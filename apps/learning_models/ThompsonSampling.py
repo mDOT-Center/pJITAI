@@ -4,7 +4,7 @@ class ThompsonSampling(LearningModelBase):
 
     def __init__(self):
         super().__init__()
-        self.name = "Thompson Sampling"
+        self.type = "ThompsonSampling" #this should be same as class name
         self.description = 'This is the thomson sampling algorithm definition.'
         # TODO: for all sigma range (0 to +inf) and for all mu, (-inf, +inf), Noise is same like sigma
         self.parameters = {

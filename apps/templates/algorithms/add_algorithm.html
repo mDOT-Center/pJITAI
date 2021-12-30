@@ -142,8 +142,6 @@
         <div class="input-group-btn text-right"> <button class="btn btn-danger" type="button" onclick="remove_form_fields(`+ field_id +`);"> Delete Feature </button> </div>
         <hr>
       </div>
-
-
 `;
 
 
@@ -217,7 +215,8 @@ function remove_form_fields(rid) {
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <h4>Algorithm Type </h4>{{ algorithm_definition.name }}
+            <h4>Algorithm Type </h4>{{ algorithm_definition.type }}
+            <input type="hidden" id="algorithm_type" name="algorithm_type" value="{{ algorithm_definition.type }}">
           </div>
         </div>
       </div>
@@ -235,7 +234,7 @@ function remove_form_fields(rid) {
         <div class="col-md-12">
           <div class="form-group">
             <h4 >Description</h4>
-            <textarea class="form-control" name="description" id="description" rows="3" placeholder="Algorithm Description">{{algorithm_definition.description}}</textarea>
+            <textarea class="form-control" name="algorithm_description" id="algorithm_description" rows="3" placeholder="Algorithm Description" required>{{algorithm_definition.description}}</textarea>
           </div>
         </div>
       </div>
