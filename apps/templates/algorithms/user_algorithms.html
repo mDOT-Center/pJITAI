@@ -6,13 +6,6 @@
 
 {% set current_url= url_for(request.endpoint) | replace("/","") %}
 
-{% if current_url=="my_algorithms" %}
-{% set bread_crumb = "My Algorithms" %}
-{% set view_button = "Edit Algorithm" %}
-{% else %}
-{% set bread_crumb = "View Prebuilt" %}
-{% set view_button = "New Instance" %}
-{% endif %}
 
   <div class="header bg-primary pb-6">
     <div class="container-fluid">
@@ -24,7 +17,7 @@
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                 <li class="breadcrumb-item"><a href="{{ url_for('home_blueprint.index') }}"><i class="fas fa-home"></i></a></li>
 
-                <li class="breadcrumb-item active" aria-current="page">Definitions</li>
+                <li class="breadcrumb-item active" aria-current="page">Mine</li>
               </ol>
             </nav>
           </div>
@@ -48,7 +41,7 @@
     <div class="card-header border-0">
       <div class="row">
         <div class="col-6">
-          <h3 class="mb-0">Algorithms' Definitions</h3>
+          <h3 class="mb-0">My Algorithms</h3>
         </div>
 
       </div>
@@ -59,50 +52,54 @@
       <!-- Form groups used in grid -->
       <div class="row">
         <div class="table-responsive">
-
+          
           <div class="accordion" id="accordionExample">
-            {% for a in algorithms_definitions %}
+
+            {% for a in user_algorithms %}
+            {% set algo_details = a.as_dict() %}
+            {% set country = 1 %}
             <div class="card">
-              <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              <div class="card-header" id="heading{{loop.index}}" data-toggle="collapse" data-target="#collapse{{loop.index}}" aria-expanded="false" aria-controls="collapse{{loop.index}}">
 
                 <div class="row">
                   <div class="col">
-                    <h5 class="mb-0">{{ a }} </h5>
+                    <h5 class="mb-0">{{ algo_details.name }} </h5>
                   </div>
                   <div class="col">
-                    &nbsp;
+                    <a href="{{ url_for('algorithm_blueprint.algorithm_form',algorithm_name=a) }}" class="btn btn-info btn-sm" role="button"><i class="fas fa-user-edit"></i>Edit</a>
                   </div>
                   <div class="col">
-
-                    <a href="{{ url_for('algorithm_blueprint.algorithm_form',algorithm_name=a) }}" class="btn btn-info btn-sm" role="button"><i class="fas fa-user-edit"></i>Create New Instance</a>
+                    <a href="{{ url_for('algorithm_blueprint.algorithm_form',algorithm_name=a) }}" class="btn btn-info btn-sm" role="button"><i class="fas fa-user-edit"></i>Modify</a>
                   </div>
                 </div>
               </div>
-              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div id="collapse{{loop.index}}" class="collapse" aria-labelledby="heading{{loop.index}}" data-parent="#accordionExample">
                 <div class="card-body">
                   <table   class="table align-items-center table-flush table-striped">
                     <tbody>
                     <tr>
-                      <td><strong>Algorithm Name</strong>: {{a}}</td>
+                      <td><strong>Algorithm Name</strong>: {{algo_details.name}}</td>
                     </tr>
                     <tr>
-                      <td><strong>Description</strong> {{ algorithms_definitions.get(a).get("description") }}</td>
-                    </tr>
-                    <tr>
-                      <td><h2>Parameters</h2></td>
+                      <td><strong>Description</strong> {{ algo_details.description }}</td>
                     </tr>
                     <tr>
                       <td>
-                        {% for p_k, p_v in algorithms_definitions.get(a).get("parameters").items() %}
-                          <strong>Name</strong>: {{ p_k }}<br>
-                          {% for k,v in p_v.items() %}
-                            <strong>{{k}}</strong> - {{ v }}<br>
-                          {% endfor %}
-                          <hr>
-                        {% endfor %}
-
+                        <h2>Features</h2>
                       </td>
                     </tr>
+                    <tr>
+                      <td>
+                        {% for p_k, p_v in algo_details.get("configuration").get("features").items() %}
+                        <strong>ID: {{p_k}}</strong><br>
+                          {% for k,v in p_v.items() %}
+                            <strong>{{k | replace("feature_","") | replace("parameter_","")}}</strong> - {{ v }}<br>
+                          {% endfor %}
+                        <hr>
+                        {% endfor %}
+                      </td>
+                    </tr>
+
                     <tr>
                       <td>
                         <h2>Standalone Parameters</h2>
@@ -110,12 +107,8 @@
                     </tr>
                     <tr>
                       <td>
-                        {% for p_k, p_v in algorithms_definitions.get(a).get("standalone_parameters").items() %}
-                        <strong>Name</strong>: {{ p_k }}<br>
-                        {% for k,v in p_v.items() %}
-                        <strong>{{k}}</strong> - {{ v }}<br>
-                        {% endfor %}
-                        <hr>
+                        {% for p_k, p_v in algo_details.get("configuration").get("standalone_parameters").items() %}
+                        <strong>{{p_k}}</strong> - {{ p_v }}<br>
                         {% endfor %}
                       </td>
                     </tr>
@@ -126,12 +119,8 @@
                     </tr>
                     <tr>
                       <td>
-                        {% for p_k, p_v in algorithms_definitions.get(a).get("other_parameters").items() %}
-                        <strong>Name</strong>: {{ p_k }}<br>
-                        {% for k,v in p_v.items() %}
-                        <strong>{{k}}</strong> - {{ v }}<br>
-                        {% endfor %}
-                        <hr>
+                        {% for p_k, p_v in algo_details.get("configuration").get("other_parameters").items() %}
+                        <strong>{{p_k}}</strong> - {{ p_v }}<br>
                         {% endfor %}
                       </td>
                     </tr>
@@ -142,11 +131,9 @@
                     </tr>
                     <tr>
                       <td>
-                        {% for p_k, p_v in algorithms_definitions.get(a).get("tuning_scheduler").items() %}
+                        {% for p_k, p_v in algo_details.get("configuration").get("tuning_scheduler").items() %}
                         <strong>{{p_k}}</strong> - {{ p_v }}<br>
-
                         {% endfor %}
-
                       </td>
                     </tr>
                     </tbody>

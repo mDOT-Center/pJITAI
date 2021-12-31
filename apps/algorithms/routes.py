@@ -36,11 +36,11 @@ def algorithms_definitions():
 @blueprint.route('/my_algorithms', methods=['GET', 'POST'])
 @login_required
 def my_algorithms():
-
-    prebuilt_algorithms = db.session.query(PrebuiltAlgorithms).filter(PrebuiltAlgorithms.algorithm_type=="custom").all()
-    return render_template('algorithms/algorithms_definitions.html',
+    user_id = current_user.get_id()
+    user_algorithms = db.session.query(Algorithms).filter(Algorithms.created_by==user_id).all()
+    return render_template('algorithms/user_algorithms.html',
                            msg='No Message',
-                           prebuilt_algorithms=prebuilt_algorithms)
+                           user_algorithms=user_algorithms)
 
 
 # @blueprint.route('/algorithm_form/<algorithm_id>', methods=['GET', 'POST'])
@@ -53,9 +53,9 @@ def my_algorithms():
 #                            prebuilt_algorithms=prebuilt_algorithms[0])
 
 
-@blueprint.route('/algorithm_form2/<algorithm_name>', methods=['GET', 'POST'])
+@blueprint.route('/algorithm_form/<algorithm_name>', methods=['GET', 'POST'])
 @login_required
-def algorithm_form2(algorithm_name):
+def algorithm_form(algorithm_name):
 
     algorithm_definition = list_algorithms(algorithm_name)
 
@@ -93,12 +93,13 @@ def add_update_algo():
                 other_parameter.update({arr[1]:request.form[param]})
 
         configuration["features"] = features
-        configuration["standalone_parameter"] = standalone_parameter
-        configuration["other_parameter"] = other_parameter
+        configuration["standalone_parameters"] = standalone_parameter
+        configuration["other_parameters"] = other_parameter
+        configuration["tuning_scheduler"] = {}
         if request.form.get("availability"):
             configuration["availability"] = {"availability":request.form.get("availability")}
 
-        existing_algo = db.session.query(Algorithms).filter(Algorithms.name == algorithm_name & Algorithms.type==algorithm_type).first()
+        existing_algo = db.session.query(Algorithms).filter(Algorithms.name == algorithm_name and Algorithms.type==algorithm_type).first()
         if not existing_algo:
             created_on = datetime.datetime.now()
             algo = Algorithms(created_by=created_by, uuid=uuid, name=algorithm_name, description=algorithm_description, study_name=study_name, version=version, type=algorithm_type, configuration=configuration, modified_on=modified_on, created_on=created_on)
