@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 import datetime
 
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 
 import json
 from apps import db
@@ -58,15 +58,27 @@ def my_algorithms():
 def algorithm_form(algorithm_name):
 
     algorithm_definition = list_algorithms(algorithm_name)
-
     return render_template('algorithms/add_algorithm.html',
                            msg='No Message',
                            algorithm_definition=algorithm_definition)
+
+@blueprint.route('/edit_algorithm/<algorithm_id>', methods=['GET', 'POST'])
+@login_required
+def edit_algorithm(algorithm_id):
+    algo = {}
+    algo["user_algorithm"] = db.session.query(Algorithms).filter(Algorithms.id == algorithm_id).first()
+    algo["algorithm_definition"] = list_algorithms(algo["user_algorithm"].type)
+
+    return render_template('algorithms/edit_algorithm.html',
+                           msg='No Message',
+                           algo=algo)
 
 @blueprint.route('/add_update_algo/', methods=['GET', 'POST'])
 @login_required
 def add_update_algo():
     if 'add_update_algo' in request.form:
+        algorithm_id = request.form.get("algorithm_id")
+        form_type = request.form.get("form_type")
         created_by = current_user.get_id()
         uuid = "123-123-123-123"
         algorithm_name = request.form.get("algorithm_name")
@@ -99,12 +111,12 @@ def add_update_algo():
         if request.form.get("availability"):
             configuration["availability"] = {"availability":request.form.get("availability")}
 
-        existing_algo = db.session.query(Algorithms).filter(Algorithms.name == algorithm_name and Algorithms.type==algorithm_type).first()
-        if not existing_algo:
+        if form_type=="new":
             created_on = datetime.datetime.now()
             algo = Algorithms(created_by=created_by, uuid=uuid, name=algorithm_name, description=algorithm_description, study_name=study_name, version=version, type=algorithm_type, configuration=configuration, modified_on=modified_on, created_on=created_on)
             db.session.add(algo)
         else:
+            existing_algo = db.session.query(Algorithms).filter(Algorithms.id==algorithm_id).first()
             existing_algo.ceated_by = created_by
             existing_algo.uuid = uuid
             existing_algo.name = algorithm_name
@@ -116,9 +128,15 @@ def add_update_algo():
             existing_algo.modified_on = modified_on
 
         db.session.commit()
-        print("sss")
+        return redirect(url_for('algorithm_blueprint.edit_algorithm', algorithm_id=algorithm_id, **request.args))
 
-
+@blueprint.route('/delete_algorithm/<algorithm_id>', methods=['GET', 'POST'])
+@login_required
+def delete_algorithm(algorithm_id):
+    existing_algo = db.session.query(Algorithms).filter(Algorithms.id==algorithm_id).first()
+    db.session.delete(existing_algo)
+    db.session.commit()
+    return redirect(url_for('algorithm_blueprint.my_algorithms', **request.args))
 
 @blueprint.route('/list_algorithms/', methods=['GET'])
 @blueprint.route('/list_algorithms/<name>', methods=['GET'])

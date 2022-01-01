@@ -66,10 +66,13 @@
                     <h5 class="mb-0">{{ algo_details.name }} </h5>
                   </div>
                   <div class="col">
-                    <a href="{{ url_for('algorithm_blueprint.algorithm_form',algorithm_name=a) }}" class="btn btn-info btn-sm" role="button"><i class="fas fa-user-edit"></i>Edit</a>
+                    <a href="{{ url_for('algorithm_blueprint.edit_algorithm',algorithm_id=algo_details.id) }}" class="btn btn-info btn-sm" role="button"><i class="icon-item fas fa-file-signature mdb-gallery-view-icon"></i> Edit</a>
                   </div>
                   <div class="col">
-                    <a href="{{ url_for('algorithm_blueprint.algorithm_form',algorithm_name=a) }}" class="btn btn-info btn-sm" role="button"><i class="fas fa-user-edit"></i>Modify</a>
+                    <a href="{{ url_for('algorithm_blueprint.delete_algorithm',algorithm_id=algo_details.id) }}" class="btn btn-danger btn-sm" role="button"><i class="ni ni-fat-remove"></i> Delete</a>
+                  </div>
+                  <div class="col">
+                    <a href="{{ url_for('algorithm_blueprint.edit_algorithm',algorithm_id=algo_details.id) }}" class="btn btn-success btn-sm" role="button"><i class="icon-item far fa-play-circle mdb-gallery-view-icon"></i> Run</a>
                   </div>
                 </div>
               </div>
