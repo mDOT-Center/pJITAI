@@ -7,6 +7,12 @@ class ThompsonSampling(LearningModelBase):
         self.type = "ThompsonSampling" #this should be same as class name
         self.description = 'This is the thomson sampling algorithm definition.'
         # TODO: for all sigma range (0 to +inf) and for all mu, (-inf, +inf), Noise is same like sigma
+        # technical section: param section for behav scitn.
+        # help /FAQ
+        # more info/tutorial
+        # should have a left/right pane on the same screen
+        # after run, finalize/contract (create a micro service, create a new url, where a 3rd party can accesss the finalized algo)
+
         self.parameters = {
             "alpha0_mu": {
                 "description": "Some description",
