@@ -111,7 +111,7 @@ def add_update_algo():
         if request.form.get("availability"):
             configuration["availability"] = {"availability":request.form.get("availability")}
 
-        if form_type=="new":
+        if form_type=="add" or form_type=="new":
             created_on = datetime.datetime.now()
             algo = Algorithms(created_by=created_by, uuid=uuid, name=algorithm_name, description=algorithm_description, study_name=study_name, version=version, type=algorithm_type, configuration=configuration, modified_on=modified_on, created_on=created_on)
             db.session.add(algo)
