@@ -326,9 +326,29 @@ function remove_form_fields(rid) {
     </div>
   </div>
     {% endif %}
+    <script>
+    algo_name = '{{request.view_args.get('algorithm_name','')}}';
+      //$(document).ready(function() {
+        function runAlgoAjax(event){
+          event.preventDefault();
+          console.log("run")
+            $.ajax({
+                    type: "POST",
+                    url: '/api/run_algo/'+algo_name,
+                    data: object, //--> send id of checked checkbox on other page
+                    success: function(data) {
+
+                    },
+                     error: function() {
+                        alert('Cannot update ban settings.');
+                    },
+                });
+        }
+     // });
+    </script>
   <div class="col-md-12">
     <button class="btn btn-primary" name="add_update_algo" type="submit">Submit form</button>
-    <button class="btn btn-primary" name="add_update_algo" type="submit">Run</button>
+    <button class="btn btn-primary" onclick="runAlgoAjax(event)" name="runAlgo" id="runAlgo" type="submit">Run</button>
   </div>
   </form>
 </div>
