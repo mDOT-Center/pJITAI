@@ -23,6 +23,7 @@ class Algorithms(db.Model):
     version = db.Column('version', db.Integer)
     type = db.Column('type', db.String(100))
     configuration=db.Column('configuration', db.JSON)
+    finalized = db.Column('finalized', db.Integer, default=0)
     modified_on = db.Column('modified_on', db.DateTime, default=datetime.now())
     created_on = db.Column('created_on', db.DateTime, default=datetime.now())
     __table_args__ = (db.UniqueConstraint('name', 'type', name='unique_name_type'),)

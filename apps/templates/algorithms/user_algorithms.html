@@ -6,6 +6,31 @@
 
 {% set current_url= url_for(request.endpoint) | replace("/","") %}
 
+<script>
+$(document).ready(function() {
+  $('#confirm-delete').on('show.bs.modal', function(e) {
+    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    console.log($(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href')));
+  });
+});
+</script>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header btn-danger">
+        Delete!
+      </div>
+      <div class="modal-body">
+        Are you sure?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <a class="btn btn-danger btn-ok">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
 
   <div class="header bg-primary pb-6">
     <div class="container-fluid">
@@ -69,10 +94,10 @@
                     <a href="{{ url_for('algorithm_blueprint.edit_algorithm',algorithm_id=algo_details.id) }}" class="btn btn-warning btn-sm" role="button"><i class="icon-item fas fa-file-signature mdb-gallery-view-icon"></i> Edit</a>
                   </div>
                   <div class="col">
-                    <a href="{{ url_for('algorithm_blueprint.delete_algorithm',algorithm_id=algo_details.id) }}" class="btn btn-danger btn-sm" role="button"><i class="ni ni-fat-remove"></i> Delete</a>
+                    <a href="#" data-href="{{ url_for('algorithm_blueprint.delete_algorithm',algorithm_id=algo_details.id) }}" class="btn btn-danger btn-sm" role="button" data-toggle="modal" data-target="#confirm-delete"><i class="ni ni-fat-remove"></i> Delete</a>
                   </div>
                   <div class="col">
-                    <a href="{{ url_for('algorithm_blueprint.edit_algorithm',algorithm_id=algo_details.id) }}" class="btn btn-success btn-sm" role="button"><i class="icon-item fas fa-check mdb-gallery-view-icon"></i> Finalize</a>
+                    <a href="{{ url_for('algorithm_blueprint.finalize_algorithm',id=algo_details.id) }}" class="btn btn-success btn-sm" role="button"><i class="icon-item fas fa-check mdb-gallery-view-icon"></i> Finalize</a>
                   </div>
                 </div>
               </div>

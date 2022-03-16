@@ -134,6 +134,15 @@ def delete_algorithm(algorithm_id):
     db.session.commit()
     return redirect(url_for('algorithm_blueprint.my_algorithms', **request.args))
 
+@blueprint.route('/finalize_algorithm/<id>', methods=['GET', 'POST'])
+@login_required
+def finalize_algorithm(id):
+    existing_algo = db.session.query(Algorithms).filter(Algorithms.id==id).first()
+    existing_algo.finalized = 1
+    #db.session.delete(existing_algo)
+    db.session.commit()
+    return redirect(url_for('algorithm_blueprint.my_algorithms', **request.args))
+
 @blueprint.route('/list_algorithms/', methods=['GET'])
 @blueprint.route('/list_algorithms/<name>', methods=['GET'])
 def list_algorithms(name=None):
