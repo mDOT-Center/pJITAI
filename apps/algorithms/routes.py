@@ -62,11 +62,19 @@ def algorithm_form(algorithm_name):
 @login_required
 def edit_algorithm(algorithm_id):
     algo = {}
+
     algo["user_algorithm"] = db.session.query(Algorithms).filter(Algorithms.id == algorithm_id).first()
     algo["algorithm_definition"] = list_algorithms(algo["user_algorithm"].type)
 
+    if request.headers.get("Referer") is not None and "algorithm_form" in request.headers.get("Referer"):
+        msg = "Algorithm "+algo["user_algorithm"].name+" type of "+algo["algorithm_definition"].get("type")+" has been saved successfully."
+    elif request.headers.get("Referer") is not None and "edit_algorithm" in request.headers.get("Referer"):
+        msg = "Algorithm "+algo["user_algorithm"].name+" type of "+algo["algorithm_definition"].get("type")+" has been updated successfully."
+    else:
+        msg = ""
+
     return render_template('algorithms/edit_algorithm.html',
-                           msg='No Message',
+                           msg=msg,
                            algo=algo)
 
 @blueprint.route('/add_update_algo/', methods=['GET', 'POST'])
@@ -111,6 +119,8 @@ def add_update_algo():
             created_on = datetime.datetime.now()
             algo = Algorithms(created_by=created_by, uuid=uuid, name=algorithm_name, description=algorithm_description, study_name=study_name, version=version, type=algorithm_type, configuration=configuration, modified_on=modified_on, created_on=created_on)
             db.session.add(algo)
+            db.session.commit()
+            algorithm_id = algo.id
         else:
             existing_algo = db.session.query(Algorithms).filter(Algorithms.id==algorithm_id).first()
             existing_algo.ceated_by = created_by
@@ -122,8 +132,8 @@ def add_update_algo():
             existing_algo.type = algorithm_type
             existing_algo.configuration = configuration
             existing_algo.modified_on = modified_on
+            db.session.commit()
 
-        db.session.commit()
         return redirect(url_for('algorithm_blueprint.edit_algorithm', algorithm_id=algorithm_id, **request.args))
 
 @blueprint.route('/delete_algorithm/<algorithm_id>', methods=['GET', 'POST'])

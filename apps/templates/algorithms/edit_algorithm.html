@@ -153,8 +153,11 @@ function remove_form_fields(rid) {
     $('#feature_div_'+rid).remove();
    }
 </script>
-
-
+{% if msg%}
+<div class="alert alert-success" role="alert">
+  {{msg}}
+</div>
+{% endif %}
   <div class="header bg-primary pb-6">
     <div class="container-fluid">
       <div class="header-body">

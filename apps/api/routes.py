@@ -2,10 +2,12 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+import json
 
 from apps.api import blueprint
 from flask import render_template, request
 from flask_login import login_required
+from flask import jsonify
 from jinja2 import TemplateNotFound
 from datetime import datetime
 from apps import db
@@ -70,16 +72,46 @@ def run_algo(algo_type):
         return {"status":"success", "message":"Algorithm ran successfully. Output is TODO"}
     return {"status":"error", "message":"Some error occurred. Check the logs."},400
 
+
+@blueprint.route('/batch_update/<uuid>', methods=['POST']) #or UUID
+def batch_update(uuid):
+    """
+    Input: json data structure (structure?)
+    https://github.com/mDOT-Center/reinforcement-learning/blob/main/cloud/notes/thompson_sampling_example.json - 242
+    Process:
+        convert json into binary data structure (e.g., numpy) (question: what data will be sent from phone)
+        make a call to the algorithm
+        returns a data structure (structure???) (e.g., posterior_sampling_weights)
+
+    :return:
+    """
+    pass
+
+@blueprint.route('/decision/<uuid>', methods=['POST']) #or UUID
+def decision(uuid):
+    """
+    Same input like batch_update
+    Process:
+        make a call to the algorithm
+        returns probabilities of all the potential options
+    :param query:
+    :return:
+    """
+
+
 @blueprint.route('/search/<query>', methods=['POST','GET']) #or UUID
 @login_required
 def search(query):
+    results = []
     search = "%{}%".format(query)
-    algos = Algorithms.query.filter(Algorithms.name.like(search) or Algorithms.type.like(search)).all()
+    algos = Algorithms.query.filter(Algorithms.name.like(search) | Algorithms.type.like(search)).all()
     if not algos:
         return {"status":"error", "message":"No result found."},400
     else:
-        print(algos)
-        return "FOUND"
+        for al in algos:
+            results.append(al.as_dict())
+        #print(algos)
+        return jsonify(results)
 
 @blueprint.route('/algorithms/<id>', methods=['GET']) #or UUID
 @login_required
