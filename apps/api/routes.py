@@ -73,7 +73,7 @@ def run_algo(algo_type):
     return {"status":"error", "message":"Some error occurred. Check the logs."},400
 
 
-@blueprint.route('/batch_update/<uuid>', methods=['POST']) #or UUID
+@blueprint.route('/batch_update/<uuid>', methods=['POST', 'GET']) #or UUID
 def batch_update(uuid):
     """
     Input: json data structure (structure?)
@@ -85,7 +85,11 @@ def batch_update(uuid):
 
     :return:
     """
-    pass
+    algo_uuid = uuid
+    data = request.form.get("data")
+    from modules.demo_algorithm.demo import demo_method
+    result = demo_method(data)
+    return result
 
 @blueprint.route('/decision/<uuid>', methods=['POST']) #or UUID
 def decision(uuid):

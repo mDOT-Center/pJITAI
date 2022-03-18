@@ -9,6 +9,7 @@ from apps.algorithms import blueprint
 from apps.authentication.models import Users
 from apps.algorithms.models import Algorithms
 from apps.learning_models.learning_model_service import get_all_available_models
+from uuid import uuid4
 
 # @blueprint.route('/prebuilt-algorithms', methods=['GET', 'POST'])
 # def view_prebuilt_algorithms():
@@ -84,7 +85,7 @@ def add_update_algo():
         algorithm_id = request.form.get("algorithm_id")
         form_type = request.form.get("form_type")
         created_by = current_user.get_id()
-        uuid = "123-123-123-123"
+        uuid = uuid4()
         algorithm_name = request.form.get("algorithm_name")
         algorithm_description = request.form.get("algorithm_description")
         study_name = "rl-demo"

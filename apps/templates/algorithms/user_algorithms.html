@@ -106,7 +106,16 @@ $(document).ready(function() {
                   <table   class="table align-items-center table-flush table-striped">
                     <tbody>
                     <tr>
-                      <td><strong>Algorithm Name</strong>: {{algo_details.name}}</td>
+                      <td><strong>UUID</strong>: {{algo_details.uuid}}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>API URL</strong>: <a target="_blank" href="{{ url_for('api_blueprint.algorithms',id=algo_details.id) }}">{{ url_for('api_blueprint.algorithms',id=algo_details.id) }}</a></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Name</strong>: {{algo_details.name}}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Type</strong>: {{algo_details.type}}</td>
                     </tr>
                     <tr>
                       <td><strong>Description</strong> {{ algo_details.description }}</td>
