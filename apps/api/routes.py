@@ -20,6 +20,52 @@ from apps.learning_models.learning_model_service import get_all_available_models
 #     # all finalized algorithms could be accessed using this api point
 #     return "api code for "+algo_name
 
+@blueprint.route('<uuid>/', methods=['GET'])
+#@login_required
+def index():
+    return {"status":"success", "message":"Model name: TODO", "model":"mode file - TODO"}
+
+@blueprint.route('<uuid>/decision', methods=['POST'])
+def decision(uuid):
+    """
+    Same input like batch_update
+    Inputs: list of features and params, param whether run algo for one user or all users, weights associated with user-id (map for weights users)
+    Output: list of probs and actions
+    Process:
+        make a call to the algorithm
+        returns probabilities of all the potential options
+    :param query:
+    :return:
+    """
+    return {"status":"success", "message":"Decision for algo ID: "+uuid}
+
+
+@blueprint.route('<uuid>/batch_update', methods=['POST', 'GET']) #or UUID
+def batch_update(uuid):
+    """
+    Input: json data structure (structure?)
+    https://github.com/mDOT-Center/reinforcement-learning/blob/main/cloud/notes/thompson_sampling_example.json - 242
+    Process:
+        convert json into binary data structure (e.g., numpy) (question: what data will be sent from phone)
+        make a call to the algorithm
+        returns a data structure (structure???) (e.g., posterior_sampling_weights)
+
+    :return:
+    """
+    # algo_uuid = uuid
+    # data = request.form.get("data")
+    # from modules.demo_algorithm.demo import demo_method
+    # result = demo_method(data)
+    # result["params"] = jsonify(request.form).json
+    # return result
+    return {"status":"success", "message":"Batch updated for Model ID: "+uuid}
+
+
+@blueprint.route('<uuid>/validate', methods=['POST'])
+#@login_required
+def validate(uuid):
+    return {"status":"success", "message":"Data validated for algo ID: "+uuid}
+
 
 @blueprint.route('/run_algo/<algo_type>', methods=['POST']) #or UUID
 @login_required
@@ -71,36 +117,6 @@ def run_algo(algo_type):
         #return algo_info
         return {"status":"success", "message":"Algorithm ran successfully. Output is TODO"}
     return {"status":"error", "message":"Some error occurred. Check the logs."},400
-
-
-@blueprint.route('/batch_update/<uuid>', methods=['POST', 'GET']) #or UUID
-def batch_update(uuid):
-    """
-    Input: json data structure (structure?)
-    https://github.com/mDOT-Center/reinforcement-learning/blob/main/cloud/notes/thompson_sampling_example.json - 242
-    Process:
-        convert json into binary data structure (e.g., numpy) (question: what data will be sent from phone)
-        make a call to the algorithm
-        returns a data structure (structure???) (e.g., posterior_sampling_weights)
-
-    :return:
-    """
-    algo_uuid = uuid
-    data = request.form.get("data")
-    from modules.demo_algorithm.demo import demo_method
-    result = demo_method(data)
-    return result
-
-@blueprint.route('/decision/<uuid>', methods=['POST']) #or UUID
-def decision(uuid):
-    """
-    Same input like batch_update
-    Process:
-        make a call to the algorithm
-        returns probabilities of all the potential options
-    :param query:
-    :return:
-    """
 
 
 @blueprint.route('/search/<query>', methods=['POST','GET']) #or UUID
