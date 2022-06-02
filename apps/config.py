@@ -36,7 +36,7 @@ class ProductionConfig(Config):
 
     # PostgreSQL database
     SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}:{}/{}'.format(
-        config('DB_ENGINE', default='mysql'),
+        config('DB_ENGINE', default='mysql+pymysql'),
         config('DB_USERNAME', default='root'),
         config('DB_PASS', default='pass'),
         config('DB_HOST', default='localhost'),

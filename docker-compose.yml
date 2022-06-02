@@ -20,6 +20,21 @@ services:
       - web_network
     depends_on:
       - rl-app
+  mysql:
+    image: mysql:5.7
+    container_name: rl_mysql
+    restart: always
+    labels:
+      org.md2k.cerebralcortex.name: "MySql"
+    ports:
+      - 3307:3306 # HOST:CONTAINER
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-pass}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-rl_interface}
+    networks:
+      - db_network
+      - web_network
+
 networks:
   db_network:
     driver: bridge
