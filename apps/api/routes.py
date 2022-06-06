@@ -22,7 +22,7 @@ from apps.learning_models.learning_model_service import get_all_available_models
 
 @blueprint.route('<uuid>/', methods=['GET'])
 #@login_required
-def index():
+def index(uuid):
     return {"status":"success", "message":"Model name: TODO", "model":"mode file - TODO"}
 
 @blueprint.route('<uuid>/decision', methods=['POST'])

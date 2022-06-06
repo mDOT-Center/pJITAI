@@ -3,13 +3,13 @@
 ## API Routes
 - Default get model: 
   * HTTP Method: `GET`
-  * URL: `HOST/UUID/`
+  * URL: `HOST/api/UUID/`
 - Decision route: 
     * HTTP Method: `POST`
-    * URL: `HOST/UUID/decision`
+    * URL: `HOST/api/UUID/decision`
 - Batch update: 
     * HTTP Method: `POST`
-    * URL: `HOST/UUID/batch_update`
+    * URL: `HOST/api/UUID/batch_update`
 - Validate: 
     * HTTP Method: `POST`
-    * URL: `HOST/UUID/validate`
+    * URL: `HOST/api/UUID/validate`
