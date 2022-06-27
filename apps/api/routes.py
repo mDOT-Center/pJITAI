@@ -22,18 +22,26 @@ def time_8601(time=datetime.now()) -> str:
     return time.astimezone().isoformat()
 
 
-def _validate_algo_data(input_request):  # TODO: Make this actually do something
+def _validate_algo_data(uuid: str, input_request: dict) -> dict:  # TODO: Make this actually do something @Anand
+    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
+
+    # TODO: iterate over input_request and validate against the algorihms specification @Anand
     output_data = input_request
     output_data['status_code'] = StatusCode.SUCCESS.value
     output_data['status_message'] = "All data values passed validation."
     return output_data
 
 
-def _make_decision(input_data):  # TODO: Make this actually do something
-    result = {
+def _make_decision(uuid: str, input_data: dict) -> dict:  # TODO: Make this actually do something
+    # TODO: Call the decision method in this specific algorithm @Ali
+    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
+
+    # values = algo.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
+    # TODO: Reformat result into an appropriate response (e.g. "values" from below)
+    result = {  # TODO: Remove this when the above works
         'user_id': input_data['user_id'],
         'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
-        'values': [
+        'values': [  # values
             {
                 'name': 'decision_1',
                 'probability': 0.3
@@ -53,9 +61,18 @@ def _make_decision(input_data):  # TODO: Make this actually do something
     return result
 
 
-def _save_each_data_row(user_id, data):  # TODO: Make this actually do something
+def _save_each_data_row(user_id: str, data: dict) -> dict:  # TODO: Make this actually do something
+    # TODO: Save each row in data in the SQL storage layer @Ali
     print(user_id)
     pprint(data)
+
+    result = {
+        'user_id': data['user_id'],
+        'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
+        'status_code': StatusCode.SUCCESS,
+        'status_message': StatusCode.SAVE_SUCCESS_MESSAGE
+    }
+    return result
 
 
 def rl_token_required(f):
@@ -65,7 +82,8 @@ def rl_token_required(f):
         if not token:
             return {'ERROR': 'Token is not present'}
 
-        # TODO: Check if the token matches the one present for the algorithm in question
+        # TODO: Check if the token matches the one present for the algorithm in question @Ali
+        # TODO: Add token to the algorithm and WebUI (View Algorithm) @Ali
 
         return f(*args, **kwargs)
 
@@ -74,7 +92,7 @@ def rl_token_required(f):
 
 @blueprint.route('<uuid>/', methods=['POST'])
 @rl_token_required
-def model(uuid):
+def model(uuid: str) -> dict:
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     result = {"status": "ERROR: Algorithm not found"}
     if algo:
@@ -84,22 +102,23 @@ def model(uuid):
 
 @blueprint.route('<uuid>/decision', methods=['POST'])
 @rl_token_required
-def decision(uuid):
+def decision(uuid: str) -> dict:
     input_data = request.json
 
-    validated_data = _validate_algo_data(input_data)
+    validated_data = _validate_algo_data(uuid, input_data)
 
-    decision_output = _make_decision(validated_data)
+    decision_output = _make_decision(uuid, validated_data)
+
     if decision_output:
         return decision_output
     else:
-        return {'status': "error", # TODO: this needs to be some sort of error response in the decision fails.
+        return {'status': "error",  # TODO: this needs to be some sort of error response in the decision fails.
                 'message': f'A decision was unable to be made for: {uuid}'}
 
 
 @blueprint.route('<uuid>/upload', methods=['POST'])  # or UUID
 @rl_token_required
-def upload(uuid):
+def upload(uuid: str) -> dict:
     input_data = request.json
 
     for row in input_data['values']:
