@@ -5,6 +5,8 @@ Copyright (c) 2019 - present AppSeed.us
 import json
 from functools import wraps
 
+import Status as Status
+
 from apps.api import blueprint
 from flask import render_template, request
 from flask_login import login_required
@@ -22,7 +24,7 @@ def time_8601(time=datetime.now()) -> str:
     return time.astimezone().isoformat()
 
 
-def _validate_algo_data(uuid: str, input_request: dict) -> dict:  # TODO: Make this actually do something @Anand
+def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make this actually do something @Anand
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
 
     # TODO: iterate over input_request and validate against the algorihms specification @Anand
@@ -32,7 +34,7 @@ def _validate_algo_data(uuid: str, input_request: dict) -> dict:  # TODO: Make t
     return output_data
 
 
-def _make_decision(uuid: str, input_data: dict) -> dict:  # TODO: Make this actually do something
+def _make_decision(uuid: str, input_data: list) -> dict:  # TODO: Make this actually do something
     # TODO: Call the decision method in this specific algorithm @Ali
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
 
@@ -105,7 +107,7 @@ def model(uuid: str) -> dict:
 def decision(uuid: str) -> dict:
     input_data = request.json
 
-    validated_data = _validate_algo_data(uuid, input_data)
+    validated_data = _validate_algo_data(uuid, input_data['values'])
 
     decision_output = _make_decision(uuid, validated_data)
 
@@ -120,9 +122,19 @@ def decision(uuid: str) -> dict:
 @rl_token_required
 def upload(uuid: str) -> dict:
     input_data = request.json
-
-    for row in input_data['values']:
-        _save_each_data_row(input_data['user_id'], row)
+    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
+    try:
+        for row in input_data['values']:
+            if len(row) == algo.features.length:
+                # TODO: Consider validating all rows prior to saving
+                _save_each_data_row(input_data['user_id'], row)
+            else:
+                raise Exception("Array out of bounds")
+    except Exception as e:
+        return {
+            "status_code": Status.ERROR,
+            #  TODO: make this work    "status_message": f"Array out of bounds.  Received ({len(row)}), Expected ({algo.features.length})"
+        }
 
     return {"status": "success", "message": "Batch updated for Model ID: " + uuid, "input_data": input_data}
 
