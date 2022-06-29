@@ -2,20 +2,17 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-import json
 from functools import wraps
 
 from apps.api import blueprint
-from flask import render_template, request
+from flask import request
 from flask_login import login_required
 from flask import jsonify
-from jinja2 import TemplateNotFound
 from datetime import datetime
 from apps import db
 from apps.algorithms.models import Algorithms
 from apps.api.codes import StatusCode
 from apps.learning_models.learning_model_service import get_all_available_models
-from pprint import pprint
 import traceback
 
 
@@ -28,7 +25,7 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
 
     # TODO: Check input_request to ensure that the number of items matches what is expected
     if len(input_request) == len(algo.configuration['features']):
-        # TODO: iterate over input_request and validate against the algorihms specification @Anand
+        # TODO: iterate over input_request and validate against the algorithm's specification @Anand
         output_data = input_request
         for row in output_data:
             row['status_code'] = StatusCode.SUCCESS.value
@@ -42,9 +39,9 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
 
 def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: Make this actually do something
     # TODO: Call the decision method in this specific algorithm @Ali
-    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
+    algorithm = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
 
-    # values = algo.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
+    # values = algorithm.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
     # TODO: Reformat result into an appropriate response (e.g. "values" from below)
     result = {  # TODO: Remove this when the above works
         'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
@@ -211,21 +208,20 @@ def run_algo(algo_type):
 @login_required
 def search(query):
     results = []
-    search = "%{}%".format(query)
-    algos = Algorithms.query.filter(Algorithms.name.like(search) | Algorithms.type.like(search)).all()
-    if not algos:
+    search_query = "%{}%".format(query)
+    algorithm = Algorithms.query.filter(Algorithms.name.like(search_query) | Algorithms.type.like(search_query)).all()
+    if not algorithm:
         return {"status": "error", "message": "No result found."}, 400
     else:
-        for al in algos:
+        for al in algorithm:
             results.append(al.as_dict())
-        # print(algos)
         return jsonify(results)
 
 
 @blueprint.route('/algorithms/<id>', methods=['GET'])  # or UUID
 @login_required
-def algorithms(id):
-    algo = db.session.query(Algorithms).filter(Algorithms.id == id).filter(Algorithms.finalized == 1).first()
+def algorithms(algo_id):
+    algo = db.session.query(Algorithms).filter(Algorithms.id == algo_id).filter(Algorithms.finalized == 1).first()
     if not algo:
         return {"status": "error",
                 "message": "Algorithm ID does not exist or algorithm has not been finalized yet."}, 400
