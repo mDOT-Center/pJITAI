@@ -5,7 +5,6 @@ Copyright (c) 2019 - present AppSeed.us
 import json
 from functools import wraps
 
-import Status as Status
 
 from apps.api import blueprint
 from flask import render_template, request
@@ -132,7 +131,7 @@ def upload(uuid: str) -> dict:
                 raise Exception("Array out of bounds")
     except Exception as e:
         return {
-            "status_code": Status.ERROR,
+            "status_code": StatusCode.ERROR.value,
             #  TODO: make this work    "status_message": f"Array out of bounds.  Received ({len(row)}), Expected ({algo.features.length})"
         }
 

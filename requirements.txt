@@ -13,3 +13,4 @@ flask-restx==0.5.1
 flask_mysqldb
 Werkzeug==2.0.3
 pymysql
+cryptography
