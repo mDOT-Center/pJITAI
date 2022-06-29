@@ -5,7 +5,6 @@ Copyright (c) 2019 - present AppSeed.us
 import json
 from functools import wraps
 
-
 from apps.api import blueprint
 from flask import render_template, request
 from flask_login import login_required
@@ -17,6 +16,7 @@ from apps.algorithms.models import Algorithms
 from apps.api.codes import StatusCode
 from apps.learning_models.learning_model_service import get_all_available_models
 from pprint import pprint
+import traceback
 
 
 def time_8601(time=datetime.now()) -> str:
@@ -26,22 +26,29 @@ def time_8601(time=datetime.now()) -> str:
 def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make this actually do something @Anand
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
 
-    # TODO: iterate over input_request and validate against the algorihms specification @Anand
-    output_data = input_request
-    output_data['status_code'] = StatusCode.SUCCESS.value
-    output_data['status_message'] = "All data values passed validation."
+    # TODO: Check input_request to ensure that the number of items matches what is expected
+    if len(input_request) == len(algo.configuration['features']):
+        # TODO: iterate over input_request and validate against the algorihms specification @Anand
+        output_data = input_request
+        for row in output_data:
+            row['status_code'] = StatusCode.SUCCESS.value
+            row['status_message'] = "All data values passed validation."
+    else:
+        raise Exception(
+            f"Array out of bounds: input: {len(input_request)}, expected: {len(algo.configuration['features'])}")
+
     return output_data
 
 
-def _make_decision(uuid: str, input_data: list) -> dict:  # TODO: Make this actually do something
+def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: Make this actually do something
     # TODO: Call the decision method in this specific algorithm @Ali
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
 
     # values = algo.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
     # TODO: Reformat result into an appropriate response (e.g. "values" from below)
     result = {  # TODO: Remove this when the above works
-        'user_id': input_data['user_id'],
         'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
+        'user_id': user_id,
         'values': [  # values
             {
                 'name': 'decision_1',
@@ -56,22 +63,19 @@ def _make_decision(uuid: str, input_data: list) -> dict:  # TODO: Make this actu
                 'probability': 0.5
             },
         ],
-        'status_code': input_data['status_code'],
-        'status_message': input_data['status_message']
+        'status_code': StatusCode.SUCCESS.value,
+        'status_message': "Decision made successfully"
     }
     return result
 
 
 def _save_each_data_row(user_id: str, data: dict) -> dict:  # TODO: Make this actually do something
     # TODO: Save each row in data in the SQL storage layer @Ali
-    print(user_id)
-    pprint(data)
-
     result = {
-        'user_id': data['user_id'],
+        'user_id': user_id,
         'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
-        'status_code': StatusCode.SUCCESS,
-        'status_message': StatusCode.SAVE_SUCCESS_MESSAGE
+        'status_code': StatusCode.SUCCESS.value,
+        'status_message': f"Saved {len(data)} rows of data"
     }
     return result
 
@@ -105,16 +109,22 @@ def model(uuid: str) -> dict:
 @rl_token_required
 def decision(uuid: str) -> dict:
     input_data = request.json
+    try:
+        validated_data = _validate_algo_data(uuid, input_data['values'])
 
-    validated_data = _validate_algo_data(uuid, input_data['values'])
+        decision_output = _make_decision(uuid, input_data['user_id'], validated_data)
 
-    decision_output = _make_decision(uuid, validated_data)
-
-    if decision_output:
-        return decision_output
-    else:
-        return {'status': "error",  # TODO: this needs to be some sort of error response in the decision fails.
-                'message': f'A decision was unable to be made for: {uuid}'}
+        if decision_output:
+            return decision_output
+        else:
+            return {'status_code': StatusCode.ERROR.value,  # TODO: this needs to be some sort of error response in the decision fails.
+                    'status_message': f'A decision was unable to be made for: {uuid}'}
+    except Exception as e:
+        traceback.print_exc()
+        return {
+            "status_code": StatusCode.ERROR.value,
+            "status_message": str(e),
+        }
 
 
 @blueprint.route('<uuid>/upload', methods=['POST'])  # or UUID
@@ -124,18 +134,25 @@ def upload(uuid: str) -> dict:
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     try:
         for row in input_data['values']:
-            if len(row) == algo.features.length:
+            if len(row['values']) == len(algo.configuration['features']):
                 # TODO: Consider validating all rows prior to saving
-                _save_each_data_row(input_data['user_id'], row)
+                response = _save_each_data_row(input_data['user_id'], row)
+                if response['status_code'] == StatusCode.ERROR.value:
+                    raise Exception('Error saving data')
             else:
-                raise Exception("Array out of bounds")
+                raise Exception(
+                    f"Array out of bounds: input: {len(row['values'])}, expected: {len(algo.configuration['features'])}")
     except Exception as e:
+        traceback.print_exc()
         return {
             "status_code": StatusCode.ERROR.value,
-            #  TODO: make this work    "status_message": f"Array out of bounds.  Received ({len(row)}), Expected ({algo.features.length})"
+            "status_message": str(e),
         }
 
-    return {"status": "success", "message": "Batch updated for Model ID: " + uuid, "input_data": input_data}
+    return {
+        "status_code": StatusCode.SUCCESS.value,
+        "status_message": f"Batch data updated for model {uuid}"
+    }
 
 
 @blueprint.route('/run_algo/<algo_type>', methods=['POST'])  # or UUID
