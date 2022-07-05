@@ -42,6 +42,7 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: 
     algorithm = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
 
     # values = algorithm.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
+    # TODO: Add a "dummy" algorithm that returns a hard-coded set of decisions @Ali
     # TODO: Reformat result into an appropriate response (e.g. "values" from below)
     result = {  # TODO: Remove this when the above works
         'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
@@ -114,7 +115,8 @@ def decision(uuid: str) -> dict:
         if decision_output:
             return decision_output
         else:
-            return {'status_code': StatusCode.ERROR.value,  # TODO: this needs to be some sort of error response in the decision fails.
+            return {'status_code': StatusCode.ERROR.value,
+                    # TODO: this needs to be some sort of error response in the decision fails.
                     'status_message': f'A decision was unable to be made for: {uuid}'}
     except Exception as e:
         traceback.print_exc()
@@ -152,6 +154,7 @@ def upload(uuid: str) -> dict:
     }
 
 
+# Web UI related APIs below here
 @blueprint.route('/run_algo/<algo_type>', methods=['POST'])  # or UUID
 @login_required
 def run_algo(algo_type):
