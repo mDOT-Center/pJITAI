@@ -15,6 +15,7 @@ from apps.api.codes import StatusCode
 from apps.learning_models.learning_model_service import get_all_available_models
 import traceback
 
+# TODO: Deadline for functioning implementation July 25th.  Demo on July 30th?
 
 def time_8601(time=datetime.now()) -> str:
     return time.astimezone().isoformat()
