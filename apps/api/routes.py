@@ -11,6 +11,8 @@ from flask import jsonify
 from datetime import datetime
 from apps import db
 from apps.algorithms.models import Algorithms
+from .models import Logs, Data, Cron
+from sqlalchemy.exc import SQLAlchemyError
 from apps.api.codes import StatusCode
 from apps.learning_models.learning_model_service import get_all_available_models
 import traceback
@@ -68,15 +70,28 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: 
     return result
 
 
-def _save_each_data_row(user_id: str, data: dict) -> dict:  # TODO: Make this actually do something
+def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TODO: Make this actually do something
     # TODO: Save each row in data in the SQL storage layer @Ali
+    resp = "Data has successfully added"
     result = {
         'user_id': user_id,
         'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
         'status_code': StatusCode.SUCCESS.value,
         'status_message': f"Saved {len(data)} rows of data"
     }
-    return result
+    try:
+        data = Data(algo_uuid=algo_uuid, details=result, created_on=time_8601())
+        db.session.add(data)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        resp = str(e.__dict__['orig'])
+        db.session.rollback()
+        print(traceback.format_exc())
+        return resp
+    except:
+        print(traceback.format_exc())
+
+    return {"msg":resp}
 
 
 def rl_token_required(f):
@@ -85,7 +100,9 @@ def rl_token_required(f):
         token = request.headers.get('rltoken')
         if not token:
             return {'ERROR': 'Token is not present'}
-
+        result = db.session.query(Algorithms).filter(Algorithms.auth_token==token).first()
+        if not result:
+            return {'ERROR': 'Invalid token'}
         # TODO: Check if the token matches the one present for the algorithm in question @Ali
         # TODO: Add token to the algorithm and WebUI (View Algorithm) @Ali
 

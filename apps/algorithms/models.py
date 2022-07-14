@@ -18,6 +18,7 @@ class Algorithms(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     uuid = db.Column('uuid', db.String(36))
     name = db.Column('name',db.String(256))
+    auth_token=db.Column('auth_token', db.Text)
     description=db.Column('description', db.Text)
     study_name = db.Column('study_name', db.String(100))
     version = db.Column('version', db.Integer)
