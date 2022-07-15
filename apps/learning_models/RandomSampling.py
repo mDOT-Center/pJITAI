@@ -1,10 +1,13 @@
 from apps.learning_models.LearningModelBase import LearningModelBase
+from random import random
+from apps.api.codes import StatusCode
+from apps.api.util import time_8601
 
-class some_demo(LearningModelBase):
+class RandomSampling(LearningModelBase):
 
     def __init__(self):
         super().__init__()
-        self.type = "ThompsonSampling" #this should be same as class name
+        self.type = "RandomSampling" #this should be same as class name
         self.description = 'some demo def.'
         # TODO: for all sigma range (0 to +inf) and for all mu, (-inf, +inf), Noise is same like sigma
         # technical section: param section for behav scitn.
@@ -141,5 +144,25 @@ class some_demo(LearningModelBase):
         self.inputs = {'data': []}
 
 
-    def run(self, command: str) -> (str, str):
-        return "RUN", "success"
+    def run(self, command: str, user_id=None) -> (str, str):
+        result = {  # TODO: Remove this when the above works
+            'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
+            'user_id': user_id,
+            'values': [  # values
+                {
+                    'name': 'decision_1',
+                    'probability': 0.3
+                },
+                {
+                    'name': 'decision_2',
+                    'probability': 0.2
+                },
+                {
+                    'name': 'decision_3',
+                    'probability': 0.5
+                },
+            ],
+            'status_code': StatusCode.SUCCESS.value,
+            'status_message': "Decision made successfully"
+        }
+        return result

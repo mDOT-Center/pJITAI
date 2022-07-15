@@ -8,19 +8,16 @@ from apps.api import blueprint
 from flask import request
 from flask_login import login_required
 from flask import jsonify
-from datetime import datetime
 from apps import db
 from apps.algorithms.models import Algorithms
-from .models import Logs, Data, Cron
+from .models import Logs, Data
 from sqlalchemy.exc import SQLAlchemyError
 from apps.api.codes import StatusCode
 from apps.learning_models.learning_model_service import get_all_available_models
 import traceback
 
 # TODO: Deadline for functioning implementation July 25th.  Demo on July 30th?
-
-def time_8601(time=datetime.now()) -> str:
-    return time.astimezone().isoformat()
+from .util import time_8601, get_class_object
 
 
 def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make this actually do something @Anand
@@ -42,31 +39,17 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
 
 def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: Make this actually do something
     # TODO: Call the decision method in this specific algorithm @Ali
-    algorithm = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
+    algorithm = Algorithms.query.filter(Algorithms.uuid==uuid).first()  # This gets the algorithm from the system
 
+    if not algorithm:
+        return {"ERROR": "Invalid algorithm ID."}
+    name = algorithm.type
+    obj = get_class_object("apps.learning_models."+name+"."+name)
+    result = obj().run("")
     # values = algorithm.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
     # TODO: Add a "dummy" algorithm that returns a hard-coded set of decisions @Ali
     # TODO: Reformat result into an appropriate response (e.g. "values" from below)
-    result = {  # TODO: Remove this when the above works
-        'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
-        'user_id': user_id,
-        'values': [  # values
-            {
-                'name': 'decision_1',
-                'probability': 0.3
-            },
-            {
-                'name': 'decision_2',
-                'probability': 0.2
-            },
-            {
-                'name': 'decision_3',
-                'probability': 0.5
-            },
-        ],
-        'status_code': StatusCode.SUCCESS.value,
-        'status_message': "Decision made successfully"
-    }
+
     return result
 
 
@@ -93,6 +76,22 @@ def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TO
 
     return {"msg":resp}
 
+def _add_log(log_detail: dict, algo_uuid=None) -> dict:
+    # TODO: Save each row in data in the SQL storage layer @Ali
+    resp = "Data has successfully added"
+    try:
+        log = Logs(algo_uuid=algo_uuid, details=log_detail, created_on=time_8601())
+        db.session.add(log)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        resp = str(e.__dict__['orig'])
+        db.session.rollback()
+        print(traceback.format_exc())
+        return resp
+    except:
+        print(traceback.format_exc())
+
+    return {"msg":resp}
 
 def rl_token_required(f):
     @wraps(f)

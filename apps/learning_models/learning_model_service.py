@@ -22,3 +22,11 @@ def get_all_available_models():
 
 def get_all_available_models2():
     models = {}
+
+def get_class_object(class_path:str):
+    from importlib import import_module
+
+    module_path, class_name = class_path.rsplit('.', 1)
+    module = import_module(module_path)
+
+    return getattr(module, class_name)
