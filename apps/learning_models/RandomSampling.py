@@ -144,7 +144,7 @@ class RandomSampling(LearningModelBase):
         self.inputs = {'data': []}
 
 
-    def run(self, command: str, user_id=None) -> (str, str):
+    def decision(self, command: str, user_id=None) -> tuple(str, str):
         result = {  # TODO: Remove this when the above works
             'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
             'user_id': user_id,
@@ -166,3 +166,6 @@ class RandomSampling(LearningModelBase):
             'status_message': "Decision made successfully"
         }
         return result
+    
+    def update(self, command: str) -> dict:
+        return {"UPDATE": "success"}

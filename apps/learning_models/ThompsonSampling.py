@@ -141,5 +141,8 @@ class ThompsonSampling(LearningModelBase):
         self.inputs = {'data': []}
 
 
-    def run(self, command: str) -> (str, str):
-        return "RUN", "success"
+    def decision(self, command: str) -> dict:
+        return {"RUN": "success"}
+    
+    def update(self, command: str) -> dict:
+        return {"UPDATE": "success"}
