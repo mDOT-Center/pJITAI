@@ -147,6 +147,7 @@ def decision(uuid: str) -> dict:
 @rl_token_required
 def upload(uuid: str) -> dict:
     input_data = request.json
+    # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     try:
         for row in input_data['values']:
