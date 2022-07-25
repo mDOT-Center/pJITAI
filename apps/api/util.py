@@ -12,5 +12,5 @@ def get_class_object(class_path:str):
 
     return getattr(module, class_name)
 
-obj = get_class_object("apps.learning_models.RandomSampling.RandomSampling")
-result = obj().run()
+# obj = get_class_object("apps.learning_models.RandomSampling.RandomSampling")
+# result = obj().run()
