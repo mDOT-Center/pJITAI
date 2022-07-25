@@ -54,6 +54,7 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: 
         return {"ERROR": "Invalid algorithm ID."}
     name = algorithm.type
     obj = get_class_object("apps.learning_models." + name + "." + name)
+
     result = obj().decision("")
     # values = algorithm.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
     # TODO: Add a "dummy" algorithm that returns a hard-coded set of decisions @Ali

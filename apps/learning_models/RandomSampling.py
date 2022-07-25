@@ -145,6 +145,9 @@ class RandomSampling(LearningModelBase):
 
 
     def decision(self, command: str, user_id=None) -> tuple(str, str):
+        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
+        
+        # TODO: implement this
         result = {  # TODO: Remove this when the above works
             'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
             'user_id': user_id,
@@ -168,4 +171,10 @@ class RandomSampling(LearningModelBase):
         return result
     
     def update(self, command: str) -> dict:
+        # TODO: implement this
+        # This should read the data and update the model
+        
+        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
+        
+        # TODO: Store tuned parameters to the datastore by user @Ali
         return {"UPDATE": "success"}
