@@ -22,14 +22,17 @@ from .util import time_8601, get_class_object
 
 def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make this actually do something @Anand
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
-
+    if not algo:
+        return {"ERROR": "Invalid algorithm ID."}
+    name = algo.type
+    obj = get_class_object("apps.learning_models." + name + "." + name)
+    params = obj.parameters
     # TODO: Check input_request to ensure that the number of items matches what is expected
-    if len(input_request) == len(algo.configuration['features']):
+    if len(input_request) == len(params):
         # TODO: iterate over input_request and validate against the algorithm's specification @Anand
         output_data = input_request
         for row in output_data:
-            row['status_code'] = StatusCode.SUCCESS.value
-            row['status_message'] = "All data values passed validation."
+            _is_valid(row, params)
     else:
         raise Exception(
             f"Array out of bounds: input: {len(input_request)}, expected: {len(algo.configuration['features'])}")
@@ -37,15 +40,22 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
     return output_data
 
 
+def _is_valid(row: dict, params: dict) -> dict:  # TODO implement me
+    validation = dict()
+    validation['status.code'] = StatusCode.SUCCESS.value
+    validation['status_message'] = "All data values passed validation."
+
+
 def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: Make this actually do something
     # TODO: Call the decision method in this specific algorithm @Ali
-    algorithm = Algorithms.query.filter(Algorithms.uuid==uuid).first()  # This gets the algorithm from the system
+    algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()  # This gets the algorithm from the system
 
     if not algorithm:
         return {"ERROR": "Invalid algorithm ID."}
     name = algorithm.type
-    obj = get_class_object("apps.learning_models."+name+"."+name)
-    result = obj().run("")
+    obj = get_class_object("apps.learning_models." + name + "." + name)
+
+    result = obj().decision("")
     # values = algorithm.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
     # TODO: Add a "dummy" algorithm that returns a hard-coded set of decisions @Ali
     # TODO: Reformat result into an appropriate response (e.g. "values" from below)
@@ -63,18 +73,19 @@ def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TO
         'status_message': f"Saved {len(data)} rows of data"
     }
     try:
-        data = Data(algo_uuid=algo_uuid, details=result, created_on=time_8601())
-        db.session.add(data)
+        data_obj = Data(algo_uuid=algo_uuid, details=data, created_on=time_8601())
+        db.session.add(data_obj)
         db.session.commit()
     except SQLAlchemyError as e:
         resp = str(e.__dict__['orig'])
         db.session.rollback()
         print(traceback.format_exc())
-        return resp
+        return {"ERROR": resp}
     except:
         print(traceback.format_exc())
 
-    return {"msg":resp}
+    return result
+
 
 def _add_log(log_detail: dict, algo_uuid=None) -> dict:
     # TODO: Save each row in data in the SQL storage layer @Ali
@@ -91,7 +102,8 @@ def _add_log(log_detail: dict, algo_uuid=None) -> dict:
     except:
         print(traceback.format_exc())
 
-    return {"msg":resp}
+    return {"msg": resp}
+
 
 def rl_token_required(f):
     @wraps(f)
@@ -99,7 +111,7 @@ def rl_token_required(f):
         token = request.headers.get('rltoken')
         if not token:
             return {'ERROR': 'Token is not present'}
-        result = db.session.query(Algorithms).filter(Algorithms.auth_token==token).first()
+        result = db.session.query(Algorithms).filter(Algorithms.auth_token == token).first()
         if not result:
             return {'ERROR': 'Invalid token'}
         # TODO: Check if the token matches the one present for the algorithm in question @Ali
@@ -147,7 +159,10 @@ def decision(uuid: str) -> dict:
 @rl_token_required
 def upload(uuid: str) -> dict:
     input_data = request.json
+
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
+    # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
+    _validate_algo_data(input_data['values'], algo.parameters)  # FIXME
     try:
         for row in input_data['values']:
             if len(row['values']) == len(algo.configuration['features']):
@@ -169,6 +184,29 @@ def upload(uuid: str) -> dict:
         "status_code": StatusCode.SUCCESS.value,
         "status_message": f"Batch data updated for model {uuid}"
     }
+
+
+@blueprint.route('<uuid>/update', methods=['POST'])
+# TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
+@rl_token_required
+def update(uuid: str) -> dict:
+    input_data = request.json
+    try:
+        pass
+        # _run_update_on_algorithm(uuid)
+
+        # if decision_output:
+        #     return decision_output
+        # else:
+        #     return {'status_code': StatusCode.ERROR.value,
+        #             # TODO: this needs to be some sort of error response in the decision fails.
+        #             'status_message': f'A decision was unable to be made for: {uuid}'}
+    except Exception as e:
+        traceback.print_exc()
+        return {
+            "status_code": StatusCode.ERROR.value,
+            "status_message": str(e),
+        }
 
 
 # Web UI related APIs below here

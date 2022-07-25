@@ -141,5 +141,12 @@ class ThompsonSampling(LearningModelBase):
         self.inputs = {'data': []}
 
 
-    def run(self, command: str) -> (str, str):
-        return "RUN", "success"
+    def decision(self, command: str) -> dict:
+        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
+        return {"RUN": "success"}
+    
+    def update(self, command: str) -> dict:
+        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
+        
+        # TODO: Store tuned parameters to the datastore by user @Ali
+        return {"UPDATE": "success"}

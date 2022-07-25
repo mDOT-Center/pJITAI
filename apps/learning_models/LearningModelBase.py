@@ -28,7 +28,11 @@ class LearningModelBase(metaclass=ABCMeta):
         return self.__dict__
 
     @abstractmethod
-    def run(self, command: str) -> (str, str):
+    def decision(self, command: str) -> dict:
+        pass
+    
+    @abstractmethod
+    def update(self, command: str) -> dict:
         pass
 
     def model_definition(self) -> dict:
