@@ -1,5 +1,5 @@
 from apps.learning_models.LearningModelBase import LearningModelBase
-from random import random
+from apps.algorithms.models import Algorithms
 from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 
@@ -144,14 +144,45 @@ class RandomSampling(LearningModelBase):
         self.outputs = {'scaling_factor': 1.453, 'num': 148932}
         self.inputs = {'data': []}
 
-    def decision(self, command: str, user_id=None) -> dict:
+
+
+
+    # def decision(self, command: str, user_id=None) -> tuple(str, str):
+    #     # TODO: Load algorithm parameters from the datastore and configure by user @Ali
+    #
+    #     # TODO: implement this
+    #     result = {  # TODO: Remove this when the above works
+    #         'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
+    #         'user_id': user_id,
+    #         'values': [  # values
+    #             {
+    #                 'name': 'decision_1',
+    #                 'probability': 0.3
+    #             },
+    #             {
+    #                 'name': 'decision_2',
+    #                 'probability': 0.2
+    #             },
+    #             {
+    #                 'name': 'decision_3',
+    #                 'probability': 0.5
+    #             },
+    #         ],
+    #         'status_code': StatusCode.SUCCESS.value,
+    #         'status_message': "Decision made successfully"
+    #     }
+    #     return result
+
+    def decision(self, algorithm_parameters:dict,input_data=None) -> dict:
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
 
-        # TODO: implement this
+        cls_obj = self.as_object(algorithm_parameters)
+        # TODO: do something with parameters and input_data
+
 
         result = {  # TODO: Remove this when the above works
             'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
-            'user_id': user_id,
+            'user_id': "123-123-123-123",
             'values': [  # values
                 {
                     'name': 'decision_1',
@@ -171,6 +202,7 @@ class RandomSampling(LearningModelBase):
         }
         return result
 
+
     def update(self, command: str) -> dict:
         # TODO: implement this
         # This should read the data and update the model
@@ -179,3 +211,9 @@ class RandomSampling(LearningModelBase):
 
         # TODO: Store tuned parameters to the datastore by user @Ali
         return {"UPDATE": "success"}
+
+    
+    
+    # TODO: @Ali Where is the required "update" method?
+
+
