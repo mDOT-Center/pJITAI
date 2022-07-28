@@ -16,7 +16,6 @@ from apps.api.codes import StatusCode
 from apps.learning_models.learning_model_service import get_all_available_models
 import traceback
 
-# TODO: Deadline for functioning implementation July 25th.  Demo on July 30th?
 from .util import time_8601, get_class_object
 
 
@@ -46,8 +45,7 @@ def _is_valid(row: dict, params: dict) -> dict:  # TODO implement me
     validation['status_message'] = "All data values passed validation."
 
 
-def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: Make this actually do something
-    # TODO: Call the decision method in this specific algorithm @Ali
+def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).filter(Algorithms.created_by==user_id).first()  # This gets the algorithm from the system
 
     if not algorithm:
@@ -56,19 +54,15 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: 
     obj = get_class_object("apps.learning_models." + name + "." + name)
 
     result = obj().decision(algorithm.configuration, input_data)
-    # values = algorithm.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
-    # TODO: Add a "dummy" algorithm that returns a hard-coded set of decisions @Ali
-    # TODO: Reformat result into an appropriate response (e.g. "values" from below)
-
+    
     return result
 
 
-def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TODO: Make this actually do something
-    # TODO: Save each row in data in the SQL storage layer @Ali
+def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:
     resp = "Data has successfully added"
     result = {
         'user_id': user_id,
-        'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
+        'timestamp': time_8601(),
         'status_code': StatusCode.SUCCESS.value,
         'status_message': f"Saved {len(data)} rows of data"
     }
@@ -88,7 +82,6 @@ def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TO
 
 
 def _add_log(log_detail: dict, algo_uuid=None) -> dict:
-    # TODO: Save each row in data in the SQL storage layer @Ali
     resp = "Data has successfully added"
     try:
         log = Logs(algo_uuid=algo_uuid, details=log_detail, created_on=time_8601())
@@ -207,19 +200,12 @@ def update(uuid: str) -> dict:
     input_data = request.json
     try:
         algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
+        #TODO: @Ali It doesn't make sense to me that the configuration is the input_data.  For now, there will be no parameters and the 'update' will retraint the model for all users in the backend.
         algorithm.configuration = input_data
         db.session.commit()
 
         return {'status_code': StatusCode.SUCCESS.value, "status_message": f'parameters have been updated for: {uuid}'}
-        # pass
-        # _run_update_on_algorithm(uuid)
 
-        # if decision_output:
-        #     return decision_output
-        # else:
-        #     return {'status_code': StatusCode.ERROR.value,
-        #             # TODO: this needs to be some sort of error response in the decision fails.
-        #             'status_message': f'A decision was unable to be made for: {uuid}'}
     except Exception as e:
         traceback.print_exc()
         return {
