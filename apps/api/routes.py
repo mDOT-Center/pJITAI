@@ -48,14 +48,14 @@ def _is_valid(row: dict, params: dict) -> dict:  # TODO implement me
 
 def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: Make this actually do something
     # TODO: Call the decision method in this specific algorithm @Ali
-    algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()  # This gets the algorithm from the system
+    algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).filter(Algorithms.created_by==user_id).first()  # This gets the algorithm from the system
 
     if not algorithm:
-        return {"ERROR": "Invalid algorithm ID."}
+        return {"ERROR": "Invalid algorithm and/or user ID."}
     name = algorithm.type
     obj = get_class_object("apps.learning_models." + name + "." + name)
 
-    result = obj().decision("")
+    result = obj().decision(algorithm.configuration, input_data)
     # values = algorithm.decision(input_data)  # TODO: We need to do something that accomplishes this @Ali
     # TODO: Add a "dummy" algorithm that returns a hard-coded set of decisions @Ali
     # TODO: Reformat result into an appropriate response (e.g. "values" from below)
@@ -132,8 +132,22 @@ def model(uuid: str) -> dict:
     return result
 
 
-@blueprint.route('<uuid>/decision', methods=['POST'])
-@rl_token_required
+@blueprint.route('<uuid>/decision2', methods=['POST', 'GET'])
+#@rl_token_required
+def decision2(uuid: str) -> dict:
+
+    try:
+        decision_output = _make_decision(uuid, 1, None)
+        return decision_output
+    except Exception as e:
+        traceback.print_exc()
+        return {
+            "status_code": StatusCode.ERROR.value,
+            "status_message": str(e),
+        }
+
+@blueprint.route('<uuid>/decision', methods=['POST', 'GET'])
+#@rl_token_required
 def decision(uuid: str) -> dict:
     input_data = request.json
     try:
@@ -188,11 +202,16 @@ def upload(uuid: str) -> dict:
 
 @blueprint.route('<uuid>/update', methods=['POST'])
 # TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
-@rl_token_required
+#@rl_token_required
 def update(uuid: str) -> dict:
     input_data = request.json
     try:
-        pass
+        algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
+        algorithm.configuration = input_data
+        db.session.commit()
+
+        return {'status_code': StatusCode.SUCCESS.value, "status_message": f'parameters have been updated for: {uuid}'}
+        # pass
         # _run_update_on_algorithm(uuid)
 
         # if decision_output:

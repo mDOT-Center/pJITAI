@@ -27,6 +27,15 @@ class LearningModelBase(metaclass=ABCMeta):
     def as_dict(self) -> dict:
         return self.__dict__
 
+    def as_object(self, d:dict):
+        """
+        Converts a dict object into class object
+        :param d: dictionary of class object
+        :return:
+        """
+
+        return type(self.__class__.__name__, (object,), d)
+
     @abstractmethod
     def decision(self, command: str) -> dict:
         pass
