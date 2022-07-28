@@ -342,10 +342,10 @@ def search(query):
         return jsonify(results)
 
 
-@blueprint.route('/algorithms/<algo_id>', methods=['GET'])  # or UUID
+@blueprint.route('/algorithms/<id>', methods=['GET'])  # or UUID
 @login_required
-def algorithms(algo_id):
-    algo = db.session.query(Algorithms).filter(Algorithms.id == algo_id).filter(Algorithms.finalized == 1).first()
+def algorithms(id):
+    algo = db.session.query(Algorithms).filter(Algorithms.id == id).filter(Algorithms.finalized == 1).first()
     if not algo:
         return {"status": "error",
                 "message": "Algorithm ID does not exist or algorithm has not been finalized yet."}, 400
