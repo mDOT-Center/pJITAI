@@ -63,6 +63,23 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:  # TODO: 
     return result
 
 
+'''
+{
+                    "timestamp": "2022-06-16T19:05:23.495427-05: 00",
+                    "decision_timestamp": "2022-06-16T19:05:23.495427-05: 00",
+                    "decision": 1,
+                    "proximal_outcome_timestamp": "2022-06-16T19:05:23.495427-05: 00",
+                    "proximal_outcome": 50,
+                    "values": [
+                        {
+                            "name": "step_count",
+                            "value": 500
+                        }
+                    ]
+                }
+'''
+
+
 def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TODO: Make this actually do something
     # TODO: Save each row in data in the SQL storage layer @Ali
     resp = "Data has successfully added"
@@ -73,7 +90,13 @@ def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TO
         'status_message': f"Saved {len(data)} rows of data"
     }
     try:
-        data_obj = Data(algo_uuid=algo_uuid, details=data, created_on=time_8601())
+        data_obj = Data(algo_uuid=algo_uuid,
+                        values=data['values'],
+                        timestamp=data['timestamp'],
+                        decision_timestamp=data['decision_timestamp'],
+                        decision=data['decision'],
+                        proximal_outcome_timestamp=data['proximal_outcome_timestamp'],
+                        proximal_outcome=data['proximal_outcome'])
         db.session.add(data_obj)
         db.session.commit()
     except SQLAlchemyError as e:
@@ -123,7 +146,7 @@ def rl_token_required(f):
 
 
 @blueprint.route('<uuid>/', methods=['POST'])
-@rl_token_required
+# @rl_token_required
 def model(uuid: str) -> dict:
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     result = {"status": "ERROR: Algorithm not found"}
@@ -133,11 +156,12 @@ def model(uuid: str) -> dict:
 
 
 @blueprint.route('<uuid>/decision', methods=['POST'])
-@rl_token_required
+# @rl_token_required # FIXME TODO
 def decision(uuid: str) -> dict:
     input_data = request.json
     try:
-        validated_data = _validate_algo_data(uuid, input_data['values'])
+        # validated_data = _validate_algo_data(uuid, input_data['values']) TODO
+        validated_data = input_data
 
         decision_output = _make_decision(uuid, input_data['user_id'], validated_data)
 
@@ -146,7 +170,7 @@ def decision(uuid: str) -> dict:
         else:
             return {'status_code': StatusCode.ERROR.value,
                     # TODO: this needs to be some sort of error response in the decision fails.
-                    'status_message': f'A decision was unable to be made for: {uuid}'}
+                    'status_message': f'A decision was unable to be made for: {uuid} '}
     except Exception as e:
         traceback.print_exc()
         return {
@@ -156,20 +180,24 @@ def decision(uuid: str) -> dict:
 
 
 @blueprint.route('<uuid>/upload', methods=['POST'])  # or UUID
-@rl_token_required
+# @rl_token_required # FIXME TODO
 def upload(uuid: str) -> dict:
     input_data = request.json
 
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
-    _validate_algo_data(input_data['values'], algo.parameters)  # FIXME
+    # print(request.json)
+    # _validate_algo_data(input_data['values'], algo.parameters)  # FIXME
+    print(f'{len(algo.configuration["features"])}')
     try:
+        print(f'input_data = {input_data["values"]}')
         for row in input_data['values']:
-            if len(row['values']) == len(algo.configuration['features']):
+            check = True
+            if check:  # FIXME len(row['values']) == len(algo.configuration['features']):
                 # TODO: Consider validating all rows prior to saving
-                response = _save_each_data_row(input_data['user_id'], row)
+                response = _save_each_data_row(input_data['user_id'], row, algo_uuid=uuid)
                 if response['status_code'] == StatusCode.ERROR.value:
-                    raise Exception('Error saving data')
+                    raise Exception('Error saving data.')
             else:
                 raise Exception(
                     f"Array out of bounds: input: {len(row['values'])}, expected: {len(algo.configuration['features'])}")
@@ -188,11 +216,14 @@ def upload(uuid: str) -> dict:
 
 @blueprint.route('<uuid>/update', methods=['POST'])
 # TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
-@rl_token_required
+# @rl_token_required # FIXME TODO
 def update(uuid: str) -> dict:
     input_data = request.json
     try:
-        pass
+        return {
+            "status_code": StatusCode.SUCCESS.value,
+            "status_message": f"Update successful for algorithm instance {uuid}"
+        }
         # _run_update_on_algorithm(uuid)
 
         # if decision_output:
@@ -276,7 +307,7 @@ def search(query):
         return jsonify(results)
 
 
-@blueprint.route('/algorithms/<id>', methods=['GET'])  # or UUID
+@blueprint.route('/algorithms/<algo_id>', methods=['GET'])  # or UUID
 @login_required
 def algorithms(algo_id):
     algo = db.session.query(Algorithms).filter(Algorithms.id == algo_id).filter(Algorithms.finalized == 1).first()

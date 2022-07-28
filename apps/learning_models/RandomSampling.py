@@ -3,11 +3,12 @@ from random import random
 from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 
+
 class RandomSampling(LearningModelBase):
 
     def __init__(self):
         super().__init__()
-        self.type = "RandomSampling" #this should be same as class name
+        self.type = "RandomSampling"  # this should be same as class name
         self.description = 'some demo def.'
         # TODO: for all sigma range (0 to +inf) and for all mu, (-inf, +inf), Noise is same like sigma
         # technical section: param section for behav scitn.
@@ -21,40 +22,40 @@ class RandomSampling(LearningModelBase):
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": "-inf",
-                "upper_bound":"inf",
-                "inclusive": [True,True],
+                "upper_bound": "inf",
+                "inclusive": [True, True],
                 "default_value": 0.9
             },
             "alpha0_sigma": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound":"inf",
-                "inclusive": [False,True],
+                "upper_bound": "inf",
+                "inclusive": [False, True],
                 "default_value": 0.9
             },
             "beta_selected_features": {
                 "description": "Some description",
                 "type": "str",
                 "lower_bound": "no",
-                "upper_bound":"yes",
-                "inclusive": [True,True],
+                "upper_bound": "yes",
+                "inclusive": [True, True],
                 "default_value": "yes"
             },
             "beta_mu": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": "-inf",
-                "upper_bound":"inf",
-                "inclusive": [True,True],
+                "upper_bound": "inf",
+                "inclusive": [True, True],
                 "default_value": 0.99
             },
             "beta_sigma": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound":"inf",
-                "inclusive": [False,True],
+                "upper_bound": "inf",
+                "inclusive": [False, True],
                 "default_value": 0.9
             }
         }
@@ -64,40 +65,40 @@ class RandomSampling(LearningModelBase):
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": "-inf",
-                "upper_bound":"inf",
-                "inclusive": [True,True],
+                "upper_bound": "inf",
+                "inclusive": [True, True],
                 "default_value": 0.31
             },
             "alpha_0_sigma_bias": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound":"inf",
-                "inclusive": [False,True],
+                "upper_bound": "inf",
+                "inclusive": [False, True],
                 "default_value": 0.32
             },
-            "beta_mu_bias" : {
+            "beta_mu_bias": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": "-inf",
-                "upper_bound":"inf",
-                "inclusive": [True,True],
+                "upper_bound": "inf",
+                "inclusive": [True, True],
                 "default_value": 0.33
             },
             "beta_sigma_bias": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound":"inf",
-                "inclusive": [False,True],
+                "upper_bound": "inf",
+                "inclusive": [False, True],
                 "default_value": 0.34
             },
             "noice": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound":"inf",
-                "inclusive": [False,True],
+                "upper_bound": "inf",
+                "inclusive": [False, True],
                 "default_value": 0.35
             }
 
@@ -107,16 +108,16 @@ class RandomSampling(LearningModelBase):
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound":1,
-                "inclusive": [True,True],
+                "upper_bound": 1,
+                "inclusive": [True, True],
                 "default_value": 0.39
             },
             "upper_clip": {
                 "description": "Some description",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound":1,
-                "inclusive": [True,True],
+                "upper_bound": 1,
+                "inclusive": [True, True],
                 "default_value": 0.8
             }
         }
@@ -127,8 +128,8 @@ class RandomSampling(LearningModelBase):
             "description": "time interval between running algorithm and update policy. Time is in seconds/minutes???",
             "type": "float",
             "lower_bound": 0,
-            "upper_bound":"pinf",
-            "inclusive": [True,True],
+            "upper_bound": "pinf",
+            "inclusive": [True, True],
             "default_value": 0.39
         }
         # TODO: move to base class??
@@ -143,11 +144,11 @@ class RandomSampling(LearningModelBase):
         self.outputs = {'scaling_factor': 1.453, 'num': 148932}
         self.inputs = {'data': []}
 
-
-    def decision(self, command: str, user_id=None) -> tuple(str, str):
+    def decision(self, command: str, user_id=None) -> dict:
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
-        
+
         # TODO: implement this
+
         result = {  # TODO: Remove this when the above works
             'timestamp': time_8601(),  # TODO: Ensure that this timestamp represents that appropriate timestamp
             'user_id': user_id,
@@ -169,12 +170,12 @@ class RandomSampling(LearningModelBase):
             'status_message': "Decision made successfully"
         }
         return result
-    
+
     def update(self, command: str) -> dict:
         # TODO: implement this
         # This should read the data and update the model
-        
+
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
-        
+
         # TODO: Store tuned parameters to the datastore by user @Ali
         return {"UPDATE": "success"}
