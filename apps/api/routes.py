@@ -201,9 +201,9 @@ def upload(uuid: str) -> dict:
     # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
     # print(request.json)
     # _validate_algo_data(input_data['values'], algo.parameters)  # FIXME
-    print(f'{len(algo.configuration["features"])}')
+    #print(f'{len(algo.configuration["features"])}')
     try:
-        print(f'input_data = {input_data["values"]}')
+        #print(f'input_data = {input_data["values"]}')
         for row in input_data['values']:
             check = True
             if check:  # FIXME len(row['values']) == len(algo.configuration['features']):
