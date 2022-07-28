@@ -198,14 +198,3 @@ class RandomSampling(LearningModelBase):
         }
         return result
 
-
-    def update(self, command: str=None) -> dict:
-        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
-
-        # TODO: Store tuned parameters to the datastore by user @Ali
-        return {"UPDATE": "success"}
-
-rs = RandomSampling()
-tmp = rs.as_dict()
-
-print(tmp)
