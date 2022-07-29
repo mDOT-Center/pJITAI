@@ -1,6 +1,7 @@
 import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
+from pprint import pprint
 import numpy as np
 import random 
 
@@ -12,6 +13,11 @@ parser.add_argument('--user', help='User base name', default='user')
 parser.add_argument('--user_count', help='Number of users', type=int, default=1)
 args = parser.parse_args()
 
+
+user_parameters = {}
+
+def gaussian(mean,std):
+    return np.random.normal(mean, std)
 
 def random_30_min_step_count():
     temp = np.random.uniform(-0.69, 6.9)
@@ -38,8 +44,7 @@ def _uploadGenerator(path, user_list, start_date, end_date):
                     decision = 0 if random.random() < 0.4 else 1
                     
                     proximal_outcome_time = decision_time + timedelta(minutes=30)
-                    proximal_outcome = int(np.exp(np.log(step_count) * np.random.normal(0.41, 0.03) + np.random.normal(1.53, 0.13) + decision * np.random.normal(0.12, 0.07)))
-                    
+                    proximal_outcome = int(np.exp(np.log(step_count) * user_parameters[user_id][0] + user_parameters[user_id][1] + decision * user_parameters[user_id][2]))
                     output_file.write(f'{user_id},{time_8601(proximal_outcome_time + timedelta(minutes=5))},{time_8601(decision_time)},{decision},{time_8601(proximal_outcome_time)},{proximal_outcome},{step_count}\n')
             current_date += timedelta(days=1)
     pass
@@ -81,6 +86,9 @@ if __name__ == '__main__':
     user = args.user
     
     user_list = [f'{user}_{i}' for i in range(args.user_count)]
+    for user in user_list:
+        user_parameters[user] = (gaussian(0.41,0.03), gaussian(1.53, 0.13), gaussian(0.13, 0.07))
+    pprint(user_parameters)
     _updateGenerator(args.path, user_list, start_date, end_date)
     _decisionGenerator(args.path, user_list, start_date, end_date)
     _uploadGenerator(args.path, user_list, start_date, end_date)
