@@ -40,7 +40,7 @@ def _uploadGenerator(path, user_list, start_date, end_date):
                     proximal_outcome_time = decision_time + timedelta(minutes=30)
                     proximal_outcome = int(np.exp(np.log(step_count) * np.random.normal(0.41, 0.03) + np.random.normal(1.53, 0.13) + decision * np.random.normal(0.12, 0.07)))
                     
-                    output_file.write(f'{user_id},{time_8601(proximal_outcome_time + timedelta(minutes=5))},{decision_time},{decision},{proximal_outcome_time},{proximal_outcome},{step_count}\n')
+                    output_file.write(f'{user_id},{time_8601(proximal_outcome_time + timedelta(minutes=5))},{time_8601(decision_time)},{decision},{time_8601(proximal_outcome_time)},{proximal_outcome},{step_count}\n')
             current_date += timedelta(days=1)
     pass
 
