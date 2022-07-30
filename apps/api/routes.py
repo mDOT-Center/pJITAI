@@ -23,30 +23,32 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
     if not algo:
         return {"ERROR": "Invalid algorithm ID."}
-    name = algo.type
-    obj = get_class_object("apps.learning_models." + name + "." + name)
-    params = obj.parameters
+    #name = algo.type
+    #obj = get_class_object("apps.learning_models." + name + "." + name)
+    #params = obj.parameters
     # TODO: Check input_request to ensure that the number of items matches what is expected
-    if len(input_request) == len(params):
+    if len(input_request) > 0:  #  == len(params):
         # TODO: iterate over input_request and validate against the algorithm's specification @Anand
-        output_data = input_request
-        for row in output_data:
-            _is_valid(row, params)
+        #output_data = input_request
+        for row in input_request:
+            for val in row['values']:
+                _is_valid(val, None)
     else:
         raise Exception(
             f"Array out of bounds: input: {len(input_request)}, expected: {len(algo.configuration['features'])}")
 
-    return output_data
+    return input_request
 
 
 def _is_valid(row: dict, params: dict) -> dict:  # TODO implement me
     validation = dict()
     validation['status.code'] = StatusCode.SUCCESS.value
     validation['status_message'] = "All data values passed validation."
+    row['validation'] = validation
 
 
 def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
-    #algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).filter(Algorithms.created_by==user_id).first()  # This gets the algorithm from the system
+    # algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).filter(Algorithms.created_by==user_id).first()  # This gets the algorithm from the system
 
     #  The above line doesn't seem to work. Override by Anand
     algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
@@ -55,10 +57,10 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     name = algorithm.type
     obj = get_class_object("apps.learning_models." + name + "." + name)
 
-    result = obj().decision(algorithm.configuration, input_data)
-    
-    return result
+    # TODO - need to load the tuned parameters FIXME
+    result = obj().decision(algorithm.configuration, user_id, input_data)
 
+    return result
 
 
 '''
@@ -91,7 +93,8 @@ def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TO
     try:
         data_obj = Data(algo_uuid=algo_uuid,
                         values=data['values'],
-                        timestamp=data['timestamp'],
+                        user_id=user_id,
+                        #timestamp=data['timestamp'],
                         decision_timestamp=data['decision_timestamp'],
                         decision=data['decision'],
                         proximal_outcome_timestamp=data['proximal_outcome_timestamp'],
@@ -154,9 +157,8 @@ def model(uuid: str) -> dict:
 
 
 @blueprint.route('<uuid>/decision2', methods=['POST', 'GET'])
-#@rl_token_required
+# @rl_token_required
 def decision2(uuid: str) -> dict:
-
     try:
         decision_output = _make_decision(uuid, 1, None)
         return decision_output
@@ -169,7 +171,7 @@ def decision2(uuid: str) -> dict:
 
 
 @blueprint.route('<uuid>/decision', methods=['POST', 'GET'])
-#@rl_token_required
+# @rl_token_required
 def decision(uuid: str) -> dict:
     input_data = request.json
     try:
@@ -196,16 +198,17 @@ def decision(uuid: str) -> dict:
 # @rl_token_required # FIXME TODO
 def upload(uuid: str) -> dict:
     input_data = request.json
-
+    print(input_data)
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
     # print(request.json)
-    # _validate_algo_data(input_data['values'], algo.parameters)  # FIXME
-    #print(f'{len(algo.configuration["features"])}')
+    validated_input_data = _validate_algo_data(uuid, input_data['values'])  # FIXME
+    # print(f'{len(algo.configuration["features"])}')
     try:
-        #print(f'input_data = {input_data["values"]}')
+        # print(f'input_data = {input_data["values"]}')
         for row in input_data['values']:
             check = True
+            # TODO - change to nome, value, validation @Anand
             if check:  # FIXME len(row['values']) == len(algo.configuration['features']):
                 # TODO: Consider validating all rows prior to saving
                 response = _save_each_data_row(input_data['user_id'], row, algo_uuid=uuid)
@@ -260,9 +263,31 @@ def update(uuid: str) -> dict:
     input_data = request.json
     try:
         algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
-        #TODO: @Ali It doesn't make sense to me that the  configuration is the input_data.  For now, there will be no parameters and the 'update' will retraint the model for all users in the backend.
-        algorithm.configuration = input_data
-        db.session.commit()
+        '''
+        Call the alogrithm update method
+        
+        '''
+        #  The above line doesn't seem to work. Override by Anand
+        algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
+        if not algorithm:
+            return {"ERROR": "Invalid algorithm and/or user ID."}
+        name = algorithm.type
+        obj = get_class_object("apps.learning_models." + name + "." + name)
+
+        # TODO - need to load the tuned parameters FIXME
+        result = obj().update(algorithm.configuration)
+        # TODO - store the result in the DB. By user. in the params_algo table
+        # list[dict] - dict contains all the tuned params and user id
+        example_result = [
+            {
+                'user_id':'user_1',
+                'timestamp': 'timestamp_with_tz',
+                'values': {
+                    'param_1': 0.34,
+                    'param_2': 34.0
+                }
+            }
+        ]
 
         return {'status_code': StatusCode.SUCCESS.value, "status_message": f'parameters have been updated for: {uuid}'}
 

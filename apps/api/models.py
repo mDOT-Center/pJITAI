@@ -12,9 +12,10 @@ class Data(db.Model):
 
     __tablename__ = 'data'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_id = db.Column('user_id', db.String(36))
     algo_uuid = db.Column('algo_uuid', db.String(36))
-    created_on = db.Column('created_on', db.DateTime, default=datetime.now())
-    timestamp = db.Column('timestamp', db.String(64))
+    upload_timestamp = db.Column('upload_timestamp', db.DateTime, default=datetime.now())
+    #timestamp = db.Column('timestamp', db.String(64))
     decision_timestamp = db.Column('decision_timestamp', db.String(64))
     proximal_outcome_timestamp = db.Column('proximal_outcome_timestamp', db.String(64))
     decision = db.Column('decision', db.Integer)
@@ -48,7 +49,7 @@ class Logs(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     algo_uuid = db.Column('algo_uuid', db.String(36))
     details=db.Column('details', db.JSON)
-    created_on = db.Column('created_on', db.DateTime, default=datetime.now())
+    upload_timestamp = db.Column('upload_timestamp', db.DateTime, default=datetime.now())
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -67,7 +68,7 @@ class Cron(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     algo_uuid = db.Column('algo_uuid', db.String(36))
     details=db.Column('details', db.JSON)
-    created_on = db.Column('created_on', db.DateTime, default=datetime.now())
+    upload_timestamp = db.Column('upload_timestamp', db.DateTime, default=datetime.now())
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
