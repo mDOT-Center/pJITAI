@@ -173,7 +173,7 @@ class RandomSampling(LearningModelBase):
     #     }
     #     return result
 
-    def decision(self, algorithm_parameters:dict,input_data=None) -> dict:
+    def decision(self,  algorithm_parameters:dict, user_id:str, input_data=None) -> dict:
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
 
         cls_obj = self.as_object(algorithm_parameters)
