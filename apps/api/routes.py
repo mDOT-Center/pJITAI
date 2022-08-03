@@ -2,6 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+import json
 from functools import wraps
 
 from apps.api import blueprint
@@ -21,18 +22,23 @@ from .util import time_8601, get_class_object
 
 def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make this actually do something @Anand
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
+    #algo_conf = json.dumps(algo.configuration, indent=4)
+    #print(f'Alogrithm is {algo_conf}')
+    algorithm_features_ = algo.configuration['features']
+    feature_map = {}
+    for ft in algorithm_features_:
+        #print(f'ft = {algorithm_features_[ft]}')
+        feature_map[algorithm_features_[ft]['feature_name']] = algorithm_features_[ft]
     if not algo:
         return {"ERROR": "Invalid algorithm ID."}
-    #name = algo.type
-    #obj = get_class_object("apps.learning_models." + name + "." + name)
-    #params = obj.parameters
+
     # TODO: Check input_request to ensure that the number of items matches what is expected
     if len(input_request) > 0:  #  == len(params):
         # TODO: iterate over input_request and validate against the algorithm's specification @Anand
         #output_data = input_request
+        input_features = {}
         for row in input_request:
-            for val in row['values']:
-                _is_valid(val, None)
+            _is_valid(row, feature_map)
     else:
         raise Exception(
             f"Array out of bounds: input: {len(input_request)}, expected: {len(algo.configuration['features'])}")
@@ -40,11 +46,99 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
     return input_request
 
 
-def _is_valid(row: dict, params: dict) -> dict:  # TODO implement me
-    validation = dict()
-    validation['status.code'] = StatusCode.SUCCESS.value
-    validation['status_message'] = "All data values passed validation."
-    row['validation'] = validation
+def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
+    input_features = set()
+    for val in row['values']:
+        input_features.add(val['name'])
+
+    # Insert missing features with none value and add validation messages
+    for f in features_config:
+        if f not in input_features:
+            missing = {}
+            missing['name'] = f
+            missing['value'] = None
+            row['values'].append(missing)
+
+    for val in row['values']:
+        validation = dict()
+
+        validation['status_code'] = StatusCode.SUCCESS.value
+        #validation['status_message'] = "Feature value passed validation."
+
+        feature_name = val['name']
+        feature_value = val['value']
+
+        if not feature_value:
+            validation['status_code'] = StatusCode.WARNING_MISSING_VALUE.value
+            #validation['status_message'] = f'Input feature {feature_name} is missing'
+            val['validation'] = validation
+            continue
+
+        if feature_name not in features_config:
+            continue
+
+        ft_def = features_config[feature_name]
+        if ft_def is None:
+            continue  # Extra data passed?
+
+        '''
+        #  START: testing code -- TODO delete this block after testing
+        if ft_def['feature_name'] == 'int1':
+            ft_def['feature_data_type'] = 'int'
+            ft_def['feature_lower_bound'] = 0
+            ft_def['feature_upper_bound'] = 10
+        if ft_def['feature_name'] == 'float_feature':
+            ft_def['feature_lower_bound'] = 0.0
+            ft_def['feature_upper_bound'] = 10.0
+        print(f'validating {val} with {ft_def}')
+        #  END: testing code
+        '''
+
+        feature_data_type = ft_def['feature_data_type']
+        if feature_data_type == 'int':
+            try:
+                feature_value = int(feature_value)
+                lower_bound_value = str(ft_def['feature_lower_bound'])
+                if 'inf' not in lower_bound_value:
+                    lower_bound = int(lower_bound_value)
+                    if feature_value < lower_bound:
+                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
+                        validation['status_message'] = f'{feature_name} with value {feature_value} is lower than the ' \
+                                                       f'lower bound value {lower_bound}. '
+                upper_bound_value = str(ft_def['feature_upper_bound'])
+                if 'inf' not in upper_bound_value:
+                    upper_bound = int(upper_bound_value)
+                    if feature_value > upper_bound:
+                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
+                        validation['status_message'] = f'{feature_name} with value {feature_value} is greater than the ' \
+                                                       f'upper bound value {upper_bound}. '
+            except:
+                validation['status_code'] = StatusCode.ERROR.value
+                validation['status_message'] = f'AAAAAAAAA {feature_name} value is not of type int.'
+        elif feature_data_type == 'float':
+            try:
+                feature_value = float(feature_value)
+                lower_bound_value = str(ft_def['feature_lower_bound'])
+                if 'inf' not in lower_bound_value:
+                    lower_bound = float(lower_bound_value)
+                    if feature_value < lower_bound:
+                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
+                        #validation['status_message'] = f'{feature_name} with value {feature_value} is lower than the ' \
+                                                       #f'lower bound value {lower_bound}. '
+                upper_bound_value = str(ft_def['feature_upper_bound'])
+                if 'inf' not in upper_bound_value:
+                    upper_bound = float(upper_bound_value)
+                    if feature_value > upper_bound:
+                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
+                        #validation['status_message'] = f'{feature_name} with value {feature_value} is greater than the ' \
+                                                       #f'upper bound value {upper_bound}. '
+            except:
+                print('value is not an float')
+                validation['status_code'] = StatusCode.ERROR.value
+                #validation['status_message'] = f'BBBBBBBBBBB {feature_name} value is not of type float.'
+
+        val['validation'] = validation
+    return row
 
 
 def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
@@ -198,10 +292,10 @@ def decision(uuid: str) -> dict:
 # @rl_token_required # FIXME TODO
 def upload(uuid: str) -> dict:
     input_data = request.json
-    print(input_data)
+
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
-    # print(request.json)
+
     validated_input_data = _validate_algo_data(uuid, input_data['values'])  # FIXME
     # print(f'{len(algo.configuration["features"])}')
     try:
