@@ -153,25 +153,8 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
 
     # TODO - need to load the tuned parameters FIXME
     result = obj().decision(algorithm.configuration, user_id, input_data)
-
+    # TODO Turn into JSON for transport
     return result
-
-
-'''
-{
-                    "timestamp": "2022-06-16T19:05:23.495427-05: 00",
-                    "decision_timestamp": "2022-06-16T19:05:23.495427-05: 00",
-                    "decision": 1,
-                    "proximal_outcome_timestamp": "2022-06-16T19:05:23.495427-05: 00",
-                    "proximal_outcome": 50,
-                    "values": [
-                        {
-                            "name": "step_count",
-                            "value": 500
-                        }
-                    ]
-                }
-'''
 
 
 def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TODO: Make this actually do something
