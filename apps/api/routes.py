@@ -24,7 +24,7 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
     #algo_conf = json.dumps(algo.configuration, indent=4)
     #print(f'Alogrithm is {algo_conf}')
-    algorithm_features_ = algo.configuration['features']
+    algorithm_features_ = algo.configuration.get('features',[])
     feature_map = {}
     for ft in algorithm_features_:
         #print(f'ft = {algorithm_features_[ft]}')
@@ -223,7 +223,7 @@ def rl_token_required(f):
     return decorated
 
 
-@blueprint.route('<uuid>/', methods=['POST'])
+@blueprint.route('<uuid>', methods=['POST'])
 # @rl_token_required
 def model(uuid: str) -> dict:
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
@@ -232,20 +232,13 @@ def model(uuid: str) -> dict:
         result = algo.as_dict()
     return result
 
-
-@blueprint.route('<uuid>/decision2', methods=['POST', 'GET'])
+@blueprint.route('tst', methods=['POST','GET'])
 # @rl_token_required
-def decision2(uuid: str) -> dict:
-    try:
-        decision_output = _make_decision(uuid, 1, None)
-        return decision_output
-    except Exception as e:
-        traceback.print_exc()
-        return {
-            "status_code": StatusCode.ERROR.value,
-            "status_message": str(e),
-        }
-
+def tst() -> dict:
+    import pandas as pd
+    algo = Algorithms.query.filter(Algorithms.uuid.like("123")).first()
+    df_from_records = pd.DataFrame.from_records(algo)
+    print(df_from_records.head(5))
 
 @blueprint.route('<uuid>/decision', methods=['POST', 'GET'])
 # @rl_token_required
@@ -305,32 +298,6 @@ def upload(uuid: str) -> dict:
         "status_code": StatusCode.SUCCESS.value,
         "status_message": f"Batch data updated for model {uuid}"
     }
-
-
-@blueprint.route('<uuid>/update2', methods=['POST'])
-# TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
-# @rl_token_required # FIXME TODO
-def update2(uuid: str) -> dict:
-    input_data = request.json
-    try:
-        return {
-            "status_code": StatusCode.SUCCESS.value,
-            "status_message": f"Update successful for algorithm instance {uuid}"
-        }
-        # _run_update_on_algorithm(uuid)
-
-        # if decision_output:
-        #     return decision_output
-        # else:
-        #     return {'status_code': StatusCode.ERROR.value,
-        #             # TODO: this needs to be some sort of error response in the decision fails.
-        #             'status_message': f'A decision was unable to be made for: {uuid}'}
-    except Exception as e:
-        traceback.print_exc()
-        return {
-            "status_code": StatusCode.ERROR.value,
-            "status_message": str(e),
-        }
 
 
 @blueprint.route('<uuid>/update', methods=['POST'])
