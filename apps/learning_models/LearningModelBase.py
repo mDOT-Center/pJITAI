@@ -74,7 +74,7 @@ class LearningModelBase(metaclass=ABCMeta):
         pass
     
     @abstractmethod
-    def update(self) -> dict:
+    def update(self, user_id) -> dict:
         pass
 
     def model_definition(self) -> dict:

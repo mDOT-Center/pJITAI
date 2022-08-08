@@ -4,6 +4,7 @@ from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 import random
 import pandas as pd
+from apps.api.sql_helper import get_tunned_params, store_tunned_params
 class RandomSampling(LearningModelBase):
 
     def __init__(self):
@@ -103,16 +104,18 @@ class RandomSampling(LearningModelBase):
 
 
     # TODO: How to handle this call if it is async from the REST API?
-    def update(self) -> dict:
+    def update(self, user_id) -> dict:
 
         # This should read the data and update the model
 
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
+        tunned_params = get_tunned_params(user_id)
 
         # TODO: Store tuned parameters to the datastore by user @Ali
-        
-        
-        
+        store_tunned_params(user_id, tunned_params)
+
+        #TODO: above TODOs don't make sense. Maybe missing any processing? @tim
+
         result = {
             'timestamp': time_8601(),
             'status_code': StatusCode.SUCCESS.value,

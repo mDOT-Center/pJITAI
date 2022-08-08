@@ -153,7 +153,7 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     # populate object with algo parameters
     obj = cls()
     obj.as_object(algorithm)
-
+    ss=obj.update()
 
     # TODO - need to load the tuned parameters FIXME
     #TODO: get rid of () @ali
@@ -237,18 +237,6 @@ def model(uuid: str) -> dict:
         result = algo.as_dict()
     return result
 
-@blueprint.route('tst', methods=['POST','GET'])
-# @rl_token_required
-def tst() -> dict:
-    import pandas as pd
-    algo = Algorithms.query.filter(Algorithms.uuid.like("123")).first()
-    df_from_records = pd.DataFrame.from_records(algo)
-    print(df_from_records.head(5))
-
-@blueprint.route('<uuid>/dd', methods=['POST', 'GET'])
-# @rl_token_required
-def dd(uuid: str) -> dict:
-    decision_output = _make_decision(uuid, 123, [])
 
 @blueprint.route('<uuid>/decision', methods=['POST', 'GET'])
 # @rl_token_required
@@ -316,7 +304,6 @@ def upload(uuid: str) -> dict:
 def update(uuid: str) -> dict:
     input_data = request.json
     try:
-        algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
         '''
         Call the alogrithm update method
         
