@@ -149,13 +149,15 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     if not algorithm:
         return {"ERROR": "Invalid algorithm and/or user ID."}
     name = algorithm.type
-    obj = get_class_object("apps.learning_models." + name + "." + name)
-    #TODO: populate object with algo parameters
-    #TODO: obj.as_object(algo_params) @ali
+    cls = get_class_object("apps.learning_models." + name + "." + name)
+    # populate object with algo parameters
+    obj = cls()
+    obj.as_object(algorithm)
+
 
     # TODO - need to load the tuned parameters FIXME
     #TODO: get rid of () @ali
-    result = obj().decision(user_id, input_data)
+    result = obj.decision(user_id, input_data)
     # TODO Turn into JSON for transport. Result datatype is Pandas dataframe
     return result
 
@@ -243,6 +245,11 @@ def tst() -> dict:
     df_from_records = pd.DataFrame.from_records(algo)
     print(df_from_records.head(5))
 
+@blueprint.route('<uuid>/dd', methods=['POST', 'GET'])
+# @rl_token_required
+def dd(uuid: str) -> dict:
+    decision_output = _make_decision(uuid, 123, [])
+
 @blueprint.route('<uuid>/decision', methods=['POST', 'GET'])
 # @rl_token_required
 def decision(uuid: str) -> dict:
@@ -319,10 +326,11 @@ def update(uuid: str) -> dict:
         if not algorithm:
             return {"ERROR": "Invalid algorithm and/or user ID."}
         name = algorithm.type
-        obj = get_class_object("apps.learning_models." + name + "." + name)
-
+        cls = get_class_object("apps.learning_models." + name + "." + name)
+        obj = cls()
+        obj.as_object(algorithm)
         # TODO - need to load the tuned parameters FIXME
-        result = obj().update(algorithm.configuration)
+        result = obj.update()
         # TODO - store the result in the DB. By user. in the params_algo table
         # list[dict] - dict contains all the tuned params and user id
         example_result = [

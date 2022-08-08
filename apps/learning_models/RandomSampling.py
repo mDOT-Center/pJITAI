@@ -103,9 +103,8 @@ class RandomSampling(LearningModelBase):
 
 
     # TODO: How to handle this call if it is async from the REST API?
-    def update(self, algorithm_parameters:dict, command: str) -> dict:
-        cls_obj = self.as_object(algorithm_parameters)
-        
+    def update(self) -> dict:
+
         # This should read the data and update the model
 
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
