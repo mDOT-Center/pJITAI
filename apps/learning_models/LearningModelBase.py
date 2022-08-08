@@ -9,6 +9,7 @@ class LearningModelBase(metaclass=ABCMeta):
     standalone_parameters = []
     other_parameters = []
     tuning_scheduler = {}
+    features=[]
     # availability = {}
 
     def __init__(self):

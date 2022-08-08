@@ -150,10 +150,13 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
         return {"ERROR": "Invalid algorithm and/or user ID."}
     name = algorithm.type
     obj = get_class_object("apps.learning_models." + name + "." + name)
+    #TODO: populate object with algo parameters
+    #TODO: obj.as_object(algo_params) @ali
 
     # TODO - need to load the tuned parameters FIXME
-    result = obj().decision(algorithm.configuration, user_id, input_data)
-    # TODO Turn into JSON for transport
+    #TODO: get rid of () @ali
+    result = obj().decision(user_id, input_data)
+    # TODO Turn into JSON for transport. Result datatype is Pandas dataframe
     return result
 
 

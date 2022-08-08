@@ -23,7 +23,7 @@ class RandomSampling(LearningModelBase):
             
         }
 
-        
+
         # TODO: @Ali This is not needed for RandomSampling but can be left in place.
         # TODO: @Ali Update Interval needs to be better defined.
         self.tuning_scheduler = {
@@ -31,22 +31,28 @@ class RandomSampling(LearningModelBase):
             "description": "time interval between running algorithm and update policy. Time is in seconds/minutes???",
             "default_value": 86400 # TODO: Daily
         }
-    
-
-        self.outputs = {'scaling_factor': 1.453, 'num': 148932} #TODO: @Ali What is this?
-        self.inputs = {'data': []} #TODO: @Ali What is this?
 
 
-    def decision(self,  algorithm_parameters:dict, user_id:str, input_data=None) -> pd.DataFrame:
-        
-        cls_obj = self.as_object(algorithm_parameters)
+    def decision(self,  user_id:str, input_data=None) -> pd.DataFrame:
+
+        # TODO: getting default algo object of an algo
+        #cls_obj = self.as_object(algorithm_parameters)
+
+        #TODO: get data from algo_params table and populate object per user
+        #TODO: tunned_parameters = self.get_tunned_parameters(user_id)
+            #TODO: return type would be pandas dict
+            #TODO: select * from algo_params where user_id=user_id order by desc limit 1
+        #TODO: tunned_parameters.get("param_name")
+
         # TODO: do something with parameters and input_data
 
-        my_class = cls_obj.initialize(algorithm_parameters)
+        #my_class = cls_obj.initialize(algorithm_parameters)
         
         # TODO: Remove this once the data method is implemented
-        # TODO: A method to retrieve data from the DB 
+        # TODO: A method to retrieve data from the DB
+        # TODO: part of algorithm (inside algo params)
         # decision_options = my_class.getDecisionOptions()
+
         decision_options = [
             {
                 'name': 'Do Nothing',
@@ -79,8 +85,6 @@ class RandomSampling(LearningModelBase):
                 selection = i
         
         my_decision = decision_options[selection]['name']
-
-        result = pd.DataFrame([], columns=['timestamp','user_id','selection'])
 
         result = {
             'timestamp': time_8601(),
