@@ -63,23 +63,23 @@ def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
         validation = dict()
 
         validation['status_code'] = StatusCode.SUCCESS.value
-        #validation['status_message'] = "Feature value passed validation."
+
 
         feature_name = val['name']
         feature_value = val['value']
 
         if not feature_value:
             validation['status_code'] = StatusCode.WARNING_MISSING_VALUE.value
-            #validation['status_message'] = f'Input feature {feature_name} is missing'
             val['validation'] = validation
             continue
 
         if feature_name not in features_config:
+            #  TODO - raise exception?
             continue
 
         ft_def = features_config[feature_name]
-        if ft_def is None:
-            continue  # Extra data passed?
+        # if ft_def is None:
+        #     continue
 
         '''
         #  START: testing code -- TODO delete this block after testing
@@ -97,6 +97,7 @@ def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
         feature_data_type = ft_def['feature_data_type']
         if feature_data_type == 'int':
             try:
+                #  TODO - what if value is float check if feature value == value
                 feature_value = int(feature_value)
                 lower_bound_value = str(ft_def['feature_lower_bound'])
                 if 'inf' not in lower_bound_value:
@@ -114,7 +115,7 @@ def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
                                                        f'upper bound value {upper_bound}. '
             except:
                 validation['status_code'] = StatusCode.ERROR.value
-                validation['status_message'] = f'AAAAAAAAA {feature_name} value is not of type int.'
+                validation['status_message'] = f'{feature_name} value is not of type int.'
         elif feature_data_type == 'float':
             try:
                 feature_value = float(feature_value)
