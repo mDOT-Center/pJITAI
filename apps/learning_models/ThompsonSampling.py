@@ -1,5 +1,5 @@
 from apps.learning_models.LearningModelBase import LearningModelBase
-
+import pandas as pd
 class ThompsonSampling(LearningModelBase):
 
     def __init__(self):
@@ -128,24 +128,14 @@ class ThompsonSampling(LearningModelBase):
             "inclusive": [True,True],
             "default_value": 0.39
         }
-        # TODO: move to base class??
-        # TODO: Not needed, more discussion is required
-        self.availability = {
-            "name": "availability",
-            "description": "Do we need to check the availability of data",
-            "type": "int",
-            "default_value": 1
-        }
-
-        self.outputs = {'scaling_factor': 1.453, 'num': 148932}
-        self.inputs = {'data': []}
 
 
-    def decision(self, command: str) -> dict:
+    def decision(self,  user_id:str, input_data=None) -> pd.DataFrame:
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
         return {"RUN": "success"}
     
-    def update(self, command: str) -> dict:
+    def update(self, user_id) -> dict:
+
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
         
         # TODO: Store tuned parameters to the datastore by user @Ali

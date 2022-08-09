@@ -7,6 +7,26 @@ from dataclasses import dataclass
 from datetime import datetime
 from apps import db
 
+
+@dataclass
+class AlgorithmTunnedParams(db.Model):
+    __tablename__ = 'algorithm_tunned_params'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_id = db.Column('user_id', db.String(36))
+    upload_timestamp = db.Column('upload_timestamp', db.DateTime, default=datetime.now())
+    configuration = db.Column('configuration', db.JSON)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.name)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 @dataclass
 class Data(db.Model):
 

@@ -24,7 +24,7 @@ def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make t
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
     #algo_conf = json.dumps(algo.configuration, indent=4)
     #print(f'Alogrithm is {algo_conf}')
-    algorithm_features_ = algo.configuration['features']
+    algorithm_features_ = algo.configuration.get('features',[])
     feature_map = {}
     for ft in algorithm_features_:
         #print(f'ft = {algorithm_features_[ft]}')
@@ -150,29 +150,17 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     if not algorithm:
         return {"ERROR": "Invalid algorithm and/or user ID."}
     name = algorithm.type
-    obj = get_class_object("apps.learning_models." + name + "." + name)
+    cls = get_class_object("apps.learning_models." + name + "." + name)
+    # populate object with algo parameters
+    obj = cls()
+    obj.as_object(algorithm)
+    ss=obj.update()
 
     # TODO - need to load the tuned parameters FIXME
-    result = obj().decision(algorithm.configuration, user_id, input_data)
-
+    #TODO: get rid of () @ali
+    result = obj.decision(user_id, input_data)
+    # TODO Turn into JSON for transport. Result datatype is Pandas dataframe
     return result
-
-
-'''
-{
-                    "timestamp": "2022-06-16T19:05:23.495427-05: 00",
-                    "decision_timestamp": "2022-06-16T19:05:23.495427-05: 00",
-                    "decision": 1,
-                    "proximal_outcome_timestamp": "2022-06-16T19:05:23.495427-05: 00",
-                    "proximal_outcome": 50,
-                    "values": [
-                        {
-                            "name": "step_count",
-                            "value": 500
-                        }
-                    ]
-                }
-'''
 
 
 def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TODO: Make this actually do something
@@ -241,7 +229,7 @@ def rl_token_required(f):
     return decorated
 
 
-@blueprint.route('<uuid>/', methods=['POST'])
+@blueprint.route('<uuid>', methods=['POST'])
 # @rl_token_required
 def model(uuid: str) -> dict:
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
@@ -249,20 +237,6 @@ def model(uuid: str) -> dict:
     if algo:
         result = algo.as_dict()
     return result
-
-
-@blueprint.route('<uuid>/decision2', methods=['POST', 'GET'])
-# @rl_token_required
-def decision2(uuid: str) -> dict:
-    try:
-        decision_output = _make_decision(uuid, 1, None)
-        return decision_output
-    except Exception as e:
-        traceback.print_exc()
-        return {
-            "status_code": StatusCode.ERROR.value,
-            "status_message": str(e),
-        }
 
 
 @blueprint.route('<uuid>/decision', methods=['POST', 'GET'])
@@ -325,39 +299,12 @@ def upload(uuid: str) -> dict:
     }
 
 
-@blueprint.route('<uuid>/update2', methods=['POST'])
-# TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
-# @rl_token_required # FIXME TODO
-def update2(uuid: str) -> dict:
-    input_data = request.json
-    try:
-        return {
-            "status_code": StatusCode.SUCCESS.value,
-            "status_message": f"Update successful for algorithm instance {uuid}"
-        }
-        # _run_update_on_algorithm(uuid)
-
-        # if decision_output:
-        #     return decision_output
-        # else:
-        #     return {'status_code': StatusCode.ERROR.value,
-        #             # TODO: this needs to be some sort of error response in the decision fails.
-        #             'status_message': f'A decision was unable to be made for: {uuid}'}
-    except Exception as e:
-        traceback.print_exc()
-        return {
-            "status_code": StatusCode.ERROR.value,
-            "status_message": str(e),
-        }
-
-
 @blueprint.route('<uuid>/update', methods=['POST'])
 # TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
 # @rl_token_required # FIXME TODO
 def update(uuid: str) -> dict:
     input_data = request.json
     try:
-        algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
         '''
         Call the alogrithm update method
         
@@ -367,10 +314,11 @@ def update(uuid: str) -> dict:
         if not algorithm:
             return {"ERROR": "Invalid algorithm and/or user ID."}
         name = algorithm.type
-        obj = get_class_object("apps.learning_models." + name + "." + name)
-
+        cls = get_class_object("apps.learning_models." + name + "." + name)
+        obj = cls()
+        obj.as_object(algorithm)
         # TODO - need to load the tuned parameters FIXME
-        result = obj().update(algorithm.configuration)
+        result = obj.update()
         # TODO - store the result in the DB. By user. in the params_algo table
         # list[dict] - dict contains all the tuned params and user id
         example_result = [

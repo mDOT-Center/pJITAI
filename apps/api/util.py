@@ -12,15 +12,4 @@ def get_class_object(class_path:str):
 
     return getattr(module, class_name)
 
-def get_data(algo_id:str, user_idS:str=None):
-    '''
-    Get data from data table, created pandas DF (parse all the dict and convert them into columns)
-    :param algo_id:
-    :param user_id:
-    :return: pandas DF
-    '''
 
-    pass
-
-# obj = get_class_object("apps.learning_models.RandomSampling.RandomSampling")
-# result = obj().run()
