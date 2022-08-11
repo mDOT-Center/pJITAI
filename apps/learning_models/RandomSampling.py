@@ -4,7 +4,8 @@ from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 import random
 import pandas as pd
-from apps.api.sql_helper import get_tunned_params, store_tunned_params
+from apps.api.sql_helper import get_data
+from apps.api.sql_helper import get_tuned_params, store_tuned_params
 class RandomSampling(LearningModelBase):
 
     def __init__(self):
@@ -34,7 +35,7 @@ class RandomSampling(LearningModelBase):
         }
 
 
-    def decision(self,  user_id:str, input_data=None) -> pd.DataFrame:
+    def decision(self,  user_id:str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
         # TODO: getting default algo object of an algo
         #cls_obj = self.as_object(algorithm_parameters)
@@ -104,29 +105,21 @@ class RandomSampling(LearningModelBase):
 
 
     # TODO: How to handle this call if it is async from the REST API?
-    def update(self, user_id) -> dict:
+    def update(self) -> dict:
 
-        # This should read the data and update the model
+        #TODO: do something with the data @Tim
+        data = get_data(algo_id=self.uuid)
 
-        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
-        tunned_params = get_tunned_params(user_id)
-
-        # TODO: Store tuned parameters to the datastore by user @Ali
-        store_tunned_params(user_id, tunned_params)
+        print(data)
 
         #TODO: above TODOs don't make sense. Maybe missing any processing? @tim
 
         result = {
             'timestamp': time_8601(),
-            'status_code': StatusCode.SUCCESS.value,
-            'status_message': "Update process successfully initiated.  Please allow enough time for it to complete before retrieving new data."
+            'param_1': 00,
+            'param_2': 22
+            #TODO: there could be more columns, @Tim
         }
         result = pd.DataFrame(result, index=[0])
         
         return result
-
-    
-    
-    # TODO: @Ali Where is the required "update" method?
-
-

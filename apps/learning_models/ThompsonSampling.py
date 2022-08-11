@@ -130,11 +130,11 @@ class ThompsonSampling(LearningModelBase):
         }
 
 
-    def decision(self,  user_id:str, input_data=None) -> pd.DataFrame:
+    def decision(self,  user_id:str, tuned_params=None, input_data=None) -> pd.DataFrame:
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
         return {"RUN": "success"}
     
-    def update(self, user_id) -> dict:
+    def update(self) -> dict:
 
         # TODO: Load algorithm parameters from the datastore and configure by user @Ali
         

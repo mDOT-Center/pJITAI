@@ -14,6 +14,7 @@ from apps.algorithms.models import Algorithms
 from .models import Logs, Data
 from sqlalchemy.exc import SQLAlchemyError
 from apps.api.codes import StatusCode
+from apps.api.sql_helper import get_tuned_params, store_tuned_params
 from apps.learning_models.learning_model_service import get_all_available_models
 import traceback
 
@@ -150,14 +151,14 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
         return {"ERROR": "Invalid algorithm and/or user ID."}
     name = algorithm.type
     cls = get_class_object("apps.learning_models." + name + "." + name)
+
     # populate object with algo parameters
     obj = cls()
     obj.as_object(algorithm)
-    ss=obj.update()
 
-    # TODO - need to load the tuned parameters FIXME
-    #TODO: get rid of () @ali
-    result = obj.decision(user_id, input_data)
+    tuned_params = get_tuned_params(user_id=user_id)
+
+    result = obj.decision(user_id, tuned_params, input_data)
     # TODO Turn into JSON for transport. Result datatype is Pandas dataframe
     return result
 
@@ -270,7 +271,7 @@ def upload(uuid: str) -> dict:
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
 
-    validated_input_data = _validate_algo_data(uuid, input_data['values'])  # FIXME
+    # validated_input_data = _validate_algo_data(uuid, input_data['values'])  # FIXME
     # print(f'{len(algo.configuration["features"])}')
     try:
         # print(f'input_data = {input_data["values"]}')
@@ -297,6 +298,19 @@ def upload(uuid: str) -> dict:
         "status_message": f"Batch data updated for model {uuid}"
     }
 
+def _do_update(algo_uuid):
+    algorithm = Algorithms.query.filter(Algorithms.uuid == algo_uuid).first()
+    if not algorithm:
+        return {"ERROR": "Invalid algorithm and/or user ID."}
+    name = algorithm.type
+    cls = get_class_object("apps.learning_models." + name + "." + name)
+    obj = cls()
+    obj.as_object(algorithm)
+
+    result = obj.update()
+
+    #TODO: iterate over pandas DF. store each row (per user) in database @ali
+    store_tuned_params(user_id=00,configuration={})
 
 @blueprint.route('<uuid>/update', methods=['POST'])
 # TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
@@ -308,16 +322,8 @@ def update(uuid: str) -> dict:
         Call the alogrithm update method
         
         '''
-        #  The above line doesn't seem to work. Override by Anand
-        algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
-        if not algorithm:
-            return {"ERROR": "Invalid algorithm and/or user ID."}
-        name = algorithm.type
-        cls = get_class_object("apps.learning_models." + name + "." + name)
-        obj = cls()
-        obj.as_object(algorithm)
-        # TODO - need to load the tuned parameters FIXME
-        result = obj.update()
+        _do_update(algo_uuid=uuid)
+
         # TODO - store the result in the DB. By user. in the params_algo table
         # list[dict] - dict contains all the tuned params and user id
         example_result = [
