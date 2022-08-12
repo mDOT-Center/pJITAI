@@ -20,66 +20,49 @@ import traceback
 from .util import time_8601, get_class_object
 
 
-def _validate_algo_data(uuid: str, input_request: list) -> list:  # TODO: Make this actually do something @Anand
-    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()  # This gets the algorithm from the system
-    #algo_conf = json.dumps(algo.configuration, indent=4)
-    #print(f'Alogrithm is {algo_conf}')
-    algorithm_features_ = algo.configuration.get('features',[])
+def _validate_algo_data(uuid: str, feature_values: list) -> list:
+    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
+    if not algo:
+        raise Exception(f'ERROR: Invalid algorithm ID.')
+    algorithm_features_ = algo.configuration.get('features', [])
     feature_map = {}
     for ft in algorithm_features_:
-        #print(f'ft = {algorithm_features_[ft]}')
         feature_map[algorithm_features_[ft]['feature_name']] = algorithm_features_[ft]
-    if not algo:
-        return {"ERROR": "Invalid algorithm ID."}
 
-    # TODO: Check input_request to ensure that the number of items matches what is expected
-    if len(input_request) > 0:  #  == len(params):
-        # TODO: iterate over input_request and validate against the algorithm's specification @Anand
-        #output_data = input_request
-        input_features = {}
-        for row in input_request:
-            _is_valid(row, feature_map)
+    # Check input_request to ensure that the number of items matches what is expected
+    if len(feature_values) == len(feature_map):
+        # iterate over input_request and validate against the algorithm's specification
+        _is_valid(feature_values, feature_map)
     else:
         raise Exception(
-            f"Array out of bounds: input: {len(input_request)}, expected: {len(algo.configuration['features'])}")
+            f"Array out of bounds: input: {len(feature_values)}, expected: {len(feature_map)}")
 
-    return input_request
+    return feature_values
 
 
-def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
+def _is_valid(feature_vector: dict, features_config: dict) -> dict:
     input_features = set()
-    for val in row['values']:
+    for val in feature_vector:
         input_features.add(val['name'])
 
-    # Insert missing features with none value and add validation messages
+    # Check for missing features
     for f in features_config:
         if f not in input_features:
-            missing = {}
-            missing['name'] = f
-            missing['value'] = None
-            row['values'].append(missing)
+            raise Exception(
+                f"Missing feature: {f}, expected: {features_config.keys()}")
 
-    for val in row['values']:
+    for val in feature_vector:
         validation = dict()
-
         validation['status_code'] = StatusCode.SUCCESS.value
-
 
         feature_name = val['name']
         feature_value = val['value']
 
-        if not feature_value:
-            validation['status_code'] = StatusCode.WARNING_MISSING_VALUE.value
-            val['validation'] = validation
-            continue
-
         if feature_name not in features_config:
-            #  TODO - raise exception?
-            continue
+            raise Exception(
+                f"Received unknown feature: {feature_name}, expected: {features_config.keys()}")
 
         ft_def = features_config[feature_name]
-        # if ft_def is None:
-        #     continue
 
         '''
         #  START: testing code -- TODO delete this block after testing
@@ -94,10 +77,14 @@ def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
         #  END: testing code
         '''
 
+        feature_value_type = type(feature_value)
         feature_data_type = ft_def['feature_data_type']
+        if feature_data_type != feature_value_type.__name__:
+            raise Exception(
+                f"Incorrect feature type for {feature_name}, expected: {feature_data_type} received: {feature_value_type}")
+
         if feature_data_type == 'int':
             try:
-                #  TODO - what if value is float check if feature value == value
                 feature_value = int(feature_value)
                 lower_bound_value = str(ft_def['feature_lower_bound'])
                 if 'inf' not in lower_bound_value:
@@ -113,9 +100,9 @@ def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
                         validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
                         validation['status_message'] = f'{feature_name} with value {feature_value} is greater than the ' \
                                                        f'upper bound value {upper_bound}. '
-            except:
+            except Exception as e:
                 validation['status_code'] = StatusCode.ERROR.value
-                validation['status_message'] = f'{feature_name} value is not of type int.'
+                validation['status_message'] = f'{feature_name} {e}'
         elif feature_data_type == 'float':
             try:
                 feature_value = float(feature_value)
@@ -124,27 +111,21 @@ def _is_valid(row: dict, features_config: dict) -> dict:  # TODO implement me
                     lower_bound = float(lower_bound_value)
                     if feature_value < lower_bound:
                         validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-                        #validation['status_message'] = f'{feature_name} with value {feature_value} is lower than the ' \
-                                                       #f'lower bound value {lower_bound}. '
                 upper_bound_value = str(ft_def['feature_upper_bound'])
                 if 'inf' not in upper_bound_value:
                     upper_bound = float(upper_bound_value)
                     if feature_value > upper_bound:
                         validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-                        #validation['status_message'] = f'{feature_name} with value {feature_value} is greater than the ' \
-                                                       #f'upper bound value {upper_bound}. '
             except:
                 print('value is not an float')
                 validation['status_code'] = StatusCode.ERROR.value
-                #validation['status_message'] = f'BBBBBBBBBBB {feature_name} value is not of type float.'
 
         val['validation'] = validation
-    return row
+    return feature_vector
 
 
 def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     # algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).filter(Algorithms.created_by==user_id).first()  # This gets the algorithm from the system
-
     #  The above line doesn't seem to work. Override by Anand
     algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
     if not algorithm:
@@ -154,10 +135,10 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     # populate object with algo parameters
     obj = cls()
     obj.as_object(algorithm)
-    ss=obj.update()
+    ss = obj.update()
 
     # TODO - need to load the tuned parameters FIXME
-    #TODO: get rid of () @ali
+    # TODO: get rid of () @ali
     result = obj.decision(user_id, input_data)
     # TODO Turn into JSON for transport. Result datatype is Pandas dataframe
     return result
@@ -177,7 +158,7 @@ def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TO
         data_obj = Data(algo_uuid=algo_uuid,
                         values=data['values'],
                         user_id=user_id,
-                        #timestamp=data['timestamp'],
+                        # timestamp=data['timestamp'],
                         decision_timestamp=data['decision_timestamp'],
                         decision=data['decision'],
                         proximal_outcome_timestamp=data['proximal_outcome_timestamp'],
@@ -267,25 +248,11 @@ def decision(uuid: str) -> dict:
 # @rl_token_required # FIXME TODO
 def upload(uuid: str) -> dict:
     input_data = request.json
-
-    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
-    # TODO: input_data = _valdiate_algo_data(uuid, input_data['values']) @Anand
-
-    validated_input_data = _validate_algo_data(uuid, input_data['values'])  # FIXME
-    # print(f'{len(algo.configuration["features"])}')
     try:
-        # print(f'input_data = {input_data["values"]}')
-        for row in input_data['values']:
-            check = True
-            # TODO - change to nome, value, validation @Anand
-            if check:  # FIXME len(row['values']) == len(algo.configuration['features']):
-                # TODO: Consider validating all rows prior to saving
-                response = _save_each_data_row(input_data['user_id'], row, algo_uuid=uuid)
-                if response['status_code'] == StatusCode.ERROR.value:
-                    raise Exception('Error saving data.')
-            else:
-                raise Exception(
-                    f"Array out of bounds: input: {len(row['values'])}, expected: {len(algo.configuration['features'])}")
+        validated_input_data = _validate_algo_data(uuid, input_data['values'])  # FIXME
+        response = _save_each_data_row(input_data['user_id'], input_data, algo_uuid=uuid)
+        if response['status_code'] == StatusCode.ERROR.value:
+            raise Exception('Error saving data.')
     except Exception as e:
         traceback.print_exc()
         return {
@@ -295,7 +262,7 @@ def upload(uuid: str) -> dict:
 
     return {
         "status_code": StatusCode.SUCCESS.value,
-        "status_message": f"Batch data updated for model {uuid}"
+        "status_message": f"Data uploaded for model {uuid}"
     }
 
 
@@ -323,7 +290,7 @@ def update(uuid: str) -> dict:
         # list[dict] - dict contains all the tuned params and user id
         example_result = [
             {
-                'user_id':'user_1',
+                'user_id': 'user_1',
                 'timestamp': 'timestamp_with_tz',
                 'values': {
                     'param_1': 0.34,
