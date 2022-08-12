@@ -24,7 +24,7 @@ def get_data(algo_id:str, user_id:str=None):
     return pd.DataFrame()
 
 
-def get_tunned_params(user_id:str=None):
+def get_tuned_params(user_id:str=None):
     '''
     Get data from data table, created pandas DF (parse all the dict and convert them into columns)
     :param algo_id:
@@ -44,7 +44,7 @@ def get_tunned_params(user_id:str=None):
     return pd.DataFrame()
 
 
-def store_tunned_params(user_id, configuration):
+def store_tuned_params(user_id, configuration):
     try:
         algo_params = AlgorithmTunnedParams(user_id=user_id, configuration=configuration)
         db.session.add(algo_params)
