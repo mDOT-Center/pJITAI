@@ -63,23 +63,10 @@ def _is_valid(feature_vector: dict, features_config: dict) -> dict:
             raise Exception(
                 f"Received unknown feature: {feature_name}, expected: {features_config.keys()}")
 
-        ft_def = features_config[feature_name]
-
-        '''
-        #  START: testing code -- TODO delete this block after testing
-        if ft_def['feature_name'] == 'int1':
-            ft_def['feature_data_type'] = 'int'
-            ft_def['feature_lower_bound'] = 0
-            ft_def['feature_upper_bound'] = 10
-        if ft_def['feature_name'] == 'float_feature':
-            ft_def['feature_lower_bound'] = 0.0
-            ft_def['feature_upper_bound'] = 10.0
-        print(f'validating {val} with {ft_def}')
-        #  END: testing code
-        '''
+        ft_def = features_config[feature_name]  # This is the defined configuration for the algorithm
 
         feature_value_type = type(feature_value)
-        feature_data_type = ft_def['feature_data_type']
+        feature_data_type = ft_def['feature_data_type']  # This is teh defined data type of the feature defined in the config
         if feature_data_type != feature_value_type.__name__:
             raise Exception(
                 f"Incorrect feature type for {feature_name}, expected: {feature_data_type} received: {feature_value_type}")
@@ -137,7 +124,6 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     # populate object with algo parameters
     obj = cls()
     obj.as_object(algorithm)
-
 
     tuned_params = get_tuned_params(user_id=user_id)
 
@@ -268,6 +254,7 @@ def upload(uuid: str) -> dict:
         "status_message": f"Data uploaded for model {uuid}"
     }
 
+
 def _do_update(algo_uuid):
     algorithm = Algorithms.query.filter(Algorithms.uuid == algo_uuid).first()
     if not algorithm:
@@ -279,8 +266,9 @@ def _do_update(algo_uuid):
 
     result = obj.update()
 
-    #TODO: iterate over pandas DF. store each row (per user) in database @ali
-    store_tuned_params(user_id=00,configuration={})
+    # TODO: iterate over pandas DF. store each row (per user) in database @ali
+    store_tuned_params(user_id=00, configuration={})
+
 
 @blueprint.route('<uuid>/update', methods=['POST'])
 # TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
