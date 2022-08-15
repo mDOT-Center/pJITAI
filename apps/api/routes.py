@@ -244,10 +244,10 @@ def upload(uuid: str) -> dict:
             raise Exception('Error saving data.')
     except Exception as e:
         traceback.print_exc()
-        return {
+        return  {
             "status_code": StatusCode.ERROR.value,
             "status_message": str(e),
-        }
+        }, 400
 
     return {
         "status_code": StatusCode.SUCCESS.value,
