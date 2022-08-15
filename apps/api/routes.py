@@ -129,8 +129,9 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
 
     result = obj.decision(user_id, tuned_params, input_data)
 
+
     # TODO Turn into JSON for transport. Result datatype is Pandas dataframe
-    return result
+    return json.dumps(json.loads(result.to_json(orient="records")))
 
 
 def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TODO: Make this actually do something
