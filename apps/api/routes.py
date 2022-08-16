@@ -128,10 +128,8 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     tuned_params = get_tuned_params(user_id=user_id)
 
     result = obj.decision(user_id, tuned_params, input_data)
-
-
-    # TODO Turn into JSON for transport. Result datatype is Pandas dataframe
-    return json.dumps(json.loads(result.to_json(orient="records")))
+    
+    return result
 
 
 def _save_each_data_row(user_id: str, data: dict, algo_uuid=None) -> dict:  # TODO: Make this actually do something
@@ -220,8 +218,8 @@ def decision(uuid: str) -> dict:
 
         decision_output = _make_decision(uuid, input_data['user_id'], validated_data)
 
-        if decision_output:
-            return decision_output
+        if len(decision_output) > 0:
+            return decision_output.iloc[0].to_dict() # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.
         else:
             return {'status_code': StatusCode.ERROR.value,
                     # TODO: this needs to be some sort of error response in the decision fails.
@@ -259,7 +257,7 @@ def upload(uuid: str) -> dict:
 def _do_update(algo_uuid):
     algorithm = Algorithms.query.filter(Algorithms.uuid == algo_uuid).first()
     if not algorithm:
-        return {"ERROR": "Invalid algorithm and/or user ID."}
+        return {"ERROR": "Invalid algorithm and/or user ID."} # TODO: Make the a proper error message object
     name = algorithm.type
     cls = get_class_object("apps.learning_models." + name + "." + name)
     obj = cls()
@@ -267,8 +265,8 @@ def _do_update(algo_uuid):
 
     result = obj.update()
 
-    # TODO: iterate over pandas DF. store each row (per user) in database @ali
-    store_tuned_params(user_id=00, configuration={})
+    for index, row in result.iterrows():
+        store_tuned_params(user_id=row.user_id,configuration=row.iloc[2:].to_dict())
 
 
 @blueprint.route('<uuid>/update', methods=['POST'])
@@ -283,19 +281,9 @@ def update(uuid: str) -> dict:
         '''
         _do_update(algo_uuid=uuid)
 
-        # TODO - store the result in the DB. By user. in the params_algo table
-        # list[dict] - dict contains all the tuned params and user id
-        example_result = [
-            {
-                'user_id': 'user_1',
-                'timestamp': 'timestamp_with_tz',
-                'values': {
-                    'param_1': 0.34,
-                    'param_2': 34.0
-                }
-            }
-        ]
-
+        result = {
+            
+        }
         return {'status_code': StatusCode.SUCCESS.value, "status_message": f'parameters have been updated for: {uuid}'}
 
 

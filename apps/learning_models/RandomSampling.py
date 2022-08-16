@@ -104,22 +104,17 @@ class RandomSampling(LearningModelBase):
         return result
 
 
-    # TODO: How to handle this call if it is async from the REST API?
     def update(self) -> dict:
-
-        #TODO: do something with the data @Tim
         data = get_data(algo_id=self.uuid)
-
-        print(data)
-
-        #TODO: above TODOs don't make sense. Maybe missing any processing? @tim
-
-        result = {
-            'timestamp': time_8601(),
-            'param_1': 00,
-            'param_2': 22
-            #TODO: there could be more columns, @Tim
-        }
-        result = pd.DataFrame(result, index=[0])
+        
+        columns=['timestamp','user_id','most_recent_step_count','total_step_count']
+        result = pd.DataFrame([], columns=columns)
+        
+        for u in data.user_id.unique():
+            most_recent_step_count = data[data.user_id == u].iloc[-1].step_count
+            total_step_count = sum(data[data.user_id == u]['step_count'])
+            
+            temp = pd.DataFrame([[time_8601(), u, most_recent_step_count, total_step_count]], columns=columns)
+            result = pd.concat([result, temp], ignore_index=True)
         
         return result
