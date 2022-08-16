@@ -83,7 +83,7 @@ class RandomSampling(LearningModelBase):
         random_number = random.random()
         selection = 0
         for i,v in enumerate(cum_sum_list):
-            if v > cum_sum_list[i] and v <= cum_sum_list[i+1]:
+            if random_number > cum_sum_list[i] and random_number <= cum_sum_list[i+1]:
                 selection = i
         
         my_decision = decision_options[selection]['name']
