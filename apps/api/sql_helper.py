@@ -3,7 +3,7 @@ import pandas as pd
 from sqlalchemy.exc import SQLAlchemyError
 
 from apps import db
-from apps.api.models import Data, AlgorithmTunnedParams
+from apps.api.models import Data, AlgorithmTunedParams
 
 
 def get_data(algo_id:str, user_id:str=None):
@@ -47,13 +47,13 @@ def get_tuned_params(user_id:str=None):
     :return: pandas DF
     '''
     if user_id:
-        tunned_params = AlgorithmTunnedParams.query.filter(AlgorithmTunnedParams.user_id==user_id).order_by(AlgorithmTunnedParams.upload_timestamp.desc()).first()
-        qry = tunned_params
+        tuned_params = AlgorithmTunedParams.query.filter(AlgorithmTunedParams.user_id==user_id).order_by(AlgorithmTunedParams.upload_timestamp.desc()).first()
+        qry = tuned_params
     else:
-        tunned_params = AlgorithmTunnedParams.query.order_by(AlgorithmTunnedParams.upload_timestamp.desc()).all()
-        if tunned_params:
-            qry = tunned_params[0]
-    if tunned_params:
+        tuned_params = AlgorithmTunedParams.query.order_by(AlgorithmTunedParams.upload_timestamp.desc()).all()
+        if tuned_params:
+            qry = tuned_params[0]
+    if tuned_params:
         df_from_records = pd.read_sql(qry.query.statement, db.session().bind)
         return df_from_records
     return pd.DataFrame()
@@ -61,7 +61,7 @@ def get_tuned_params(user_id:str=None):
 
 def store_tuned_params(user_id, configuration):
     try:
-        algo_params = AlgorithmTunnedParams(user_id=user_id, configuration=configuration)
+        algo_params = AlgorithmTunedParams(user_id=user_id, configuration=configuration)
         db.session.add(algo_params)
         db.session.commit()
     except SQLAlchemyError as e:

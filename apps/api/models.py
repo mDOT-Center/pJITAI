@@ -9,7 +9,7 @@ from apps import db
 
 
 @dataclass
-class AlgorithmTunnedParams(db.Model):
+class AlgorithmTunedParams(db.Model):
     __tablename__ = 'algorithm_tunned_params'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))

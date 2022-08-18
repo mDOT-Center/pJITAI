@@ -37,9 +37,6 @@ class RandomSampling(LearningModelBase):
 
     def decision(self,  user_id:str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
-        # TODO: getting default algo object of an algo
-        #cls_obj = self.as_object(algorithm_parameters)
-
         #TODO: get data from algo_params table and populate object per user
         #TODO: tunned_parameters = self.get_tunned_parameters(user_id)
             #TODO: return type would be pandas dict
