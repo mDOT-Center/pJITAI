@@ -27,10 +27,34 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-from flask import Blueprint
+import os
+import importlib
+import inspect
 
-blueprint = Blueprint(
-    'api_blueprint',
-    __name__,
-    url_prefix='/api/'
-)
+# Must be absolute path for this to work.
+base_learning_method_path = 'apps.learning_methods.'
+
+
+def get_all_available_methods():
+    models = {}
+
+    for module in os.listdir(os.path.dirname(__file__)):
+        if module == '__init__.py' or module[-3:] != '.py' or module == "learning_method_service.py" or module == "LearningMethodBase.py":
+            continue
+
+        module_name = module[:-3]
+        cls = getattr(importlib.import_module(
+            base_learning_method_path + str(module_name)), module_name)
+
+        q = cls()
+        models[module_name] = q.as_dict()
+    return models
+
+
+def get_class_object(class_path: str):
+    from importlib import import_module
+
+    module_path, class_name = class_path.rsplit('.', 1)
+    module = import_module(module_path)
+
+    return getattr(module, class_name)
