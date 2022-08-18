@@ -172,10 +172,10 @@ def _add_log(log_detail: dict, algo_uuid=None) -> dict:
     return {"msg": resp}
 
 
-def rl_token_required(f):
+def pJITAI_token_required(f):
     @ wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get('rltoken')
+        token = request.headers.get('pJITAI_token')
         if not token:
             return {
                 'status_code': StatusCode.ERROR.value,
@@ -200,7 +200,7 @@ def rl_token_required(f):
 
 
 @blueprint.route('<uuid>', methods=['POST'])
-@rl_token_required
+@pJITAI_token_required
 def model(uuid: str) -> dict:
     algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
     result = {"status": "ERROR: Algorithm not found"}
@@ -210,7 +210,7 @@ def model(uuid: str) -> dict:
 
 
 @blueprint.route('<uuid>/decision', methods=['POST', 'GET'])
-@rl_token_required
+@pJITAI_token_required
 def decision(uuid: str) -> dict:
     input_data = request.json
     try:
@@ -238,7 +238,7 @@ def decision(uuid: str) -> dict:
 
 
 @blueprint.route('<uuid>/upload', methods=['POST'])
-@rl_token_required  # TODO: This should actually check the token
+@pJITAI_token_required  # TODO: This should actually check the token
 def upload(uuid: str) -> dict:
     input_data = request.json
     try:
@@ -279,7 +279,7 @@ def _do_update(algo_uuid):
 
 @blueprint.route('<uuid>/update', methods=['POST'])
 # TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
-@rl_token_required  # FIXME TODO
+@pJITAI_token_required  # FIXME TODO
 def update(uuid: str) -> dict:
     input_data = request.json
     try:
