@@ -14,11 +14,11 @@ def get_data(algo_id:str, user_id:str=None):
     :return: pandas DF
     '''
     if user_id:
-        data = Data.query.filter(Data.algo_uuid==algo_id).filter(Data.user_id==user_id).order_by(Data.upload_timestamp.desc()).all()
+        data = Data.query.filter(Data.algo_uuid==algo_id).filter(Data.user_id==user_id).order_by(Data.upload_timestamp.desc())
     else:
-        data = Data.query.filter(Data.algo_uuid==algo_id).order_by(Data.upload_timestamp.desc()).all()
+        data = Data.query.filter(Data.algo_uuid==algo_id).order_by(Data.upload_timestamp.desc())
     if data:
-        df_from_records = pd.read_sql(data[0].query.statement, db.session().bind)
+        df_from_records = pd.read_sql(data.statement, db.session().bind)
         
         result = pd.concat([df_from_records, df_from_records['values'].apply(json_to_series)], axis=1)
         result.drop('values', axis=1, inplace=True)
@@ -47,14 +47,13 @@ def get_tuned_params(user_id:str=None):
     :return: pandas DF
     '''
     if user_id:
-        tuned_params = AlgorithmTunedParams.query.filter(AlgorithmTunedParams.user_id==user_id).order_by(AlgorithmTunedParams.upload_timestamp.desc()).first()
-        qry = tuned_params
+        tuned_params = AlgorithmTunedParams.query.filter(AlgorithmTunedParams.user_id==user_id).order_by(AlgorithmTunedParams.upload_timestamp.desc())
+
     else:
-        tuned_params = AlgorithmTunedParams.query.order_by(AlgorithmTunedParams.upload_timestamp.desc()).all()
-        if tuned_params:
-            qry = tuned_params[0]
+        tuned_params = AlgorithmTunedParams.query.order_by(AlgorithmTunedParams.upload_timestamp.desc())
+
     if tuned_params:
-        df_from_records = pd.read_sql(qry.query.statement, db.session().bind)
+        df_from_records = pd.read_sql(tuned_params.statement, db.session().bind)
         return df_from_records
     return pd.DataFrame()
 
