@@ -1,139 +1,57 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
-import json
+'''
+Copyright (c) 2022 University of Memphis, mDOT Center. All rights reserved. 
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer. 
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution. 
+
+3. Neither the name of the copyright holder nor the names of its contributors
+may be used to endorse or promote products derived from this software without
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
+
+import traceback
 from functools import wraps
 
-from apps.api import blueprint
-from flask import request
-from flask_login import login_required
-from flask import jsonify
+import pandas as pd
 from apps import db
 from apps.algorithms.models import Algorithms
-from .models import Logs, Data
-from sqlalchemy.exc import SQLAlchemyError
+from apps.api import blueprint
 from apps.api.codes import StatusCode
 from apps.api.sql_helper import get_tuned_params, json_to_series, store_tuned_params
 from apps.learning_models.learning_model_service import get_all_available_models
-import traceback
-import pandas as pd
+from flask import jsonify, request
+from flask_login import login_required
+from sqlalchemy.exc import SQLAlchemyError
 
-from .util import time_8601, get_class_object
-from threading import Thread
-
-
-def _validate_algo_data(uuid: str, feature_values: list) -> list:
-    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
-    if not algo:
-        raise Exception(f'ERROR: Invalid algorithm ID.')
-    algorithm_features_ = algo.configuration.get('features', [])
-    feature_map = {}
-    for ft in algorithm_features_:
-        feature_map[algorithm_features_[ft]
-                    ['feature_name']] = algorithm_features_[ft]
-
-    # Check input_request to ensure that the number of items matches what is expected
-    if len(feature_values) == len(feature_map):
-        # iterate over input_request and validate against the algorithm's specification
-        _is_valid(feature_values, feature_map)
-    else:
-        raise Exception(
-            f"Array out of bounds: input: {len(feature_values)}, expected: {len(feature_map)}")
-
-    return feature_values
+from .models import Data, Logs
+from .util import get_class_object, pJITAI_token_required, time_8601, _validate_algo_data
 
 
-def _is_valid(feature_vector: dict, features_config: dict) -> dict:
-    input_features = set()
-    for val in feature_vector:
-        input_features.add(val['name'])
-
-    # Check for missing features
-    for f in features_config:
-        if f not in input_features:
-            raise Exception(
-                f"Missing feature: {f}, expected: {features_config.keys()}")
-
-    for val in feature_vector:
-        validation = dict()
-        validation['status_code'] = StatusCode.SUCCESS.value
-
-        feature_name = val['name']
-        feature_value = val['value']
-
-        if feature_name not in features_config:
-            raise Exception(
-                f"Received unknown feature: {feature_name}, expected: {features_config.keys()}")
-
-        # This is the defined configuration for the algorithm
-        ft_def = features_config[feature_name]
-
-        feature_value_type = type(feature_value)
-        # This is teh defined data type of the feature defined in the config
-        feature_data_type = ft_def['feature_data_type']
-        if feature_data_type != feature_value_type.__name__:
-            raise Exception(
-                f"Incorrect feature type for {feature_name}, expected: {feature_data_type} received: {feature_value_type}")
-
-        if feature_data_type == 'int':
-            try:
-                feature_value = int(feature_value)
-                lower_bound_value = str(ft_def['feature_lower_bound'])
-                if 'inf' not in lower_bound_value:
-                    lower_bound = int(lower_bound_value)
-                    if feature_value < lower_bound:
-                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-                        validation['status_message'] = f'{feature_name} with value {feature_value} is lower than the ' \
-                                                       f'lower bound value {lower_bound}. '
-                upper_bound_value = str(ft_def['feature_upper_bound'])
-                if 'inf' not in upper_bound_value:
-                    upper_bound = int(upper_bound_value)
-                    if feature_value > upper_bound:
-                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-                        validation['status_message'] = f'{feature_name} with value {feature_value} is greater than the ' \
-                                                       f'upper bound value {upper_bound}. '
-            except Exception as e:
-                validation['status_code'] = StatusCode.ERROR.value
-                validation['status_message'] = f'{feature_name} {e}'
-        elif feature_data_type == 'float':
-            try:
-                feature_value = float(feature_value)
-                lower_bound_value = str(ft_def['feature_lower_bound'])
-                if 'inf' not in lower_bound_value:
-                    lower_bound = float(lower_bound_value)
-                    if feature_value < lower_bound:
-                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-                upper_bound_value = str(ft_def['feature_upper_bound'])
-                if 'inf' not in upper_bound_value:
-                    upper_bound = float(upper_bound_value)
-                    if feature_value > upper_bound:
-                        validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-            except:
-                print('value is not an float')
-                validation['status_code'] = StatusCode.ERROR.value
-
-        val['validation'] = validation
-    return feature_vector
-
-
-def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
-    # algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).filter(Algorithms.created_by==user_id).first()  # This gets the algorithm from the system
-    #  The above line doesn't seem to work. Override by Anand
-    algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
-    cls = get_class_object("apps.learning_models." +
-                           algorithm.type + "." + algorithm.type)
-    obj = cls()
-    obj.as_object(algorithm)  # TODO: What does this do?
-
-    tuned_params = get_tuned_params(user_id=user_id).iloc[0]['configuration']
-    tuned_params_df = pd.json_normalize(tuned_params)
-    result = obj.decision(user_id, tuned_params_df, input_data)
-
-    return result
-
-
-def _save_each_data_row(user_id: str, decision_timestamp, decision, proximal_outcome_timestamp, proximal_outcome, data: list, algo_uuid=None) -> dict:
+def _save_each_data_row(user_id: str,
+                        decision_timestamp: str,
+                        decision,
+                        proximal_outcome_timestamp: str,
+                        proximal_outcome,
+                        data: list,
+                        algo_uuid=None) -> dict:
     resp = "Data has successfully added"
     try:
         data_obj = Data(algo_uuid=algo_uuid,
@@ -155,11 +73,10 @@ def _save_each_data_row(user_id: str, decision_timestamp, decision, proximal_out
         raise Exception(f'Error saving data: {resp}')
 
 
-def _add_log(log_detail: dict, algo_uuid=None) -> dict:
+def _add_log(log_detail: dict, algo_uuid=None) -> dict:  # TODO: This should be moved to the utils file?
     resp = "Data has successfully added"
     try:
-        log = Logs(algo_uuid=algo_uuid, details=log_detail,
-                   created_on=time_8601())
+        log = Logs(algo_uuid=algo_uuid, details=log_detail, created_on=time_8601())
         db.session.add(log)
         db.session.commit()
     except SQLAlchemyError as e:
@@ -173,32 +90,19 @@ def _add_log(log_detail: dict, algo_uuid=None) -> dict:
     return {"msg": resp}
 
 
-def pJITAI_token_required(f):
-    @ wraps(f)
-    def decorated(*args, **kwargs):
-        token = request.headers.get('pJITAI_token')
-        if not token:
-            return {
-                'status_code': StatusCode.ERROR.value,
-                'status_message': 'Token not found'
-            }, 400
+def _do_update(algo_uuid):
+    algorithm = Algorithms.query.filter(Algorithms.uuid == algo_uuid).first()
+    cls = get_class_object(f"apps.learning_models.{algorithm.type}.{algorithm.type}")
+    obj = cls()
+    obj.as_object(algorithm)
+    result = obj.update()
 
-        # TODO: Testing bypass until the below code is implemented properly
+    for index, row in result.iterrows():
+        store_tuned_params(user_id=row.user_id,
+                           configuration=row.iloc[2:].to_dict())
 
-        # result = db.session.query(Algorithms).filter(Algorithms.auth_token == token).first()
-        # if not result:
-        #     return {
-        #         'status_code': StatusCode.ERROR.value,
-        #         'status_message': 'Algorithm authentication token is incorrect'
-        #     }, 400
 
-        # TODO: Check if the token matches the one present for the algorithm in question @Ali
-        # TODO: Add token to the algorithm and WebUI (View Algorithm) @Ali
-
-        return f(*args, **kwargs)
-
-    return decorated
-
+# API METHODS ARE BELOW
 
 @blueprint.route('<uuid>', methods=['POST'])
 @pJITAI_token_required
@@ -215,14 +119,25 @@ def model(uuid: str) -> dict:
 def decision(uuid: str) -> dict:
     input_data = request.json
     try:
-        validated_data = _validate_algo_data(uuid,
-                                             input_data['values'])
+        validated_data = _validate_algo_data(uuid, input_data['values'])
 
         validated_data_df = pd.DataFrame(json_to_series(validated_data)).transpose()
 
-        decision_output = _make_decision(uuid,
-                                         input_data['user_id'],
-                                         validated_data_df)
+        user_id = input_data['user_id'],
+        input_data = validated_data_df
+
+        algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
+        cls = get_class_object(f"apps.learning_models.{algorithm.type}.{algorithm.type}")
+        obj = cls()
+        obj.as_object(algorithm)  # TODO: What does this do?
+
+        tuned_params = get_tuned_params(user_id=user_id)
+        tuned_params_df = None
+        if len(tuned_params) > 0:
+            tuned_params = tuned_params.iloc[0]['configuration']
+            tuned_params_df = pd.json_normalize(tuned_params)
+
+        decision_output = obj.decision(user_id, tuned_params_df, input_data)
 
         if len(decision_output) > 0:
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.
@@ -245,8 +160,7 @@ def decision(uuid: str) -> dict:
 def upload(uuid: str) -> dict:
     input_data = request.json
     try:
-        validated_input_data = _validate_algo_data(uuid,
-                                                   input_data['values'])
+        validated_input_data = _validate_algo_data(uuid, input_data['values'])
         _save_each_data_row(input_data['user_id'],
                             decision_timestamp=input_data['decision_timestamp'],
                             decision=input_data['decision'],
@@ -267,22 +181,8 @@ def upload(uuid: str) -> dict:
         }, 400
 
 
-def _do_update(algo_uuid):
-    algorithm = Algorithms.query.filter(Algorithms.uuid == algo_uuid).first()
-    cls = get_class_object("apps.learning_models." +
-                           algorithm.type + "." + algorithm.type)
-    obj = cls()
-    obj.as_object(algorithm)
-    result = obj.update()
-
-    for index, row in result.iterrows():
-        store_tuned_params(user_id=row.user_id,
-                           configuration=row.iloc[2:].to_dict())
-
-
 @blueprint.route('<uuid>/update', methods=['POST'])
-# TODO Something like this?  @Ali @rl_server_token_required # Make sure this only exposed on the server
-@pJITAI_token_required  # FIXME TODO
+@pJITAI_token_required
 def update(uuid: str) -> dict:
     input_data = request.json
     try:
@@ -290,10 +190,10 @@ def update(uuid: str) -> dict:
         Call the alogrithm update method
 
         '''
-        #TODO: Something like this for async calls?
+        # TODO: Something like this for async calls?
         # t = Thread(target=_do_update, args={'algo_uuid': uuid})
         # t.start()
-        
+
         _do_update(algo_uuid=uuid)
 
         result = {
@@ -352,8 +252,7 @@ def run_algo(algo_type):
         configuration["other_parameters"] = other_parameter
         configuration["tuning_scheduler"] = {}
         if request.form.get("availability"):
-            configuration["availability"] = {
-                "availability": request.form.get("availability")}
+            configuration["availability"] = {"availability": request.form.get("availability")}
 
         algo_info["features"] = features
         algo_info["standalone_parameter"] = standalone_parameter
@@ -369,8 +268,7 @@ def run_algo(algo_type):
 def search(query):
     results = []
     search_query = "%{}%".format(query)
-    algorithm = Algorithms.query.filter(Algorithms.name.like(
-        search_query) | Algorithms.type.like(search_query)).all()
+    algorithm = Algorithms.query.filter(Algorithms.name.like(search_query) | Algorithms.type.like(search_query)).all()
     if not algorithm:
         return {"status": "error", "message": "No result found."}, 400
     else:
@@ -382,8 +280,7 @@ def search(query):
 @blueprint.route('/algorithms/<id>', methods=['GET'])  # or UUID
 @login_required
 def algorithms(id):
-    algo = db.session.query(Algorithms).filter(
-        Algorithms.id == id).filter(Algorithms.finalized == 1).first()
+    algo = db.session.query(Algorithms).filter(Algorithms.id == id).filter(Algorithms.finalized == 1).first()
     if not algo:
         return {"status": "error",
                 "message": "Algorithm ID does not exist or algorithm has not been finalized yet."}, 400
