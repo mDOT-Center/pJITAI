@@ -27,17 +27,16 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-from apps.learning_models.LearningModelBase import LearningModelBase
-from apps.algorithms.models import Algorithms
+from apps.learning_methods.LearningMethodBase import LearningMethodBase
 from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 import random
 import pandas as pd
 from apps.api.sql_helper import get_data
-from apps.api.sql_helper import get_tuned_params, store_tuned_params
 
 
-class RandomSampling(LearningModelBase):
+
+class RandomSampling(LearningMethodBase):
 
     def __init__(self):
         super().__init__()

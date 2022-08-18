@@ -35,7 +35,7 @@ from apps import db
 from flask_login import login_required, current_user
 from apps.algorithms import blueprint
 from apps.algorithms.models import Algorithms
-from apps.learning_models.learning_model_service import get_all_available_models
+from apps.learning_methods.learning_method_service import get_all_available_methods
 from uuid import uuid4
 
 
@@ -190,7 +190,7 @@ def finalize_algorithm(id):
 @blueprint.route('/list_algorithms/', methods=['GET'])
 @blueprint.route('/list_algorithms/<name>', methods=['GET'])
 def list_algorithms(name=None):
-    algos = get_all_available_models()
+    algos = get_all_available_methods()
     if name:
         return algos.get(name)
     else:

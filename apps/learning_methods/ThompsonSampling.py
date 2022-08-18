@@ -28,11 +28,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-from apps.learning_models.LearningModelBase import LearningModelBase
+from apps.learning_methods.LearningMethodBase import LearningMethodBase
 import pandas as pd
 
 
-class ThompsonSampling(LearningModelBase):
+class ThompsonSampling(LearningMethodBase):
 
     def __init__(self):
         super().__init__()

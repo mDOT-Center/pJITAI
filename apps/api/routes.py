@@ -36,7 +36,7 @@ from apps.algorithms.models import Algorithms
 from apps.api import blueprint
 from apps.api.codes import StatusCode
 from apps.api.sql_helper import get_tuned_params, json_to_series, store_tuned_params
-from apps.learning_models.learning_model_service import get_all_available_models
+from apps.learning_methods.learning_method_service import get_all_available_methods
 from flask import jsonify, request
 from flask_login import login_required
 from sqlalchemy.exc import SQLAlchemyError
@@ -92,7 +92,7 @@ def _add_log(log_detail: dict, algo_uuid=None) -> dict:  # TODO: This should be 
 
 def _do_update(algo_uuid):
     algorithm = Algorithms.query.filter(Algorithms.uuid == algo_uuid).first()
-    cls = get_class_object(f"apps.learning_models.{algorithm.type}.{algorithm.type}")
+    cls = get_class_object(f"apps.learning_methods.{algorithm.type}.{algorithm.type}")
     obj = cls()
     obj.as_object(algorithm)
     result = obj.update()
@@ -127,7 +127,7 @@ def decision(uuid: str) -> dict:
         input_data = validated_data_df
 
         algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
-        cls = get_class_object(f"apps.learning_models.{algorithm.type}.{algorithm.type}")
+        cls = get_class_object(f"apps.learning_methods.{algorithm.type}.{algorithm.type}")
         obj = cls()
         obj.as_object(algorithm)  # TODO: What does this do?
 
@@ -215,7 +215,7 @@ def update(uuid: str) -> dict:
 @login_required
 def run_algo(algo_type):
     # all finalized algorithms could be accessed using this api point
-    algo_definitions = get_all_available_models()
+    algo_definitions = get_all_available_methods()
     algo_info = {}
     form_type = request.form.get("form_type")
     if algo_type not in algo_definitions:

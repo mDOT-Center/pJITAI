@@ -32,7 +32,7 @@ from abc import abstractmethod, ABCMeta
 import pandas as pd
 
 
-class LearningModelBase(metaclass=ABCMeta):
+class LearningMethodBase(metaclass=ABCMeta):
 
     def __init__(self, algorithm_specs=None):
         # self.uuid = algorithm_specs.uuid
@@ -102,5 +102,5 @@ class LearningModelBase(metaclass=ABCMeta):
     def update(self, user_id) -> dict:
         pass
 
-    def model_definition(self) -> dict:
+    def method_definition(self) -> dict:
         return {'inputs': self.get_inputs(), 'outputs': self.get_outputs(), 'parameters': self.get_parameters()}
