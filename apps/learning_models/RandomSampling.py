@@ -36,16 +36,12 @@ class RandomSampling(LearningModelBase):
 
 
     def decision(self,  user_id:str, tuned_params=None, input_data=None) -> pd.DataFrame:
-
-        #TODO: get data from algo_params table and populate object per user
-        #TODO: tunned_parameters = self.get_tunned_parameters(user_id)
-            #TODO: return type would be pandas dict
-            #TODO: select * from algo_params where user_id=user_id order by desc limit 1
-        #TODO: tunned_parameters.get("param_name")
-
-        # TODO: do something with parameters and input_data
-
-        #my_class = cls_obj.initialize(algorithm_parameters)
+        
+        # Accessing tuned parameters
+        # Parameters are access by column name and first row
+        
+        total_step_count = tuned_params.iloc[0]['total_step_count']
+        
         
         # TODO: Remove this once the data method is implemented
         # TODO: A method to retrieve data from the DB

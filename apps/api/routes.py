@@ -14,9 +14,10 @@ from apps.algorithms.models import Algorithms
 from .models import Logs, Data
 from sqlalchemy.exc import SQLAlchemyError
 from apps.api.codes import StatusCode
-from apps.api.sql_helper import get_tuned_params, store_tuned_params
+from apps.api.sql_helper import get_tuned_params, json_to_series, store_tuned_params
 from apps.learning_models.learning_model_service import get_all_available_models
 import traceback
+import pandas as pd
 
 from .util import time_8601, get_class_object
 from threading import Thread
@@ -125,9 +126,9 @@ def _make_decision(uuid: str, user_id: str, input_data: list) -> dict:
     obj = cls()
     obj.as_object(algorithm)  # TODO: What does this do?
 
-    tuned_params = get_tuned_params(user_id=user_id)
-
-    result = obj.decision(user_id, tuned_params, input_data)
+    tuned_params = get_tuned_params(user_id=user_id).iloc[0]['configuration']
+    tuned_params_df = pd.json_normalize(tuned_params)
+    result = obj.decision(user_id, tuned_params_df, input_data)
 
     return result
 
@@ -217,9 +218,11 @@ def decision(uuid: str) -> dict:
         validated_data = _validate_algo_data(uuid,
                                              input_data['values'])
 
+        validated_data_df = pd.DataFrame(json_to_series(validated_data)).transpose()
+
         decision_output = _make_decision(uuid,
                                          input_data['user_id'],
-                                         validated_data)
+                                         validated_data_df)
 
         if len(decision_output) > 0:
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.

@@ -33,7 +33,7 @@ def json_to_series(variable_list):
         keys.append(variable['name'])
         values.append(variable['value'])
         for validation_key, validation_value in variable['validation'].items():
-            keys.append(f'validation_{validation_key}')
+            keys.append(f'{variable["name"]}_validation_{validation_key}')
             values.append(validation_value)
     
     return pd.Series(values, index=keys)
