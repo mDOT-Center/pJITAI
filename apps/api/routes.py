@@ -190,10 +190,6 @@ def update(uuid: str) -> dict:
         Call the alogrithm update method
 
         '''
-        # TODO: Something like this for async calls?
-        # t = Thread(target=_do_update, args={'algo_uuid': uuid})
-        # t.start()
-
         _do_update(algo_uuid=uuid)
 
         result = {
