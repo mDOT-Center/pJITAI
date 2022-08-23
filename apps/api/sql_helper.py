@@ -79,10 +79,10 @@ def get_tuned_params(user_id: str = None):
     if user_id:
         tuned_params = AlgorithmTunedParams.query.filter(
             AlgorithmTunedParams.user_id == user_id).order_by(
-            AlgorithmTunedParams.upload_timestamp.desc())
+            AlgorithmTunedParams.timestamp.desc())
 
     else:
-        tuned_params = AlgorithmTunedParams.query.order_by(AlgorithmTunedParams.upload_timestamp.desc())
+        tuned_params = AlgorithmTunedParams.query.order_by(AlgorithmTunedParams.timestamp.desc())
 
     if tuned_params:
         df_from_records = pd.read_sql(tuned_params.statement, db.session().bind)

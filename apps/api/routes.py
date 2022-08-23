@@ -41,8 +41,8 @@ from flask import jsonify, request
 from flask_login import login_required
 from sqlalchemy.exc import SQLAlchemyError
 
-from .models import Data, Logs
-from .util import get_class_object, pJITAI_token_required, time_8601, _validate_algo_data
+from .models import Data, Log
+from .util import get_class_object, pJITAI_token_required, time_8601, _validate_algo_data, _add_log
 
 
 def _save_each_data_row(user_id: str,
@@ -71,23 +71,6 @@ def _save_each_data_row(user_id: str,
         raise Exception(f'Error saving data: {resp}')
     except:
         raise Exception(f'Error saving data: {resp}')
-
-
-def _add_log(log_detail: dict, algo_uuid=None) -> dict:  # TODO: This should be moved to the utils file?
-    resp = "Data has successfully added"
-    try:
-        log = Logs(algo_uuid=algo_uuid, details=log_detail, created_on=time_8601())
-        db.session.add(log)
-        db.session.commit()
-    except SQLAlchemyError as e:
-        resp = str(e.__dict__['orig'])
-        db.session.rollback()
-        print(traceback.format_exc())
-        return resp
-    except:
-        print(traceback.format_exc())
-
-    return {"msg": resp}
 
 
 def _do_update(algo_uuid):
@@ -141,18 +124,25 @@ def decision(uuid: str) -> dict:
 
         if len(decision_output) > 0:
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.
-            return decision_output.iloc[0].to_dict(), 200
+            result = decision_output.iloc[0].to_dict()
+            _add_log(algo_uuid=uuid, log_detail={'input_data': input_data.iloc[0].to_dict(), 'response': result, 'http_status_code': 200})
+            return result, 200
         else:
-            return {
+            result = {
                 'status_code': StatusCode.ERROR.value,
                 'status_message': f'A decision was unable to be made for: {uuid} with validated data: {validated_data}'
-            }, 400
+            }
+            _add_log(algo_uuid=uuid, log_detail={'input_data': input_data.iloc[0].to_dict(
+            ), 'response': None, 'error': result, 'http_status_code': 400})
+            return result, 400
     except Exception as e:
         traceback.print_exc()
-        return {
+        result = {
             "status_code": StatusCode.ERROR.value,
             "status_message": str(e),
-        }, 400
+        }
+        _add_log(algo_uuid=uuid, log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
+        return result, 400
 
 
 @blueprint.route('<uuid>/upload', methods=['POST'])
@@ -168,17 +158,20 @@ def upload(uuid: str) -> dict:
                             proximal_outcome=input_data['proximal_outcome'],
                             data=validated_input_data,
                             algo_uuid=uuid)
-
-        return {
+        result = {
             "status_code": StatusCode.SUCCESS.value,
             "status_message": f"Data uploaded for model {uuid}"
-        }, 200
+        }
+        _add_log(algo_uuid=uuid, log_detail={'input_data': validated_input_data, 'response': result, 'http_status_code': 200})
+        return result, 200
     except Exception as e:
         traceback.print_exc()
-        return {
-            "status_code": StatusCode.ERROR.value,
-            "status_message": str(e),
-        }, 400
+        result = {
+            'status_code': StatusCode.ERROR.value,
+            'status_message': f'A decision was unable to be made for: {uuid} with input data: {input_data}'
+        }
+        _add_log(algo_uuid=uuid, log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
+        return result, 400
 
 
 @blueprint.route('<uuid>/update', methods=['POST'])
@@ -196,17 +189,20 @@ def update(uuid: str) -> dict:
             "status_code": StatusCode.SUCCESS.value,
             "status_message": "Background update proceedure has been started.",
         }
+        _add_log(algo_uuid=uuid, log_detail={'input_data': input_data, 'response': result, 'http_status_code': 200})
         return result, 200
 
     except Exception as e:
         traceback.print_exc()
-        return {
+        result = {
             "status_code": StatusCode.ERROR.value,
             "status_message": str(e),
-        }, 400
+        }
+        _add_log(algo_uuid=uuid, log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
+        return result, 400
 
 
-# Web UI related APIs below here
+# Web UI related APIs below here #TODO: Move these to a separate file?
 @blueprint.route('/run_algo/<algo_type>', methods=['POST'])  # or UUID
 @login_required
 def run_algo(algo_type):

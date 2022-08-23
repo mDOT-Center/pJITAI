@@ -33,14 +33,17 @@ from datetime import datetime
 from apps import db
 
 
+def time_8601(time=datetime.now()) -> str:
+    return time.astimezone().isoformat()
+
 @dataclass
 class AlgorithmTunedParams(db.Model):
     __tablename__ = 'algorithm_tuned_params'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))
-    upload_timestamp = db.Column('upload_timestamp', 
-                                 db.DateTime, 
-                                 default=datetime.now()) #TODO: Is this supposed to be a datetime object?
+    timestamp = db.Column('timestamp',
+                          db.String,
+                          default=time_8601())
     configuration = db.Column('configuration', db.JSON)
 
     def __init__(self, **kwargs):
@@ -60,12 +63,12 @@ class Data(db.Model):
     __tablename__ = 'data'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))
-    algo_uuid = db.Column('algo_uuid', db.String(36))
-    upload_timestamp = db.Column('upload_timestamp', 
-                                 db.DateTime, 
-                                 default=datetime.now()) #TODO: Is this supposed to be a datetime object?
+    algo_uuid = db.Column('algo_uuid', db.String(36))  # TODO: Are are these the correct timestamps needed?
+    upload_timestamp = db.Column('upload_timestamp',
+                                 db.String,
+                                 default=time_8601())
     decision_timestamp = db.Column('decision_timestamp', db.String(64))
-    proximal_outcome_timestamp = db.Column('proximal_outcome_timestamp', 
+    proximal_outcome_timestamp = db.Column('proximal_outcome_timestamp',
                                            db.String(64))
     decision = db.Column('decision', db.Integer)
     proximal_outcome = db.Column('proximal_outcome', db.Float)
@@ -84,15 +87,14 @@ class Data(db.Model):
 
 
 @dataclass
-class Logs(db.Model):
+class Log(db.Model):
     __tablename__ = 'logs'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     algo_uuid = db.Column('algo_uuid', db.String(36))
     details = db.Column('details', db.JSON)
-    upload_timestamp = db.Column('upload_timestamp', 
-                                 db.DateTime, 
-                                 default=datetime.now()) #TODO: Is this supposed to be a datetime object?
-    
+    timestamp = db.Column('timestamp',
+                          db.String,
+                          default=time_8601())
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -111,9 +113,9 @@ class Cron(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     algo_uuid = db.Column('algo_uuid', db.String(36))
     details = db.Column('details', db.JSON)
-    upload_timestamp = db.Column('upload_timestamp', 
-                                 db.DateTime, 
-                                 default=datetime.now()) #TODO: Is this supposed to be a datetime object?
+    timestamp = db.Column('timestamp',
+                          db.String,
+                          default=time_8601())
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
