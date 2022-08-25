@@ -50,19 +50,14 @@ def pJITAI_token_required(f):
                 'status_message': 'Token not found'
             }, 400
 
-        # TODO: Testing bypass until the below code is implemented properly
-
-        # result = db.session.query(Algorithms).filter(Algorithms.auth_token == token).first()
-        # if not result:
-        #     return {
-        #         'status_code': StatusCode.ERROR.value,
-        #         'status_message': 'Algorithm authentication token is incorrect'
-        #     }, 400
-
-        # TODO: Check if the token matches the one present for the algorithm in question @Ali
-        # TODO: Add token to the algorithm and WebUI (View Algorithm) @Ali
-
-        return f(*args, **kwargs)
+        result = db.session.query(Algorithms).filter(Algorithms.auth_token == token).first()
+        if result:
+            return f(*args, **kwargs)
+        else:
+            return {
+                'status_code': StatusCode.ERROR.value,
+                'status_message': 'Invalid security token'
+            }, 400
 
     return decorated
 

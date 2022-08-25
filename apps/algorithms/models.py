@@ -47,7 +47,7 @@ class Algorithms(db.Model):
                            nullable=False)
     uuid = db.Column('uuid', db.String(36))
     name = db.Column('name', db.String(256))
-    auth_token = db.Column('auth_token', db.Text)
+    auth_token = db.Column('auth_token', db.String(36))
     description = db.Column('description', db.Text)
     study_name = db.Column('study_name', db.String(100))
     version = db.Column('version', db.Integer)

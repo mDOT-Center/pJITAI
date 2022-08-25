@@ -182,6 +182,7 @@ def finalize_algorithm(id):
     existing_algo = db.session.query(
         Algorithms).filter(Algorithms.id == id).first()
     existing_algo.finalized = 1
+    existing_algo.auth_token = str(uuid4())
     # db.session.delete(existing_algo)
     db.session.commit()
     return redirect(url_for('algorithm_blueprint.my_algorithms', **request.args))
