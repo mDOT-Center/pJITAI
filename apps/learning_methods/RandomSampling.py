@@ -67,10 +67,12 @@ class RandomSampling(LearningMethodBase):
 
         # Accessing tuned parameters
         # Parameters are access by column name and first row
-        if tuned_params is not None:
-            total_step_count = tuned_params.iloc[0]['total_step_count']
-        else:
-            total_step_count = 0
+        try:
+            alpha_mu = tuned_params.iloc[0]['alpha_mu']
+            alpha_sigma = tuned_params.iloc[0]['alpha_sigma']
+        except Exception as e: # Something is wrong or data is missing, assuming defaults
+            alpha_mu = 100.0
+            alpha_sigma = 150.0
 
         # TODO: Remove this once the data method is implemented
         # TODO: A method to retrieve data from the DB
@@ -128,15 +130,25 @@ class RandomSampling(LearningMethodBase):
     def update(self) -> dict:
         data = get_data(algo_id=self.uuid)
 
-        columns = ['timestamp', 'user_id', 'most_recent_step_count', 'total_step_count']
+        columns = ['timestamp', 'user_id', 'alpha_mu', 'alpha_sigma']
         result = pd.DataFrame([], columns=columns)
 
+
+
         for u in data.user_id.unique():
-            most_recent_step_count = data[data.user_id == u].iloc[-1].step_count
-            total_step_count = sum(data[data.user_id == u]['step_count'])
+            result_mean = [None for i in self.features]
+            result_stdev = [None for i in self.features]
+            for key, feature in self.features.items():
+                feature_name = feature['feature_name']
+                index = int(key)-1  #TODO: Why do I have to change the type on the index? and subtract 1
+                temp_mean = data[data.user_id == u][feature_name].mean()
+                temp_stdev = data[data.user_id == u][feature_name].std()
+                
+                result_mean[index] = temp_mean
+                result_stdev[index] = temp_stdev
 
             temp = pd.DataFrame(
-                [[time_8601(), u, most_recent_step_count, total_step_count]], columns=columns)
+                [[time_8601(), u, result_mean, result_stdev]], columns=columns)
             result = pd.concat([result, temp], ignore_index=True)
 
         return result
