@@ -42,7 +42,7 @@ class AlgorithmTunedParams(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))
     timestamp = db.Column('timestamp',
-                          db.String,
+                          db.String(100),
                           default=time_8601())
     configuration = db.Column('configuration', db.JSON)
 
@@ -65,7 +65,7 @@ class Data(db.Model):
     user_id = db.Column('user_id', db.String(36))
     algo_uuid = db.Column('algo_uuid', db.String(36))  # TODO: Are are these the correct timestamps needed?
     upload_timestamp = db.Column('upload_timestamp',
-                                 db.String,
+                                 db.String(100),
                                  default=time_8601())
     decision_timestamp = db.Column('decision_timestamp', db.String(64))
     proximal_outcome_timestamp = db.Column('proximal_outcome_timestamp',
@@ -93,7 +93,7 @@ class Log(db.Model):
     algo_uuid = db.Column('algo_uuid', db.String(36))
     details = db.Column('details', db.JSON)
     timestamp = db.Column('timestamp',
-                          db.String,
+                          db.String(100),
                           default=time_8601())
 
     def __init__(self, **kwargs):
@@ -114,7 +114,7 @@ class Cron(db.Model):
     algo_uuid = db.Column('algo_uuid', db.String(36))
     details = db.Column('details', db.JSON)
     timestamp = db.Column('timestamp',
-                          db.String,
+                          db.String(100),
                           default=time_8601())
 
     def __init__(self, **kwargs):
