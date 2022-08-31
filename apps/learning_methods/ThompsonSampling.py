@@ -30,7 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from apps.learning_methods.LearningMethodBase import LearningMethodBase
 import pandas as pd
-
+from apps.api.sql_helper import get_data
+from apps.api.util import time_8601
 
 class ThompsonSampling(LearningMethodBase):
 
@@ -166,8 +167,40 @@ class ThompsonSampling(LearningMethodBase):
         return {"RUN": "success"}
 
     def update(self) -> dict:
+        data = get_data(algo_id=self.uuid)
 
-        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
 
-        # TODO: Store tuned parameters to the datastore by user @Ali
-        return {"UPDATE": "success"}
+        columns = ['timestamp', 'user_id']
+        
+
+        for key, feature in self.features.items():
+            feature_name = feature['feature_name']
+            a0_mu = f'${feature_name}_alpha0_mu'
+            a0_sigma = f'${feature_name}_alpha0_sigma'
+
+            columns.append(a0_mu)
+            columns.append(a0_sigma)
+
+        result = pd.DataFrame([], columns=columns)
+
+        for u in data.user_id.unique():
+            result_data = [time_8601(), u]
+            for key, feature in self.features.items():
+                index = int(key)-1  #TODO: Why do I have to change the type on the index? and subtract 1
+                feature_name = feature['feature_name']
+                feature_alpha0_mu = feature['feature_parameter_alpha0_mu']
+
+                # TODO: Do something with the data...
+                # 
+                # 
+
+                feature_alpha0_mu_data = feature_alpha0_mu
+
+                result_data.append(feature_alpha0_mu_data)
+                result_data.append(feature_alpha0_sigma_data)
+
+            temp = pd.DataFrame([result_data], columns=columns)
+            result = pd.concat([result, temp], ignore_index=True)
+
+        return result
+
