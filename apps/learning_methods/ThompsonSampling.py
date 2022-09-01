@@ -48,23 +48,23 @@ class ThompsonSampling(LearningMethodBase):
 
         self.parameters = {
             "alpha0_mu": {
-                "description": "Some description",
+                "description": "baseline prior mean",
                 "type": "float",
                 "lower_bound": "-inf",
                 "upper_bound": "inf",
-                "inclusive": [True, True],
-                "default_value": 0.9
+                "inclusive": [False, False],
+                "default_value": 0
             },
             "alpha0_sigma": {
-                "description": "Some description",
+                "description": "baseline prior std",
                 "type": "float",
                 "lower_bound": 0,
                 "upper_bound": "inf",
-                "inclusive": [False, True],
-                "default_value": 0.9
+                "inclusive": [False, False],
+                "default_value": 3.16
             },
             "beta_selected_features": {
-                "description": "Some description",
+                "description": "tailoring variable or not",
                 "type": "str",
                 "lower_bound": "no",
                 "upper_bound": "yes",
@@ -72,84 +72,110 @@ class ThompsonSampling(LearningMethodBase):
                 "default_value": "yes"
             },
             "beta_mu": {
-                "description": "Some description",
+                "description": "tailored effect prior mean",
                 "type": "float",
                 "lower_bound": "-inf",
                 "upper_bound": "inf",
-                "inclusive": [True, True],
-                "default_value": 0.99
+                "inclusive": [False, False],
+                "default_value": 0
             },
             "beta_sigma": {
-                "description": "Some description",
+                "description": "tailored effect prior std",
                 "type": "float",
                 "lower_bound": 0,
                 "upper_bound": "inf",
-                "inclusive": [False, True],
-                "default_value": 0.9
+                "inclusive": [False, False],
+                "default_value": 3.16
             }
         }
         # TODO: change name -> standalone_parameters
         self.standalone_parameters = {
             "alpha_0_mu_bias": {
-                "description": "Some description",
+                "description": "intercept prior mean",
                 "type": "float",
                 "lower_bound": "-inf",
                 "upper_bound": "inf",
-                "inclusive": [True, True],
-                "default_value": 0.31
+                "inclusive": [False, False],
+                "default_value": 0
             },
             "alpha_0_sigma_bias": {
-                "description": "Some description",
+                "description": "intercept prior std",
                 "type": "float",
                 "lower_bound": 0,
                 "upper_bound": "inf",
-                "inclusive": [False, True],
-                "default_value": 0.32
+                "inclusive": [False, False],
+                "default_value": 3.16
             },
             "beta_mu_bias": {
-                "description": "Some description",
+                "description": "main effect prior mean",
                 "type": "float",
                 "lower_bound": "-inf",
                 "upper_bound": "inf",
-                "inclusive": [True, True],
-                "default_value": 0.33
+                "inclusive": [False, False],
+                "default_value": 0
             },
             "beta_sigma_bias": {
-                "description": "Some description",
+                "description": "main effect prior std",
                 "type": "float",
                 "lower_bound": 0,
                 "upper_bound": "inf",
-                "inclusive": [False, True],
-                "default_value": 0.34
+                "inclusive": [False, False],
+                "default_value": 3.16
             },
-            "noice": {
-                "description": "Some description",
+            "noise_scale": {
+                "description": "scaling parameter of scaled inverse chi square",
                 "type": "float",
                 "lower_bound": 0,
                 "upper_bound": "inf",
-                "inclusive": [False, True],
-                "default_value": 0.35
+                "inclusive": [False, False],
+                "default_value": 1
+            },
+
+            "noise_degree": {
+                "description": "degree of freedom of scaled inverse chi square",
+                "type": "float",
+                "lower_bound": 0,
+                "upper_bound": "inf",
+                "inclusive": [False, False],
+                "default_value": 0.2
             }
 
         }
         self.other_parameters = {
             "lower_clip": {
-                "description": "Some description",
+                "description": "randomization probability lower bound",
                 "type": "float",
                 "lower_bound": 0,
                 "upper_bound": 1,
                 "inclusive": [True, True],
-                "default_value": 0.39
+                "default_value": 0.1
             },
             "upper_clip": {
-                "description": "Some description",
+                "description": "randomization probability upper bound",
                 "type": "float",
                 "lower_bound": 0,
                 "upper_bound": 1,
                 "inclusive": [True, True],
                 "default_value": 0.8
+            },
+            # I'm not sure what the unit should  be
+            "fixed_randomization_period": {
+                "description": "length of the fixed randomization period",
+                "type": "float",
+                "lower_bound": 0,
+                "upper_bound": inf,
+                "inclusive": [True, False],
+                "default_value": 3
+            },
+            "fixed_randomization_probability": {
+                "description": "fixed randomization probability",
+                "type": "float",
+                "lower_bound": 0,
+                "upper_bound": 1,
+                "inclusive": [True, True],
+                "default_value": 0.3
             }
-        }
+        },
 
         # TODO: move to base class??
         self.tuning_scheduler = {
