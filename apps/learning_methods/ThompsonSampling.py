@@ -163,7 +163,7 @@ class ThompsonSampling(LearningMethodBase):
                 "description": "length of the fixed randomization period",
                 "type": "float",
                 "lower_bound": 0,
-                "upper_bound": inf,
+                "upper_bound": "inf",
                 "inclusive": [True, False],
                 "default_value": 3
             },
