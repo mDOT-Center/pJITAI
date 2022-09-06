@@ -33,6 +33,9 @@ import pandas as pd
 from apps.api.sql_helper import get_data
 from apps.api.util import time_8601
 
+# These are libraries hsinyu include
+import numpy as np
+
 class ThompsonSampling(LearningMethodBase):
 
     def __init__(self):
@@ -89,7 +92,9 @@ class ThompsonSampling(LearningMethodBase):
             }
         }
         # TODO: change name -> standalone_parameters
+        # For now you can change it to "model parameters"
         self.standalone_parameters = {
+            # I may want to change the names of all of these
             "alpha_0_mu_bias": {
                 "description": "intercept prior mean",
                 "type": "float",
@@ -141,6 +146,7 @@ class ThompsonSampling(LearningMethodBase):
             }
 
         }
+        # For now you can change it to "intervention parameters"
         self.other_parameters = {
             "lower_clip": {
                 "description": "randomization probability lower bound",
@@ -158,7 +164,7 @@ class ThompsonSampling(LearningMethodBase):
                 "inclusive": [True, True],
                 "default_value": 0.8
             },
-            # I'm not sure what the unit should  be
+            # I'm not sure what the unit should be
             "fixed_randomization_period": {
                 "description": "length of the fixed randomization period",
                 "type": "float",
@@ -195,38 +201,65 @@ class ThompsonSampling(LearningMethodBase):
     def update(self) -> dict:
         data = get_data(algo_id=self.uuid)
 
-
         columns = ['timestamp', 'user_id']
         
-
+        # Create column names for the datafram        
         for key, feature in self.features.items():
             feature_name = feature['feature_name']
             a0_mu = f'${feature_name}_alpha0_mu'
             a0_sigma = f'${feature_name}_alpha0_sigma'
 
             columns.append(a0_mu)
+            
             columns.append(a0_sigma)
 
         result = pd.DataFrame([], columns=columns)
 
         for u in data.user_id.unique():
             result_data = [time_8601(), u]
-            for key, feature in self.features.items():
-                index = int(key)-1  #TODO: Why do I have to change the type on the index? and subtract 1
-                feature_name = feature['feature_name']
-                feature_alpha0_mu = feature['feature_parameter_alpha0_mu']
 
-                # TODO: Do something with the data...
-                # 
-                # 
+            theta_mu_ini, theta_Sigma_ini = self.initialize_from_defaults()
 
-                feature_alpha0_mu_data = feature_alpha0_mu
+            alpha0_mu, alpha0_sigma = update_parameters(data[data.user_id==u],theta_mu_ini, theta_Sigma_ini)
 
-                result_data.append(feature_alpha0_mu_data)
-                result_data.append(feature_alpha0_sigma_data)
-
+            
+            result_data.append(alpha0_mu)
+            result_data.append(alpha0_sigma)
             temp = pd.DataFrame([result_data], columns=columns)
             result = pd.concat([result, temp], ignore_index=True)
 
         return result
 
+    # Create all the tuned parameters from the parameters read from the web user interface
+     # This should match the "parameter_initialization" here: https://github.com/StatisticalReinforcementLearningLab/mDOT_toolbox/blob/master/TS_Toolbox_inverse_gamma_v1.py
+    def initialize_from_defaults(self):
+        # How many control variables are there
+        self._state_dim=len(self.features.items())
+        # Let's for now not set it as numpy array
+        alpha0_mu=[]
+        beta_mu=[]
+        alpha0_std_sigma=[]
+        beta_std_sigma=[]
+        for key, feature in self.features.items():
+            index = int(key)-1  #TODO: Why do I have to change the type on the index? and subtract 1
+            alpha0_mu.append(float(feature['feature_parameter_alpha0_mu']))
+            alpha0_std_sigma.append(float(feature['feature_parameter_alpha0_sigma']))
+            if(feature['feature_parameter_beta_selected_features']=='yes'):
+                beta_mu.append(float(feature['feature_parameter_beta_mu']))
+                beta_std_sigma.append(float(feature['feature_parameter_beta_sigma']))
+            
+        alpha0_mu.append(float(self.standalone_parameters['alpha_0_mu_bias']))
+        beta_mu.append(float(self.standalone_parameters['beta_sigma_bias']))
+        alpha0_std_sigma.append(float(self.standalone_parameters['alpha_0_sigma_bias']))
+        beta_std_sigma.append(float(self.standalone_parameters['beta_sigma_bias']))
+        
+        # We can initialize theta_mu and theta_sigma here
+        # Eventually the standardization would need to happen here
+        theta_mu=np.array([alpha0_mu+beta_mu+beta_mu]).T
+        theta_sigma_list=alpha0_std_sigma+beta_std_sigma+beta_std_sigma
+        theta_Sigma=np.diag(np.array(theta_sigma_list)**2)
+
+        return theta_mu, theta_Sigma 
+
+    def update_parameters(self, data, theta_mu, theta_Sigma):
+        return True
