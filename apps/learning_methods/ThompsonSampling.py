@@ -205,12 +205,11 @@ class ThompsonSampling(LearningMethodBase):
         
         
         # Create column names for the datafram        
-        for key, feature in self.features.items():
-            feature_name = feature['feature_name']
-            a0_mu = f'${feature_name}_alpha0_mu'
-            a0_sigma = f'${feature_name}_alpha0_sigma'
-            columns.append(a0_mu)
-            columns.append(a0_sigma)
+
+        columns.append('theta_mu')
+        columns.append('theta_Sigma')
+        columns.append('degree')
+        columns.append('scale')
 
         result = pd.DataFrame([], columns=columns)
 
@@ -222,11 +221,13 @@ class ThompsonSampling(LearningMethodBase):
 
             
 
-            alpha0_mu, alpha0_sigma = self.update_parameters(data[data.user_id==u])
+            theta_mu, theta_Sigma, degree, scale = self.update_parameters(data[data.user_id==u])
 
             
-            result_data.append(alpha0_mu)
-            result_data.append(alpha0_sigma)
+            result_data.append(theta_mu)
+            result_data.append(theta_Sigma)
+            result_data.append(degree)
+            result_data.append(scale)
             temp = pd.DataFrame([result_data], columns=columns)
             result = pd.concat([result, temp], ignore_index=True)
 
@@ -310,8 +311,21 @@ class ThompsonSampling(LearningMethodBase):
         reward_all=np.array([reward_all]).T
 
         # Now we are ready to update theta
+        theta_Sigma=np.linalg.inv(np.linalg.inv(self._theta_Sigma_ini)+np.matmul(Phi_all,np.transpose(Phi_all)))
+        theta_mu=np.matmul(np.linalg.inv(self._theta_Sigma_ini),self._theta_mu_ini)+np.matmul(Phi_all,reward_all)
+        theta_mu=np.matmul(theta_Sigma,theta_mu)
 
-        return True
+        # Now we update the noise
+        # We need more inputs!
+        # This one should be read from the web user interface
+        _L_ini=1
+        _noise_ini=float(self.standalone_parameters['noice'])
+        degree=_L_ini+len(reward_all)
+        tmp0=reward_all-np.matmul(np.transpose(Phi_all),self._theta_mu_ini)
+        tmp=np.linalg.solve(np.matmul(np.matmul(np.transpose(Phi_all),self._theta_Sigma_ini),Phi_all)+np.identity(len(reward_all)), tmp0)
+        scale=1/degree*(len(reward_all)*_noise_ini+np.matmul(np.transpose(tmp0),tmp))
+
+        return theta_mu, theta_Sigma, degree, scale
 
     # The follows are helper functions for Thompson sampling
 
