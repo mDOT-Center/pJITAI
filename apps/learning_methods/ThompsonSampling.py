@@ -203,14 +203,13 @@ class ThompsonSampling(LearningMethodBase):
 
         columns = ['timestamp', 'user_id']
         
+        
         # Create column names for the datafram        
         for key, feature in self.features.items():
             feature_name = feature['feature_name']
             a0_mu = f'${feature_name}_alpha0_mu'
             a0_sigma = f'${feature_name}_alpha0_sigma'
-
             columns.append(a0_mu)
-            
             columns.append(a0_sigma)
 
         result = pd.DataFrame([], columns=columns)
@@ -243,8 +242,14 @@ class ThompsonSampling(LearningMethodBase):
         alpha0_std_sigma=[]
         beta_std_sigma=[]
         action_center_ind=[]
+
+        feature_name_list=[]
+
         for key, feature in self.features.items():
             index = int(key)-1  #TODO: Why do I have to change the type on the index? and subtract 1
+            # There might be a better way to do this. Let me try to be safe to ensure the order of the features is consistent.
+            feature_name = feature['feature_name']
+            feature_name_list.append(feature_name)
             alpha0_mu.append(float(feature['feature_parameter_alpha0_mu']))
             alpha0_std_sigma.append(float(feature['feature_parameter_alpha0_sigma']))
             if(feature['feature_parameter_beta_selected_features']=='yes'):
@@ -272,6 +277,8 @@ class ThompsonSampling(LearningMethodBase):
         self._action_center_ind=np.array([action_center_ind]).T # Which of these states are tailoring variables
         self._theta_mu_ini=theta_mu_ini
         self._theta_Sigma_ini=theta_Sigma_ini
+        # This is for reading through the values of each feature and the validation code
+        self._feature_name_list=feature_name_list
 
         #return theta_mu_ini, theta_Sigma_ini 
 
@@ -279,4 +286,17 @@ class ThompsonSampling(LearningMethodBase):
     def update_parameters(self, data):
         # I want to select all the data with valid validation status code (ask Tim) and concatenate the data into a matrix of ...
         # I'll use a for loop for now 
+        # (This is a lame implementation but is the most careful one)
+        state_list=[]
+        for row in data.itertuples():
+            state=[]
+            for feature_name in self._feature_name_list:
+                # We will need to check the eligibility as well!
+                if(getattr(row,feature_name+'_validation_status_code')=='SUCCESS'):
+                    state.append(getattr(row,feature_name))
+            # If all the states are "valid"
+            if(len(state)==self._state_dim):
+                state_list.append(state)
+            
+
         return True
