@@ -287,7 +287,9 @@ class ThompsonSampling(LearningMethodBase):
         # I want to select all the data with valid validation status code (ask Tim) and concatenate the data into a matrix of ...
         # I'll use a for loop for now 
         # (This is a lame implementation but is the most careful one)
-        state_list=[]
+        #state_list=[]
+        Phi_all=np.array([],dtype=float).reshape(len(self._theta_mu_ini),0)
+        reward_all=[]
         for row in data.itertuples():
             state=[]
             for feature_name in self._feature_name_list:
@@ -296,7 +298,36 @@ class ThompsonSampling(LearningMethodBase):
                     state.append(getattr(row,feature_name))
             # If all the states are "valid"
             if(len(state)==self._state_dim):
-                state_list.append(state)
+                #state_list.append(state)
+                # Check how to grab the decision and how the decision is coded in numerical values
+                action=getattr(row,'decision')
+                # we will need to grab the intervention probability as well
+                pi=0.5
+                Phi=self.reward_model([state],action,pi)
+                Phi_all=np.hstack((Phi_all,Phi))
+                reward_all.append(getattr(row,'proximal_outcome'))
             
+        reward_all=np.array([reward_all]).T
+
+        # Now we are ready to update theta
 
         return True
+
+    # The follows are helper functions for Thompson sampling
+
+    # g(S) in Peng's paper
+    def baseline(self, state):
+        return np.concatenate((state,np.ones((1,1))),axis=0)
+
+    # f(S) in Peng's paper
+    def action_center(self, state):
+        idx=(self._action_center_ind==1)
+        tmp=state[idx.flatten(),:]
+        tmp=np.concatenate((tmp,np.ones((1,1))),axis=0)
+        return tmp
+
+    # THis is the model for generating Phi(State,Action)
+    def reward_model(self, state, action, pi):
+        Phi=np.concatenate((self.baseline(state),pi*self.action_center(np.array(state))),axis=0)
+        Phi=np.concatenate((Phi,(action-pi)*self.action_center(np.array(state))),axis=0)
+        return Phi
