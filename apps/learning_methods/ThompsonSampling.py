@@ -215,12 +215,15 @@ class ThompsonSampling(LearningMethodBase):
 
         result = pd.DataFrame([], columns=columns)
 
+        # I move the initialization out because it only needs to be done once for everyone
+        self.initialize_from_defaults()
+
         for u in data.user_id.unique():
             result_data = [time_8601(), u]
 
-            theta_mu_ini, theta_Sigma_ini = self.initialize_from_defaults()
+            
 
-            alpha0_mu, alpha0_sigma = update_parameters(data[data.user_id==u],theta_mu_ini, theta_Sigma_ini)
+            alpha0_mu, alpha0_sigma = self.update_parameters(data[data.user_id==u])
 
             
             result_data.append(alpha0_mu)
@@ -233,13 +236,13 @@ class ThompsonSampling(LearningMethodBase):
     # Create all the tuned parameters from the parameters read from the web user interface
      # This should match the "parameter_initialization" here: https://github.com/StatisticalReinforcementLearningLab/mDOT_toolbox/blob/master/TS_Toolbox_inverse_gamma_v1.py
     def initialize_from_defaults(self):
-        # How many control variables are there
-        self._state_dim=len(self.features.items())
         # Let's for now not set it as numpy array
+        # We can also initialize the following as an numpy array. Not sure what we prefer. For now, I keep everything consistent.
         alpha0_mu=[]
         beta_mu=[]
         alpha0_std_sigma=[]
         beta_std_sigma=[]
+        action_center_ind=[]
         for key, feature in self.features.items():
             index = int(key)-1  #TODO: Why do I have to change the type on the index? and subtract 1
             alpha0_mu.append(float(feature['feature_parameter_alpha0_mu']))
@@ -247,6 +250,11 @@ class ThompsonSampling(LearningMethodBase):
             if(feature['feature_parameter_beta_selected_features']=='yes'):
                 beta_mu.append(float(feature['feature_parameter_beta_mu']))
                 beta_std_sigma.append(float(feature['feature_parameter_beta_sigma']))
+                action_center_ind.append(1)
+            else:
+                action_center_ind.append(0)
+ 
+        
             
         alpha0_mu.append(float(self.standalone_parameters['alpha_0_mu_bias']))
         beta_mu.append(float(self.standalone_parameters['beta_sigma_bias']))
@@ -255,11 +263,20 @@ class ThompsonSampling(LearningMethodBase):
         
         # We can initialize theta_mu and theta_sigma here
         # Eventually the standardization would need to happen here
-        theta_mu=np.array([alpha0_mu+beta_mu+beta_mu]).T
+        theta_mu_ini=np.array([alpha0_mu+beta_mu+beta_mu]).T
         theta_sigma_list=alpha0_std_sigma+beta_std_sigma+beta_std_sigma
-        theta_Sigma=np.diag(np.array(theta_sigma_list)**2)
+        theta_Sigma_ini=np.diag(np.array(theta_sigma_list)**2)
 
-        return theta_mu, theta_Sigma 
+        # Let's setup all the fixed parameters that are not directly read from the web user interface
+        self._state_dim=len(self.features.items()) # Number of states
+        self._action_center_ind=np.array([action_center_ind]).T # Which of these states are tailoring variables
+        self._theta_mu_ini=theta_mu_ini
+        self._theta_Sigma_ini=theta_Sigma_ini
 
-    def update_parameters(self, data, theta_mu, theta_Sigma):
+        #return theta_mu_ini, theta_Sigma_ini 
+
+    # This function should match with the "update" function here: https://github.com/StatisticalReinforcementLearningLab/mDOT_toolbox/blob/master/TS_Toolbox_inverse_gamma_v1.py
+    def update_parameters(self, data):
+        # I want to select all the data with valid validation status code (ask Tim) and concatenate the data into a matrix of ...
+        # I'll use a for loop for now 
         return True
