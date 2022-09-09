@@ -34,8 +34,11 @@ from apps import db
 import uuid
 import pandas as pd
 
-def time_8601(time=datetime.now()) -> str:
+
+def time_8601() -> str:
+    time=datetime.now()
     return time.astimezone().isoformat()
+
 
 @dataclass
 class AlgorithmTunedParams(db.Model):
@@ -64,20 +67,20 @@ class Decision(db.Model):
     __tablename__ = 'decision'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))
-    algo_uuid = db.Column('algo_uuid', db.String(36))  # TODO: Are are these the correct timestamps needed?
-    
-    decision_id = db.Column('decision_id', db.String(36), unique=True, default=uuid.uuid4) # UUID
-    
+    algo_uuid = db.Column('algo_uuid', db.String(36))
+
+    decision_id = db.Column('decision_id', db.String(36), unique=True, default=uuid.uuid4, nullable=False)  # UUID
+
     timestamp = db.Column('timestamp',
-                                 db.String(100),
-                                 default=time_8601)
+                          db.String(100),
+                          default=time_8601)
     decision = db.Column('decision', db.String(100))
-    
+
     decision_options = db.Column('decision_options', db.JSON)
-    
+
     status_code = db.Column('status_code', db.String(250))
     status_message = db.Column('status_message', db.String(250))
-    
+
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
             setattr(self, property, value)
@@ -96,22 +99,24 @@ class Decision(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-    
+
+
 @dataclass
 class Data(db.Model):
 
     __tablename__ = 'data'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))
-    algo_uuid = db.Column('algo_uuid', db.String(36))  # TODO: Are are these the correct timestamps needed?
-    upload_timestamp = db.Column('upload_timestamp',
-                                 db.String(100),
-                                 default=time_8601)
-    decision_timestamp = db.Column('decision_timestamp', db.String(64))
+    algo_uuid = db.Column('algo_uuid', db.String(36))
+    timestamp = db.Column('timestamp',
+                          db.String(100),
+                          default=time_8601)
+
+    proximal_outcome = db.Column('proximal_outcome', db.Float)
     proximal_outcome_timestamp = db.Column('proximal_outcome_timestamp',
                                            db.String(64))
-    decision = db.Column('decision', db.Integer)
-    proximal_outcome = db.Column('proximal_outcome', db.Float)
+
+    decision_id = db.Column('decision_id', db.String(36), unique=True, nullable=False)  # UUID
 
     values = db.Column('values', db.JSON)
 

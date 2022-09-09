@@ -33,7 +33,7 @@ from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 import random
 import pandas as pd
-from apps.api.sql_helper import get_data, get_decision_data, save_decision
+from apps.api.sql_helper import get_data, get_decision_data, get_merged_data, save_decision
 
 
 class RandomSampling(LearningMethodBase):
@@ -128,7 +128,7 @@ class RandomSampling(LearningMethodBase):
         return decision.as_dataframe()
 
     def update(self) -> dict:
-        data = get_data(algo_id=self.uuid)
+        data = get_merged_data(algo_id=self.uuid)
         decision_data = get_decision_data(algo_id=self.uuid)
         
         columns = ['timestamp', 'user_id', 'alpha_mu', 'alpha_sigma']
