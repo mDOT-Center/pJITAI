@@ -32,7 +32,35 @@ import pandas as pd
 from sqlalchemy.exc import SQLAlchemyError
 
 from apps import db
-from apps.api.models import Data, AlgorithmTunedParams
+from apps.api.models import Data, AlgorithmTunedParams, Decision
+
+def save_decision(decision: Decision):
+    try:
+        db.session.add(decision)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        resp = str(e.__dict__['orig'])
+        db.session.rollback()
+        print(traceback.format_exc())
+        return {"ERROR": resp}
+    except:
+        print(traceback.format_exc())
+
+def get_decision_data(algo_id: str, user_id: str = None):    
+    '''
+    Get data from data table, created pandas DF (parse all the dict and convert them into columns)
+    :param algo_id:
+    :param user_id:
+    :return: pandas DF
+    '''
+    if user_id:
+        data = Decision.query.filter(Decision.algo_uuid == algo_id).filter(Decision.user_id == user_id).order_by(Decision.timestamp.desc())
+    else:
+        data = Decision.query.filter(Decision.algo_uuid == algo_id).order_by(Decision.timestamp.desc())
+    if data:
+        df_from_records = pd.read_sql(data.statement, db.session().bind)
+        return df_from_records
+    return pd.DataFrame()
 
 
 def get_data(algo_id: str, user_id: str = None):

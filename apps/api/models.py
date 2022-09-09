@@ -31,7 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from dataclasses import dataclass
 from datetime import datetime
 from apps import db
-
+import uuid
+import pandas as pd
 
 def time_8601(time=datetime.now()) -> str:
     return time.astimezone().isoformat()
@@ -43,7 +44,7 @@ class AlgorithmTunedParams(db.Model):
     user_id = db.Column('user_id', db.String(36))
     timestamp = db.Column('timestamp',
                           db.String(100),
-                          default=time_8601())
+                          default=time_8601)
     configuration = db.Column('configuration', db.JSON)
 
     def __init__(self, **kwargs):
@@ -58,6 +59,45 @@ class AlgorithmTunedParams(db.Model):
 
 
 @dataclass
+class Decision(db.Model):
+
+    __tablename__ = 'decision'
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    user_id = db.Column('user_id', db.String(36))
+    algo_uuid = db.Column('algo_uuid', db.String(36))  # TODO: Are are these the correct timestamps needed?
+    
+    decision_id = db.Column('decision_id', db.String(36), unique=True, default=uuid.uuid4) # UUID
+    
+    timestamp = db.Column('timestamp',
+                                 db.String(100),
+                                 default=time_8601)
+    decision = db.Column('decision', db.String(100))
+    
+    decision_options = db.Column('decision_options', db.JSON)
+    
+    status_code = db.Column('status_code', db.String(250))
+    status_message = db.Column('status_message', db.String(250))
+    
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.name)
+
+    def as_dataframe(self):
+        temp = self.as_dict()
+        temp.pop('decision_options')
+        result = pd.DataFrame(temp, index=[0])
+        result['decision_options'] = None
+        result['decision_options'].astype(object)
+        result.at[0, 'decision_options'] = self.as_dict()['decision_options']
+        return result
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    
+@dataclass
 class Data(db.Model):
 
     __tablename__ = 'data'
@@ -66,7 +106,7 @@ class Data(db.Model):
     algo_uuid = db.Column('algo_uuid', db.String(36))  # TODO: Are are these the correct timestamps needed?
     upload_timestamp = db.Column('upload_timestamp',
                                  db.String(100),
-                                 default=time_8601())
+                                 default=time_8601)
     decision_timestamp = db.Column('decision_timestamp', db.String(64))
     proximal_outcome_timestamp = db.Column('proximal_outcome_timestamp',
                                            db.String(64))
@@ -94,7 +134,7 @@ class Log(db.Model):
     details = db.Column('details', db.JSON)
     timestamp = db.Column('timestamp',
                           db.String(100),
-                          default=time_8601())
+                          default=time_8601)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -115,7 +155,7 @@ class Cron(db.Model):
     details = db.Column('details', db.JSON)
     timestamp = db.Column('timestamp',
                           db.String(100),
-                          default=time_8601())
+                          default=time_8601)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
