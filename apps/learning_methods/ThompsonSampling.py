@@ -233,13 +233,11 @@ class ThompsonSampling(LearningMethodBase):
             scale = self._scale_ini
 
         # Setup the state
-        # We only have one row, so this for loop doesn't make sense. We'll deal with this later.
-        for row in input_data.itertuples():
-            state=[]
-            for feature_name in self._feature_name_list:
-                # We will need to check the eligibility as well!
-                if(getattr(row,feature_name+'_validation_status_code')=='SUCCESS'):
-                    state.append(getattr(row,feature_name))
+        state=[]
+        for feature_name in self._feature_name_list:
+            # We will need to check the eligibility as well!
+            if(input_data.iloc[0][feature_name+'_validation_status_code']=='SUCCESS'):
+                state.append(input_data.iloc[0][feature_name])
         state=np.array([state]).T
 
         # Check whether it's eligible 
@@ -357,29 +355,31 @@ class ThompsonSampling(LearningMethodBase):
         beta_mu.append(float(self.standalone_parameters['beta_sigma_bias']))
         alpha0_std_sigma.append(float(self.standalone_parameters['alpha_0_sigma_bias']))
         beta_std_sigma.append(float(self.standalone_parameters['beta_sigma_bias']))
+
+
+        # Let's setup all the global parameters
+        # This degree_ini is missing. This one should be read from the web user interface. We need more inputs!
+        self._degree_ini=1
+        self._scale_ini=float(self.standalone_parameters['noice'])
+        self._lower_clip=float(self.other_parameters['lower_clip'])
+        self._upper_clip=float(self.other_parameters['upper_clip'])
+        self._state_dim=len(self.features.items()) # Number of states
+        self._action_center_ind=np.array([action_center_ind]).T # Which of these states are tailoring variables
+        self._alpha_len=len(alpha0_mu)+len(beta_mu)
+        # This is for reading through the values of each feature and the validation code
+        self._feature_name_list=feature_name_list
+
         
         # We can initialize theta_mu and theta_sigma here
         # Eventually the standardization would need to happen here
         # Right now we haven't changed theta_Sigma with respect to the scaling parameter of the noise
         theta_mu_ini=np.array([alpha0_mu+beta_mu+beta_mu]).T
         theta_sigma_list=alpha0_std_sigma+beta_std_sigma+beta_std_sigma
-        theta_Sigma_ini=np.diag(np.array(theta_sigma_list)**2)
-
-        # Let's setup all the global parameters
-        self._state_dim=len(self.features.items()) # Number of states
-        self._action_center_ind=np.array([action_center_ind]).T # Which of these states are tailoring variables
-        self._alpha_len=len(alpha0_mu)+len(beta_mu)
+        theta_Sigma_ini=np.diag(np.array(theta_sigma_list)**2/self._scale_ini)
+        
         self._theta_mu_ini=theta_mu_ini
         self._theta_Sigma_ini=theta_Sigma_ini
-        # This degree_ini is missing. This one should be read from the web user interface. We need more inputs!
-        self._degree_ini=1
-        self._scale_ini=float(self.standalone_parameters['noice'])
-        self._lower_clip=float(self.other_parameters['lower_clip'])
-        self._upper_clip=float(self.other_parameters['upper_clip'])
-        # This is for reading through the values of each feature and the validation code
-        self._feature_name_list=feature_name_list
 
-        #return theta_mu_ini, theta_Sigma_ini 
 
     # This function should match with the "update" function here: https://github.com/StatisticalReinforcementLearningLab/mDOT_toolbox/blob/master/TS_Toolbox_inverse_gamma_v1.py
     def update_parameters(self, data):
