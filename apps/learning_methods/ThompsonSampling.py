@@ -31,10 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from apps.learning_methods.LearningMethodBase import LearningMethodBase
 import pandas as pd
 from apps.api.sql_helper import get_data
+from apps.api.codes import StatusCode
 from apps.api.util import time_8601
+import random
 
 # These are libraries hsinyu include
 import numpy as np
+from scipy.stats import t
 
 class ThompsonSampling(LearningMethodBase):
 
@@ -195,8 +198,99 @@ class ThompsonSampling(LearningMethodBase):
         }
 
     def decision(self,  user_id: str, tuned_params=None, input_data=None) -> pd.DataFrame:
-        # TODO: Load algorithm parameters from the datastore and configure by user @Ali
-        return {"RUN": "success"}
+
+        # These need to be read from the web user interface
+        # I added "value" to represent what each option means in the linear regression. It's super important.
+        decision_options = [
+            {
+                'name': 'Do Nothing',
+                'value': 0,
+                'prob':0.7,
+            },
+            {
+                'name': 'Send an Intervention',
+                'value': 1,
+                'prob':0.3,
+            }
+        ]
+
+        # Initialize all the global parameters appropriately
+        self.initialize_from_defaults()
+
+        # Accessing tuned parameters
+        # Parameters are access by column name and first row
+
+        try:
+            theta_mu = tuned_params.iloc[0]['theta_mu']
+            theta_Sigma = tuned_params.iloc[0]['theta_Sigma']
+            degree = tuned_params.iloc[0]['degree']
+            scale = tuned_params.iloc[0]['scale']
+            
+        except Exception as e: # Something is wrong or data is missing, assuming defaults
+            theta_mu = self._theta_mu_ini
+            theta_Sigma = self._theta_Sigma_ini
+            degree = self._degree_ini
+            scale = self._scale_ini
+
+        # Setup the state
+        # We only have one row, so this for loop doesn't make sense. We'll deal with this later.
+        for row in input_data.itertuples():
+            state=[]
+            for feature_name in self._feature_name_list:
+                # We will need to check the eligibility as well!
+                if(getattr(row,feature_name+'_validation_status_code')=='SUCCESS'):
+                    state.append(getattr(row,feature_name))
+        state=np.array([state]).T
+
+        # Check whether it's eligible 
+        if(False):
+            pi=0
+
+        # Check whether all the covariates are valid => If not, what should we do?
+        elif(len(state)!=self._state_dim):
+            pi=0
+        
+        # Check whether it's fixed randomization period
+        elif(False):
+            # There is a missing parameter from the web interface as well
+            print("To-Do")
+
+        # Personalization (Thompson Sampling)
+        else:
+            beta_mu=theta_mu[self._alpha_len:]
+            beta_Sigma=theta_Sigma[self._alpha_len:,:][:,self._alpha_len:]
+
+            # mu_t and Sigma_t are associated with the f(S)*beta
+            mu_t=np.matmul(np.transpose(self.action_center(state)),beta_mu)
+            Sigma_t=np.matmul(np.transpose(self.action_center(state)),beta_Sigma)
+
+            # Notice that the posterior variance of f(S)*beta is scaled by the scale of the inverse chi-square distribution
+            Sigma_t= scale*np.matmul(Sigma_t,self.action_center(state))
+
+            # f(S)*beta is a multivariate t distribution with mean mu_t, variance Sigma_t, and degree of freedom L
+            pi=1-t.cdf(0, degree, loc=mu_t, scale=Sigma_t)
+            pi=max(self._lower_clip,pi)
+            pi=min(self._upper_clip,pi)
+
+        random_number=random.uniform(0,1)
+        if(pi>random_number):
+            my_decision = decision_options[1]['name']
+        else:
+            my_decision = decision_options[0]['name']
+
+        # We need to record pi as well
+
+        result = {
+            'timestamp': time_8601(),
+            'user_id': user_id,
+            'selection': my_decision,
+            'status_code': StatusCode.SUCCESS.value,
+            'status_message': "Decision made successfully"
+        }
+
+        result = pd.DataFrame(result, index=[0])
+
+        return result
 
     def update(self) -> dict:
         data = get_data(algo_id=self.uuid)
@@ -219,10 +313,7 @@ class ThompsonSampling(LearningMethodBase):
         for u in data.user_id.unique():
             result_data = [time_8601(), u]
 
-            
-
             theta_mu, theta_Sigma, degree, scale = self.update_parameters(data[data.user_id==u])
-
             
             result_data.append(theta_mu)
             result_data.append(theta_Sigma)
@@ -269,15 +360,22 @@ class ThompsonSampling(LearningMethodBase):
         
         # We can initialize theta_mu and theta_sigma here
         # Eventually the standardization would need to happen here
+        # Right now we haven't changed theta_Sigma with respect to the scaling parameter of the noise
         theta_mu_ini=np.array([alpha0_mu+beta_mu+beta_mu]).T
         theta_sigma_list=alpha0_std_sigma+beta_std_sigma+beta_std_sigma
         theta_Sigma_ini=np.diag(np.array(theta_sigma_list)**2)
 
-        # Let's setup all the fixed parameters that are not directly read from the web user interface
+        # Let's setup all the global parameters
         self._state_dim=len(self.features.items()) # Number of states
         self._action_center_ind=np.array([action_center_ind]).T # Which of these states are tailoring variables
+        self._alpha_len=len(alpha0_mu)+len(beta_mu)
         self._theta_mu_ini=theta_mu_ini
         self._theta_Sigma_ini=theta_Sigma_ini
+        # This degree_ini is missing. This one should be read from the web user interface. We need more inputs!
+        self._degree_ini=1
+        self._scale_ini=float(self.standalone_parameters['noice'])
+        self._lower_clip=float(self.other_parameters['lower_clip'])
+        self._upper_clip=float(self.other_parameters['upper_clip'])
         # This is for reading through the values of each feature and the validation code
         self._feature_name_list=feature_name_list
 
@@ -299,31 +397,28 @@ class ThompsonSampling(LearningMethodBase):
                     state.append(getattr(row,feature_name))
             # If all the states are "valid"
             if(len(state)==self._state_dim):
-                #state_list.append(state)
+                state=np.array([state]).T
                 # Check how to grab the decision and how the decision is coded in numerical values
                 action=getattr(row,'decision')
                 # we will need to grab the intervention probability as well
                 pi=0.5
-                Phi=self.reward_model([state],action,pi)
+                Phi=self.reward_model(state,action,pi)
                 Phi_all=np.hstack((Phi_all,Phi))
                 reward_all.append(getattr(row,'proximal_outcome'))
             
         reward_all=np.array([reward_all]).T
 
         # Now we are ready to update theta
+        # Right now I did not handle ill-conditioned matrix
         theta_Sigma=np.linalg.inv(np.linalg.inv(self._theta_Sigma_ini)+np.matmul(Phi_all,np.transpose(Phi_all)))
         theta_mu=np.matmul(np.linalg.inv(self._theta_Sigma_ini),self._theta_mu_ini)+np.matmul(Phi_all,reward_all)
         theta_mu=np.matmul(theta_Sigma,theta_mu)
 
         # Now we update the noise
-        # We need more inputs!
-        # This one should be read from the web user interface
-        _L_ini=1
-        _noise_ini=float(self.standalone_parameters['noice'])
-        degree=_L_ini+len(reward_all)
+        degree=self._degree_ini+len(reward_all)
         tmp0=reward_all-np.matmul(np.transpose(Phi_all),self._theta_mu_ini)
         tmp=np.linalg.solve(np.matmul(np.matmul(np.transpose(Phi_all),self._theta_Sigma_ini),Phi_all)+np.identity(len(reward_all)), tmp0)
-        scale=1/degree*(len(reward_all)*_noise_ini+np.matmul(np.transpose(tmp0),tmp))
+        scale=1/degree*(len(reward_all)*self._scale_ini+np.matmul(np.transpose(tmp0),tmp))
 
         return theta_mu, theta_Sigma, degree, scale
 
@@ -342,6 +437,6 @@ class ThompsonSampling(LearningMethodBase):
 
     # THis is the model for generating Phi(State,Action)
     def reward_model(self, state, action, pi):
-        Phi=np.concatenate((self.baseline(state),pi*self.action_center(np.array(state))),axis=0)
-        Phi=np.concatenate((Phi,(action-pi)*self.action_center(np.array(state))),axis=0)
+        Phi=np.concatenate((self.baseline(state),pi*self.action_center(state)),axis=0)
+        Phi=np.concatenate((Phi,(action-pi)*self.action_center(state)),axis=0)
         return Phi
