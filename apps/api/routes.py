@@ -128,10 +128,9 @@ def decision(uuid: str) -> dict:
             tuned_params_df = pd.json_normalize(tuned_params)
 
         decision = obj.decision(user_id, timestamp, tuned_params_df, input_data)
+        save_decision(decision) # Save the decision to the database
         decision_output = decision.as_dataframe()
-        
         if len(decision_output) > 0:
-            save_decision(decision) # Save the decision to the database
             
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.
             result = decision_output.iloc[0].to_dict()

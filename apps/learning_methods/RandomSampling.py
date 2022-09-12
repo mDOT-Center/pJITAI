@@ -122,7 +122,7 @@ class RandomSampling(LearningMethodBase):
 
     def update(self) -> dict:
         data = get_merged_data(algo_id=self.uuid)
-        decision_data = get_decision_data(algo_id=self.uuid)
+        
         
         columns = ['timestamp', 'user_id', 'alpha_mu', 'alpha_sigma']
         result = pd.DataFrame([], columns=columns)

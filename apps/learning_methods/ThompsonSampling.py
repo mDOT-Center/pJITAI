@@ -28,9 +28,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
+from apps.api.models import Decision
 from apps.learning_methods.LearningMethodBase import LearningMethodBase
 import pandas as pd
-from apps.api.sql_helper import get_data
+from apps.api.sql_helper import get_data, get_merged_data
 from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 import random
@@ -271,26 +272,23 @@ class ThompsonSampling(LearningMethodBase):
 
         random_number=random.uniform(0,1)
         if(pi>random_number):
-            my_decision = decision_options[1]['name']
+            my_decision = 1 # decision_options[1]['name']
         else:
-            my_decision = decision_options[0]['name']
+            my_decision = 0 # decision_options[0]['name']
 
         # We need to record pi as well
 
-        result = {
-            'timestamp': time_8601(),
-            'user_id': user_id,
-            'selection': my_decision,
-            'status_code': StatusCode.SUCCESS.value,
-            'status_message': "Decision made successfully"
-        }
+        decision = Decision(user_id=user_id,
+                            algo_uuid=self.uuid,
+                            decision=my_decision,
+                            decision_options=decision_options,
+                            status_code = StatusCode.SUCCESS.value,
+                            status_message = "Decision made successfully")
 
-        result = pd.DataFrame(result, index=[0])
-
-        return result
+        return decision
 
     def update(self) -> dict:
-        data = get_data(algo_id=self.uuid)
+        data = get_merged_data(algo_id=self.uuid)
 
         columns = ['timestamp', 'user_id']
         
