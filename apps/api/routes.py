@@ -120,11 +120,14 @@ def decision(uuid: str) -> dict:
 
         tuned_params = get_tuned_params(user_id=user_id)
         tuned_params_df = None
+        
+        timestamp = request.json['timestamp']
+        
         if len(tuned_params) > 0:
             tuned_params = tuned_params.iloc[0]['configuration']
             tuned_params_df = pd.json_normalize(tuned_params)
 
-        decision_output = obj.decision(user_id, tuned_params_df, input_data)
+        decision_output = obj.decision(user_id, timestamp, tuned_params_df, input_data)
 
         if len(decision_output) > 0:
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.

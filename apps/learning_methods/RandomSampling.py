@@ -63,7 +63,7 @@ class RandomSampling(LearningMethodBase):
             "default_value": 86400  # TODO: Daily
         }
 
-    def decision(self,  user_id: str, tuned_params=None, input_data=None) -> pd.DataFrame:
+    def decision(self,  user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
         # Accessing tuned parameters
         # Parameters are access by column name and first row
@@ -120,12 +120,14 @@ class RandomSampling(LearningMethodBase):
                             status_message="Decision made successfully"
                             )
 
-        save_decision(decision)
+        # save_decision(decision)
 
-        # Example Result:
-        #                              timestamp user_id  selection status_code              status_message
-        #    0  2022-08-04T12:44:34.194011-05:00  user_1  Headspace     SUCCESS  Decision made successfully
-        return decision.as_dataframe()
+        # # Example Result:
+        # #                              timestamp user_id  selection status_code              status_message
+        # #    0  2022-08-04T12:44:34.194011-05:00  user_1  Headspace     SUCCESS  Decision made successfully
+        # return decision.as_dataframe()
+    
+        return decision
 
     def update(self) -> dict:
         data = get_merged_data(algo_id=self.uuid)
