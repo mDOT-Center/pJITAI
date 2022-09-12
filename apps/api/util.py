@@ -65,6 +65,9 @@ def pJITAI_token_required(f):
 def time_8601(time=datetime.now()) -> str:
     return time.astimezone().isoformat()
 
+def time_8601_to_datetime(input_time):
+    return datetime.fromisoformat(input_time))
+
 
 def get_class_object(class_path: str):
     from importlib import import_module
