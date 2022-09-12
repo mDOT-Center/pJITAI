@@ -110,23 +110,14 @@ class RandomSampling(LearningMethodBase):
             if random_number > cum_sum_list[i] and random_number <= cum_sum_list[i+1]:
                 selection = i
 
-        my_decision = decision_options[selection]['name']
-
         decision = Decision(user_id=user_id,
                             algo_uuid=self.uuid,
-                            decision=my_decision,
+                            decision=selection,
                             decision_options=decision_options,
                             status_code=StatusCode.SUCCESS.value,
                             status_message="Decision made successfully"
                             )
-
-        # save_decision(decision)
-
-        # # Example Result:
-        # #                              timestamp user_id  selection status_code              status_message
-        # #    0  2022-08-04T12:44:34.194011-05:00  user_1  Headspace     SUCCESS  Decision made successfully
-        # return decision.as_dataframe()
-    
+        
         return decision
 
     def update(self) -> dict:

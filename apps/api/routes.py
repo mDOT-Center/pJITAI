@@ -35,7 +35,7 @@ from apps import db
 from apps.algorithms.models import Algorithms
 from apps.api import blueprint
 from apps.api.codes import StatusCode
-from apps.api.sql_helper import get_tuned_params, json_to_series, store_tuned_params
+from apps.api.sql_helper import get_tuned_params, json_to_series, save_decision, store_tuned_params
 from apps.learning_methods.learning_method_service import get_all_available_methods
 from flask import jsonify, request
 from flask_login import login_required
@@ -127,9 +127,12 @@ def decision(uuid: str) -> dict:
             tuned_params = tuned_params.iloc[0]['configuration']
             tuned_params_df = pd.json_normalize(tuned_params)
 
-        decision_output = obj.decision(user_id, timestamp, tuned_params_df, input_data)
-
+        decision = obj.decision(user_id, timestamp, tuned_params_df, input_data)
+        decision_output = decision.as_dataframe()
+        
         if len(decision_output) > 0:
+            save_decision(decision) # Save the decision to the database
+            
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.
             result = decision_output.iloc[0].to_dict()
             _add_log(algo_uuid=uuid, log_detail={'input_data': input_data.iloc[0].to_dict(), 'response': result, 'http_status_code': 200})
