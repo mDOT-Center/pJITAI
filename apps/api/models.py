@@ -74,7 +74,7 @@ class Decision(db.Model):
     timestamp = db.Column('timestamp',
                           db.String(100),
                           default=time_8601)
-    decision = db.Column('decision', db.String(100))
+    decision = db.Column('decision', db.Integer)
 
     decision_options = db.Column('decision_options', db.JSON)
 
