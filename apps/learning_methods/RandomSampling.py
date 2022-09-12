@@ -27,13 +27,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
+from apps.api.models import Decision
 from apps.learning_methods.LearningMethodBase import LearningMethodBase
 from apps.api.codes import StatusCode
 from apps.api.util import time_8601
 import random
 import pandas as pd
-from apps.api.sql_helper import get_data
-
+from apps.api.sql_helper import get_data, get_decision_data, get_merged_data, save_decision
 
 
 class RandomSampling(LearningMethodBase):
@@ -63,14 +63,14 @@ class RandomSampling(LearningMethodBase):
             "default_value": 86400  # TODO: Daily
         }
 
-    def decision(self,  user_id: str, tuned_params=None, input_data=None) -> pd.DataFrame:
+    def decision(self,  user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
         # Accessing tuned parameters
         # Parameters are access by column name and first row
         try:
             alpha_mu = tuned_params.iloc[0]['alpha_mu']
             alpha_sigma = tuned_params.iloc[0]['alpha_sigma']
-        except Exception as e: # Something is wrong or data is missing, assuming defaults
+        except Exception as e:  # Something is wrong or data is missing, assuming defaults
             alpha_mu = 100.0
             alpha_sigma = 150.0
 
@@ -110,40 +110,32 @@ class RandomSampling(LearningMethodBase):
             if random_number > cum_sum_list[i] and random_number <= cum_sum_list[i+1]:
                 selection = i
 
-        my_decision = decision_options[selection]['name']
-
-        result = {
-            'timestamp': time_8601(),
-            'user_id': user_id,
-            'selection': my_decision,
-            'status_code': StatusCode.SUCCESS.value,
-            'status_message': "Decision made successfully"
-        }
-
-        result = pd.DataFrame(result, index=[0])
-
-        # Example Result:
-        #                              timestamp user_id  selection status_code              status_message
-        #    0  2022-08-04T12:44:34.194011-05:00  user_1  Headspace     SUCCESS  Decision made successfully
-        return result
+        decision = Decision(user_id=user_id,
+                            algo_uuid=self.uuid,
+                            decision=selection,
+                            decision_options=decision_options,
+                            status_code=StatusCode.SUCCESS.value,
+                            status_message="Decision made successfully"
+                            )
+        
+        return decision
 
     def update(self) -> dict:
-        data = get_data(algo_id=self.uuid)
-
+        data = get_merged_data(algo_id=self.uuid)
+        decision_data = get_decision_data(algo_id=self.uuid)
+        
         columns = ['timestamp', 'user_id', 'alpha_mu', 'alpha_sigma']
         result = pd.DataFrame([], columns=columns)
-
-
 
         for u in data.user_id.unique():
             result_mean = [None for i in self.features]
             result_stdev = [None for i in self.features]
             for key, feature in self.features.items():
                 feature_name = feature['feature_name']
-                index = int(key)-1  #TODO: Why do I have to change the type on the index? and subtract 1
+                index = int(key)-1  # TODO: Why do I have to change the type on the index? and subtract 1
                 temp_mean = data[data.user_id == u][feature_name].mean()
                 temp_stdev = data[data.user_id == u][feature_name].std()
-                
+
                 result_mean[index] = temp_mean
                 result_stdev[index] = temp_stdev
 

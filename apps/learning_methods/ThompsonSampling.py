@@ -184,8 +184,7 @@ class ThompsonSampling(LearningMethodBase):
                 "inclusive": [True, True],
                 "default_value": 0.3
             }
-        },
-
+        }
         # TODO: move to base class??
         self.tuning_scheduler = {
             "name": "update_interval",

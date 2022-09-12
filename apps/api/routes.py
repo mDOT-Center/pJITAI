@@ -35,34 +35,38 @@ from apps import db
 from apps.algorithms.models import Algorithms
 from apps.api import blueprint
 from apps.api.codes import StatusCode
-from apps.api.sql_helper import get_tuned_params, json_to_series, store_tuned_params
+from apps.api.sql_helper import get_tuned_params, json_to_series, save_decision, store_tuned_params
 from apps.learning_methods.learning_method_service import get_all_available_methods
 from flask import jsonify, request
 from flask_login import login_required
 from sqlalchemy.exc import SQLAlchemyError
 
-from .models import Data, Log
+from .models import Data, Decision, Log
 from .util import get_class_object, pJITAI_token_required, time_8601, _validate_algo_data, _add_log
 
 
 def _save_each_data_row(user_id: str,
-                        decision_timestamp: str,
-                        decision,
+                        decision_id: str,
                         proximal_outcome_timestamp: str,
                         proximal_outcome,
                         data: list,
                         algo_uuid=None) -> dict:
     resp = "Data has successfully added"
     try:
-        data_obj = Data(algo_uuid=algo_uuid,
-                        values=data,
-                        user_id=user_id,
-                        decision_timestamp=decision_timestamp,
-                        decision=decision,
-                        proximal_outcome_timestamp=proximal_outcome_timestamp,
-                        proximal_outcome=proximal_outcome)
-        db.session.add(data_obj)
-        db.session.commit()
+        
+        decision_obj = Decision.query.filter(Decision.decision_id == decision_id).first()
+        
+        if decision_obj:
+            data_obj = Data(algo_uuid=algo_uuid,
+                            values=data,
+                            user_id=user_id,
+                            decision_id=decision_id,
+                            proximal_outcome_timestamp=proximal_outcome_timestamp,
+                            proximal_outcome=proximal_outcome)
+            db.session.add(data_obj)
+            db.session.commit()
+        else:
+           raise Exception(f'Error saving data: {resp}. {decision_id} was not found.') 
 
     except SQLAlchemyError as e:
         resp = str(e.__dict__['orig'])
@@ -116,13 +120,19 @@ def decision(uuid: str) -> dict:
 
         tuned_params = get_tuned_params(user_id=user_id)
         tuned_params_df = None
+        
+        timestamp = request.json['timestamp']
+        
         if len(tuned_params) > 0:
             tuned_params = tuned_params.iloc[0]['configuration']
             tuned_params_df = pd.json_normalize(tuned_params)
 
-        decision_output = obj.decision(user_id, tuned_params_df, input_data)
-
+        decision = obj.decision(user_id, timestamp, tuned_params_df, input_data)
+        decision_output = decision.as_dataframe()
+        
         if len(decision_output) > 0:
+            save_decision(decision) # Save the decision to the database
+            
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.
             result = decision_output.iloc[0].to_dict()
             _add_log(algo_uuid=uuid, log_detail={'input_data': input_data.iloc[0].to_dict(), 'response': result, 'http_status_code': 200})
@@ -152,15 +162,14 @@ def upload(uuid: str) -> dict:
     try:
         validated_input_data = _validate_algo_data(uuid, input_data['values'])
         _save_each_data_row(input_data['user_id'],
-                            decision_timestamp=input_data['decision_timestamp'],
-                            decision=input_data['decision'],
+                            decision_id=input_data['decision_id'],
                             proximal_outcome_timestamp=input_data['proximal_outcome_timestamp'],
                             proximal_outcome=input_data['proximal_outcome'],
                             data=validated_input_data,
                             algo_uuid=uuid)
         result = {
             "status_code": StatusCode.SUCCESS.value,
-            "status_message": f"Data uploaded for model {uuid}"
+            "status_message": f"Data uploaded fo model {uuid}"
         }
         _add_log(algo_uuid=uuid, log_detail={'input_data': validated_input_data, 'response': result, 'http_status_code': 200})
         return result, 200
