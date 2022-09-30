@@ -31,7 +31,7 @@ from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-
+from flask import render_template, redirect, request, url_for
 
 @blueprint.route('/index')
 @login_required
@@ -60,6 +60,22 @@ def route_template(template):
 
     except:
         return render_template('home/page-500.html'), 500
+
+@blueprint.route('/projects')
+def projects():
+    return render_template("projects/projects.html")
+
+@blueprint.route('/projects/settings/<setting_type>', methods=['GET', 'POST'])
+def project_general_settings(setting_type):
+    if setting_type=="general":
+        return render_template("projects/general_settings.html")
+    elif setting_type=="personalized_method":
+        return render_template("projects/personalized_method.html")
+    elif setting_type=="scenario":
+        return render_template("projects/scenario.html")
+    elif setting_type=="summary":
+        return render_template("projects/summary.html")
+
 
 
 # Helper - Extract current page name from request

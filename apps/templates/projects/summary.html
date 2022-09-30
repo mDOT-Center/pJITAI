@@ -1,0 +1,97 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<script>
+
+</script>
+<style>
+
+</style>
+
+
+<div class="container-fluid">
+
+    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> General Settings / Summary <i
+            class="ni ni-question" aria-hidden="true"></i></h1>
+    <hr>
+    <div class="container col-sm-12">
+        <div class="row">
+
+                <div class="card col-sm-12">
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="personalization_method">How will you configure your personalized JITAI</label>
+                                    <select id="personalization_method" class="form-select" aria-label="Default select example">
+                                        <option selected>Scenario 1: I have published results from MRT</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="accordion" id="accordionExample">
+                                        <div class="card">
+                                            <div class="card-header" id="headingThree">
+                                                <h2 class="mb-0">
+                                                    <button class="btn btn-link btn-block text-left collapsed"
+                                                            type="button" data-toggle="collapse"
+                                                            data-target="#collapseThree" aria-expanded="false"
+                                                            aria-controls="collapseThree">
+                                                        Explanation
+                                                    </button>
+                                                </h2>
+                                            </div>
+                                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                                                 data-parent="#accordionExample">
+                                                <div class="card-body">
+                                                    And lastly, the placeholder content for the third and final
+                                                    accordion panel. This panel is hidden by default.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group float-right">
+                                    <button type="button" class="btn btn-primary">Back</button>
+                                    <button type="button" class="btn btn-primary">Next</button>
+                                </div>
+                            </div>
+
+                            <div class="col">
+
+                            </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+{% include "includes/footer.html" %}
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+
+{% endblock javascripts %}
