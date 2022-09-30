@@ -9,41 +9,71 @@
 
 <script>
     $(document).ready(function(){
-    $('#instructionModel').css({
+    $('#myCarousel').css({
             'display': 'flex',
             'justify-content': 'center',
             'align-items': 'center'
-        });
+        }).carousel({interval: false,wrap: false});
         $("#instructionModel").modal('show');
-        $('#instructionCarouselIndicators').carousel({interval: false,wrap: false});
 
 
+var myCarousel   = $('#myCarousel');
+var itemFirst    = myCarousel.find('.carousel-inner > .carousel-item:first-child');
+var itemLast     = myCarousel.find('.carousel-inner > .carousel-item:last-child');
+var controlLeft  = $(".introduction_next_prev").find('button.left.carousel-control');
+var controlRight = $(".introduction_next_prev").find('button.right.carousel-control');
 
-    $('#instructionCarouselIndicators').on('slid.bs.carousel', '', function() {
-  var $this = $(this);
+hideControl();
 
-  //$this.children('.carousel-control').show();
-
-  if($('.carousel-inner .carousel-item:first').hasClass('active')) {
-    $this.children('.left.carousel-control').hide();
-  } else if($('.carousel-inner .carousel-item:last').hasClass('active')) {
-    $this.children('.right.carousel-control').hide();
-  }
-
+myCarousel.on('slid.bs.carousel', function() {
+  hideControl();
+});
+myCarousel.on('slide.bs.carousel', function() {
+  showControl();
 });
 
+function hideControl() {
+  if ( itemFirst.hasClass('active') ) {
+    controlLeft.prop("disabled",true);
+  }
+  if ( itemLast.hasClass('active') ) {
+    //controlRight.prop("disabled",true);
+    $("#right_btn").text('Finish');
+    $('#right_btn').attr('data-dismiss', 'modal');
+    myCarousel.carousel('pause');  // stop from cycling through items
+  }
+}
+
+function showControl() {
+  if ( itemFirst.hasClass('active') ) {
+    controlLeft.prop("disabled",false);
+  }
+  if ( itemLast.hasClass('active') ) {
+    controlRight.prop("disabled",false);
+
+  }
+}
 
 
     });
 </script>
 <style>
+.carousel-inner img {
+  height: auto;
+  width: 100%;
+}
     #instructionModel {
    display: 'flex';
 	justify-content: 'center';
 	align-items: 'center';
 }
+.carousel-indicators {
+        bottom: -6.4375rem;
+    }
+
 .carousel-indicators li {
     box-sizing: content-box;
+
     flex: 0 1 auto;
     width: 30px;
     height: 3px;
@@ -64,45 +94,36 @@
 <div class="modal fade" id="instructionModel" tabindex="-1" role="dialog" aria-labelledby="instructionModel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Instruction Cards</h5>
+
+            <div class="modal-body">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
-            </div>
-            <div class="modal-body">
-
-                <div id="instructionCarouselIndicators" class="carousel slide" data-interval="false">
-                    <ol class="carousel-indicators">
-                        <li data-target="#instructionCarouselIndicators" data-slide-to="0" class="active"></li>
-                        <li data-target="#instructionCarouselIndicators" data-slide-to="1"></li>
-                        <li data-target="#instructionCarouselIndicators" data-slide-to="2"></li>
+                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators indicator">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel" data-slide-to="1"></li>
+                        <li data-target="#myCarousel" data-slide-to="2"></li>
                     </ol>
-                    <div class="carousel-inner">
+                    <div class="carousel-inner" role="listbox">
                         <div class="carousel-item active">
-                            <h5>First slide label</h5>
-                            <p>111111</p>
+                            asdf asdf asdf asdf
                         </div>
                         <div class="carousel-item">
-                            2222
+                            2222 2 2 2 2 2 2 2  2
                         </div>
                         <div class="carousel-item">
-                            333
+                            3 3 3 3 3 3 3 3  3
                         </div>
                     </div>
 
                 </div>
-            </div>
-            <div class="modal-footer">
-                <a class="left carousel-control" href="#instructionCarouselIndicators" data-slide="prev">‹</a>
 
-                <a class="right carousel-control" href="#instructionCarouselIndicators" data-slide="next">›</a>
-                <!--<a href="#instructionCarouselIndicators" role="button" data-slide="prev">
-                    <button id="left_btn"  type="button" class="btn btn-primary text-left" style="display:none">Back</button>
-                </a>
-                <a  href="#instructionCarouselIndicators" role="button" data-slide="next">
-                    <button  id="right_btn" type="button" class="btn btn-primary text-left">Next</button>
-                </a>-->
+            </div>
+            <div class="modal-footer introduction_next_prev">
+
+                    <button href="#myCarousel" role="button" data-slide="prev" type="button" class="btn btn-primary left carousel-control mr-auto">Back</button>
+                    <button href="#myCarousel" role="button" data-slide="next" id="right_btn"  type="button" class="btn btn-primary right carousel-control">Next</button>
             </div>
         </div>
     </div>
