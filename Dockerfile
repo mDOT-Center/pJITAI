@@ -27,15 +27,20 @@
 
 FROM python:3.9
 
-COPY . .
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+RUN apt-get update && apt-get install -y systemctl cron
+
+RUN crontab -l | { cat; echo "* * * * * bash /crontab/scheduler.sh"; } | crontab -
+
+COPY . .
 # install python dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # gunicorn
-CMD ["gunicorn", "--config", "gunicorn-cfg.py", "run:app"]
+# CMD ["systemctl", "start", "cron", ";","gunicorn", "--config", "gunicorn-cfg.py", "run:app"]
+CMD systemctl start cron ; gunicorn --config gunicorn-cfg.py run:appb

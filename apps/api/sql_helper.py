@@ -32,7 +32,63 @@ import pandas as pd
 from sqlalchemy.exc import SQLAlchemyError
 
 from apps import db
-from apps.api.models import Data, AlgorithmTunedParams
+from apps.api.models import Data, AlgorithmTunedParams, Decision
+
+def save_decision(decision: Decision):
+    try:
+        db.session.add(decision)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        resp = str(e.__dict__['orig'])
+        db.session.rollback()
+        print(traceback.format_exc())
+        return {"ERROR": resp}
+    except:
+        print(traceback.format_exc())
+
+def get_decision_data(algo_id: str, user_id: str = None):    
+    '''
+    Get data from data table, created pandas DF (parse all the dict and convert them into columns)
+    :param algo_id:
+    :param user_id:
+    :return: pandas DF
+    '''
+    if user_id:
+        data = Decision.query.filter(Decision.algo_uuid == algo_id).filter(Decision.user_id == user_id).order_by(Decision.timestamp.desc())
+    else:
+        data = Decision.query.filter(Decision.algo_uuid == algo_id).order_by(Decision.timestamp.desc())
+    if data:
+        df_from_records = pd.read_sql(data.statement, db.session().bind)
+        return df_from_records
+    return pd.DataFrame()
+
+def get_merged_data(algo_id: str, user_id: str = None):
+    '''
+    Get data from data table, created pandas DF (parse all the dict and convert them into columns)
+    :param algo_id:
+    :param user_id:
+    :return: pandas DF
+    '''
+    if user_id:
+        data = Data.query.outerjoin(Decision, Decision.decision_id == Data.decision_id).add_entity(Decision).filter(Data.user_id == user_id).order_by(Data.timestamp.desc())
+    else:
+        data = Data.query.outerjoin(Decision, Decision.decision_id == Data.decision_id).add_entity(Decision).order_by(Data.timestamp.desc())
+    if data:
+        df_from_records = pd.read_sql(data.statement, db.session().bind)
+    
+        result = pd.concat([df_from_records, df_from_records['values'].apply(json_to_series)], axis=1)
+        result.drop('values', axis=1, inplace=True)
+        result.drop('id_1', axis=1, inplace=True)
+        result.drop('user_id_1', axis=1, inplace=True)
+        result.drop('algo_uuid_1', axis=1, inplace=True)
+        result.drop('decision_id_1', axis=1, inplace=True)
+        result.rename(columns={"timestamp_1": "decision__timestamp", 
+                               "decision": "decision__decision", 
+                               "decision_options": "decision__decision_options", 
+                               "status_code": "decision__status_code", 
+                               "status_message": "decision__status_message"},inplace=True)
+        return result
+    return pd.DataFrame()
 
 
 def get_data(algo_id: str, user_id: str = None):
@@ -43,9 +99,9 @@ def get_data(algo_id: str, user_id: str = None):
     :return: pandas DF
     '''
     if user_id:
-        data = Data.query.filter(Data.algo_uuid == algo_id).filter(Data.user_id == user_id).order_by(Data.upload_timestamp.desc())
+        data = Data.query.filter(Data.algo_uuid == algo_id).filter(Data.user_id == user_id).order_by(Data.timestamp.desc())
     else:
-        data = Data.query.filter(Data.algo_uuid == algo_id).order_by(Data.upload_timestamp.desc())
+        data = Data.query.filter(Data.algo_uuid == algo_id).order_by(Data.timestamp.desc())
     if data:
         df_from_records = pd.read_sql(data.statement, db.session().bind)
 
@@ -79,10 +135,10 @@ def get_tuned_params(user_id: str = None):
     if user_id:
         tuned_params = AlgorithmTunedParams.query.filter(
             AlgorithmTunedParams.user_id == user_id).order_by(
-            AlgorithmTunedParams.upload_timestamp.desc())
+            AlgorithmTunedParams.timestamp.desc())
 
     else:
-        tuned_params = AlgorithmTunedParams.query.order_by(AlgorithmTunedParams.upload_timestamp.desc())
+        tuned_params = AlgorithmTunedParams.query.order_by(AlgorithmTunedParams.timestamp.desc())
 
     if tuned_params:
         df_from_records = pd.read_sql(tuned_params.statement, db.session().bind)

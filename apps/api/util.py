@@ -29,11 +29,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from datetime import datetime
 from functools import wraps
+import inspect
+import traceback
 from flask import request
 
 from apps.algorithms.models import Algorithms
 from apps.api.codes import StatusCode
+from apps import db
+from sqlalchemy.exc import SQLAlchemyError
 
+from .models import Log
 
 def pJITAI_token_required(f):
     @ wraps(f)
@@ -45,25 +50,23 @@ def pJITAI_token_required(f):
                 'status_message': 'Token not found'
             }, 400
 
-        # TODO: Testing bypass until the below code is implemented properly
-
-        # result = db.session.query(Algorithms).filter(Algorithms.auth_token == token).first()
-        # if not result:
-        #     return {
-        #         'status_code': StatusCode.ERROR.value,
-        #         'status_message': 'Algorithm authentication token is incorrect'
-        #     }, 400
-
-        # TODO: Check if the token matches the one present for the algorithm in question @Ali
-        # TODO: Add token to the algorithm and WebUI (View Algorithm) @Ali
-
-        return f(*args, **kwargs)
+        result = db.session.query(Algorithms).filter(Algorithms.auth_token == token).first()
+        if result:
+            return f(*args, **kwargs)
+        else:
+            return {
+                'status_code': StatusCode.ERROR.value,
+                'status_message': 'Invalid security token'
+            }, 400
 
     return decorated
 
 
 def time_8601(time=datetime.now()) -> str:
     return time.astimezone().isoformat()
+
+def time_8601_to_datetime(input_time):
+    return datetime.fromisoformat(input_time)
 
 
 def get_class_object(class_path: str):
@@ -162,3 +165,20 @@ def _is_valid(feature_vector: dict, features_config: dict) -> dict:
 
         val['validation'] = validation
     return feature_vector
+
+
+def _add_log(algo_uuid:str=None,log_detail: dict=None, ) -> dict:  # TODO: This should be moved to the utils file?
+    calling_method = inspect.stack()[1][3] # Look at the calling stack for the parent method
+    calling_file = inspect.stack()[1][1]
+    try:
+        log_detail['calling_method'] = calling_method
+        log_detail['calling_file'] = calling_file
+        log = Log(algo_uuid=algo_uuid, details=log_detail, created_on=time_8601())
+        db.session.add(log)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        resp = str(e.__dict__['orig'])
+        db.session.rollback()
+        print(traceback.format_exc())
+    except:
+        print(traceback.format_exc())
