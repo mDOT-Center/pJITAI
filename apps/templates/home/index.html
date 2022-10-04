@@ -9,12 +9,28 @@
 
 <script>
     $(document).ready(function(){
+
+    $('#donotshowagain').change(function (e) {
+        if ($(this).prop('checked')) {
+            Cookies.set('donotshowagain', 'true');
+        }else{
+            Cookies.set('donotshowagain', 'false');
+        }
+    });
+
     $('#myCarousel').css({
-            'display': 'flex',
-            'justify-content': 'center',
-            'align-items': 'center'
-        }).carousel({interval: false,wrap: false});
+        'display': 'flex',
+        'justify-content': 'center',
+        'align-items': 'center'
+    }).carousel({interval: false,wrap: false});
+    if(Cookies.get('donotshowagain')=='false' || Cookies.get('donotshowagain')==null){
         $("#instructionModel").modal('show');
+    }
+
+
+
+
+
 
 
 var myCarousel   = $('#myCarousel');
@@ -104,16 +120,51 @@ function showControl() {
                         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
                         <li data-target="#myCarousel" data-slide-to="1"></li>
                         <li data-target="#myCarousel" data-slide-to="2"></li>
+                        <li data-target="#myCarousel" data-slide-to="3"></li>
+                        <li data-target="#myCarousel" data-slide-to="4"></li>
+                        <li data-target="#myCarousel" data-slide-to="5"></li>
                     </ol>
                     <div class="carousel-inner" role="listbox">
                         <div class="carousel-item active">
-                            asdf asdf asdf asdf
+                            <h3>Why use the pJITAI toolbox?</h3>
+                            This toolbox helps you design a personalizing Just-in-Time Adaptive Intervention (pJITAI), i.e., it helps you configure an algorithm that powers your JITAI to make personalized intervention decisions.
                         </div>
                         <div class="carousel-item">
-                            2222 2 2 2 2 2 2 2  2
+                            <h3>What is Personalization?</h3>
+                            Data accruing from an individual may indicate that intervention option A is more effective than intervention option B when the individual is in certain states. A personalizing JITAI will increase the probability of sending intervention option A in these states.
+                            For example, if an individual is more responsive to intervention option A during weekends, the JITAI will send intervention option A more frequently than intervention option B during weekends.
+
                         </div>
                         <div class="carousel-item">
-                            3 3 3 3 3 3 3 3  3
+                            <h3>When can you use the pJITAI toolbox?</h3>
+                            Scenario 1: When you have access to published results from a micro-randomized trial (MRT), the toolbox helps you find the information needed to configure a personalizing JITAI.
+                            Scenario 2: When you have access to the data from an MRT of an intervention component you want to personalize, the toolbox guides you to run analyses to configure a personalizing JITAI.
+                        </div>
+                        <div class="carousel-item">
+                            <h3>Practice using the pJITAI toolbox with our HeartSteps Demo</h3>
+                            When you log in, you will see a HeartSteps demo already configured for you, where HeartSteps is an mHealth intervention for physical activity:
+                            <ul>
+                                <li>Goal: Provide an actionable message to help a person take a short walk in the near future.</li>
+                                <li>Intervention options:  (A) Send an activity suggestion; (B) Do not send an activity suggestion</li>
+                                <li>Proximal outcome: The 30-minute step count after each decision point</li>
+                            </ul>
+
+                        </div>
+                        <div class="carousel-item">
+                            <h3>In particular, we assume scenario 1 in this HeartSteps demo </h3>
+                            Recall that scenario 1 is where you have access to published results from a micro-randomized trial (MRT).
+                            In this demo, we show you how to use the results from HeartSteps V1 paper to configure a personalizing HeartSteps JITAI.
+                            We suggest that if you are not familiar with our toolbox, you start by going through our HeartSteps demo.
+                        </div>
+                        <div class="carousel-item">
+                            <h3>Once you finish designing your personalizing JITAI... </h3>
+                            The toolbox will generate a URL for accessing the algorithm you just configured via an API so it can be integrated  into the code for your JITAI. The algorithm can then begin to personalize sending of interventions.
+                            <h2>Have more questions?</h2>
+                            <ul>
+                                <li>Please check our <a href="">FAQs</a></li>
+                                <li>Please check our <a href=""> tutorial</a></li>
+
+                            </ul>
                         </div>
                     </div>
 
@@ -124,6 +175,9 @@ function showControl() {
 
                     <button href="#myCarousel" role="button" data-slide="prev" type="button" class="btn btn-primary left carousel-control mr-auto">Back</button>
                     <button href="#myCarousel" role="button" data-slide="next" id="right_btn"  type="button" class="btn btn-primary right carousel-control">Next</button>
+            </div>
+            <div class="modal-footer">
+                <input class="" id="donotshowagain" name="donotshowagain" type="checkbox"> Do not show me again
             </div>
         </div>
     </div>
