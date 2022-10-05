@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from enum import Enum
 
 
-class StatusCode(Enum):  # TODO: Update this to ensure that it matches the python library and is utilized throughout the code
+class StatusCode(Enum):
     ERROR = "ERROR"
     WARNING = "WARNING"
     SUCCESS = "SUCCESS"
