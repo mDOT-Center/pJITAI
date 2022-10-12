@@ -197,20 +197,18 @@ class ThompsonSampling(LearningMethodBase):
             "default_value": 0.39
         }
 
-    def decision(self,  user_id: str, tuned_params=None, input_data=None) -> pd.DataFrame:
+    def decision(self,  user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
         # These need to be read from the web user interface
         # I added "value" to represent what each option means in the linear regression. It's super important.
         decision_options = [
-            {
+            { # Index 0
                 'name': 'Do Nothing',
-                'value': 0,
-                'prob':0.7,
+                'value': 0.7,
             },
-            {
+            { # Index 1
                 'name': 'Send an Intervention',
-                'value': 1,
-                'prob':0.3,
+                'value': 0.3,
             }
         ]
 
@@ -221,10 +219,10 @@ class ThompsonSampling(LearningMethodBase):
         # Parameters are access by column name and first row
 
         try:
-            theta_mu = tuned_params.iloc[0]['theta_mu']
-            theta_Sigma = tuned_params.iloc[0]['theta_Sigma']
+            theta_mu = np.array(tuned_params.iloc[0]['theta_mu'])
+            theta_Sigma = np.array(tuned_params.iloc[0]['theta_Sigma'])
             degree = tuned_params.iloc[0]['degree']
-            scale = tuned_params.iloc[0]['scale']
+            scale = np.array(tuned_params.iloc[0]['scale'])
             
         except Exception as e: # Something is wrong or data is missing, assuming defaults
             theta_mu = self._theta_mu_ini
@@ -310,10 +308,10 @@ class ThompsonSampling(LearningMethodBase):
 
             theta_mu, theta_Sigma, degree, scale = self.update_parameters(data[data.user_id==u])
             
-            result_data.append(theta_mu)
-            result_data.append(theta_Sigma)
+            result_data.append(theta_mu.tolist())
+            result_data.append(theta_Sigma.tolist())
             result_data.append(degree)
-            result_data.append(scale)
+            result_data.append(scale.tolist())
             temp = pd.DataFrame([result_data], columns=columns)
             result = pd.concat([result, temp], ignore_index=True)
 
@@ -355,9 +353,8 @@ class ThompsonSampling(LearningMethodBase):
 
 
         # Let's setup all the global parameters
-        # This degree_ini is missing. This one should be read from the web user interface. We need more inputs!
-        self._degree_ini=1
-        self._scale_ini=float(self.standalone_parameters['noice'])
+        self._degree_ini=float(self.standalone_parameters['noise_degree'])
+        self._scale_ini=float(self.standalone_parameters['noise_scale'])
         self._lower_clip=float(self.other_parameters['lower_clip'])
         self._upper_clip=float(self.other_parameters['upper_clip'])
         self._state_dim=len(self.features.items()) # Number of states
@@ -395,10 +392,11 @@ class ThompsonSampling(LearningMethodBase):
             # If all the states are "valid"
             if(len(state)==self._state_dim):
                 state=np.array([state]).T
-                # Check how to grab the decision and how the decision is coded in numerical values
-                action=getattr(row,'decision')
+                # Check how to grab the d    ecision and how the decision is coded in numerical values
+                
+                action=getattr(row,'decision__decision') # index of the action chosen
                 # we will need to grab the intervention probability as well
-                pi=0.5
+                pi=getattr(row,'decision__decision_options')[getattr(row,'decision__decision')]['value']
                 Phi=self.reward_model(state,action,pi)
                 Phi_all=np.hstack((Phi_all,Phi))
                 reward_all.append(getattr(row,'proximal_outcome'))
@@ -432,8 +430,8 @@ class ThompsonSampling(LearningMethodBase):
         tmp=np.concatenate((tmp,np.ones((1,1))),axis=0)
         return tmp
 
-    # THis is the model for generating Phi(State,Action)
-    def reward_model(self, state, action, pi):
+    # This is the model for generating Phi(State,Action)
+    def reward_model(self, state, action, pi): 
         Phi=np.concatenate((self.baseline(state),pi*self.action_center(state)),axis=0)
         Phi=np.concatenate((Phi,(action-pi)*self.action_center(state)),axis=0)
         return Phi

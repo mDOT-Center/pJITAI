@@ -167,7 +167,7 @@ def _is_valid(feature_vector: dict, features_config: dict) -> dict:
     return feature_vector
 
 
-def _add_log(algo_uuid:str=None,log_detail: dict=None, ) -> dict:  # TODO: This should be moved to the utils file?
+def _add_log(algo_uuid:str=None,log_detail: dict=None, ) -> dict:
     calling_method = inspect.stack()[1][3] # Look at the calling stack for the parent method
     calling_file = inspect.stack()[1][1]
     try:
