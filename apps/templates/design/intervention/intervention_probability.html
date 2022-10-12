@@ -17,8 +17,7 @@
 
 <div class="container-fluid">
 
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> General Settings / Scenario <i
-            class="ni ni-question" aria-hidden="true"></i></h1>
+    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Intervention Settings / Intervention Probability</h1>
     <hr>
     <div class="container col-sm-12">
         <div class="row">
@@ -27,16 +26,18 @@
                     <div class="card-body">
                         <form>
                             <div class="row">
-                            <div class="col">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="form-control-label" for="personalized_scenario">How will you configure your personalized JITAI</label>
-                                    <select id="personalized_scenario" class="form-select" aria-label="Default select example">
-                                        <option selected>Scenario 1: I have published results from MRT</option>
-                                    </select>
+                                    <label  class="form-control-label" for="intervention_probability_lower_bound">Intervention probability lower bound (when eligible)</label>
+                                    <input type="text" id="intervention_probability_lower_bound" class="form-control" placeholder="Option A"> : sss
                                 </div>
-
-
                             </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="intervention_probability_lower_bound"></label>
+                                        : <span style="border: 1px dotted; padding: 5px;"> 0.1 x <span style="background: #efeeee;">5 times/day</span> = 0.5 <span style="background: #efeeee;">intervention option A</span> per day</span>
+                                    </div>
+                                </div>
 
                                 <div class="row">
                                     <hr class="hr_style">
@@ -44,7 +45,10 @@
                                         <div class="nav-wrapper">
                                             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
                                                 <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Explanation</a>
+                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
                                                 </li>
 
                                             </ul>
@@ -54,7 +58,12 @@
                                                 <div class="tab-content" id="myTabContent">
                                                     <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
                                                         <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
+
                                                     </div>
+                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>

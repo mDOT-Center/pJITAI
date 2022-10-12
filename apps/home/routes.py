@@ -77,7 +77,41 @@ def project_general_settings(setting_type):
         return render_template("projects/summary.html")
 
 
+@blueprint.route('/intervention/settings/<setting_type>', methods=['GET', 'POST'])
+def intervention_settings(setting_type):
+    if setting_type=="intervention_option":
+        return render_template("design/intervention/intervention_option.html")
+    elif setting_type=="decision_point":
+        return render_template("design/intervention/ineligibility.html")
+    elif setting_type=="ineligibility":
+        return render_template("design/intervention/ineligibility.html")
+    elif setting_type=="intervention_probability":
+        return render_template("design/intervention/intervention_probability.html")
+    elif setting_type=="update_point":
+        return render_template("design/intervention/update_point.html")
+    elif setting_type=="summary":
+        return render_template("design/intervention/summary.html")
 
+@blueprint.route('/model/settings/<setting_type>', methods=['GET', 'POST'])
+def model_settings(setting_type):
+    if setting_type=="proximal_outcome_attribute":
+        return render_template("design/model/proximal_outcome_attribute.html")
+    elif setting_type=="intercept":
+        return render_template("design/model/intercept.html")
+    elif setting_type=="main_treatment_effect":
+        return render_template("design/model/main_treatment_effect.html")
+    elif setting_type=="covariates":
+        return render_template("design/model/covariates.html")
+    elif setting_type=="covariate_name":
+        return render_template("design/model/covariate_name.html")
+    elif setting_type=="covariate_attributes":
+        return render_template("design/model/covariate_attributes.html")
+    elif setting_type=="covariate_main_effect":
+        return render_template("design/model/covariate_main_effect.html")
+    elif setting_type=="covariate_tailored_effect":
+        return render_template("design/model/covariate_tailored_effect.html")
+    elif setting_type=="summary":
+        return render_template("design/model/summary.html")
 # Helper - Extract current page name from request
 def get_segment(request):
 

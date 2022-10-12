@@ -8,7 +8,7 @@
 {% block content %}
 
 <script>
-
+$('.btn').button();
 </script>
 <style>
 
@@ -17,8 +17,7 @@
 
 <div class="container-fluid">
 
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> General Settings / Personalization Method <i
-            class="ni ni-question" aria-hidden="true"></i></h1>
+    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Model Settings / Covariates / Location / Name</h1>
     <hr>
     <div class="container col-sm-12">
         <div class="row">
@@ -29,12 +28,22 @@
                             <div class="row">
                             <div class="col">
                                 <div class="form-group">
-                                    <label class="form-control-label" for="personalization_method">Personalization Method</label>
-                                    <select id="personalization_method" class="form-select" aria-label="Default select example">
-                                        <option selected>Thompson Sampling - Two intervention option</option>
-                                    </select>
+                                    <label class="form-control-label" for="intercept_prior_mean">Name of the covariate</label>
+                                    <input type="text" id="intercept_prior_mean" class="form-control" placeholder="Option B">
                                 </div>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="tailoring_yes">Is this covariate a tailoring variable?</label><br>
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-primary active">
+                                            <input type="radio" name="options" id="tailoring_yes" checked> Yes
+                                        </label>
+                                        <label class="btn btn-primary">
+                                            <input type="radio" name="options" id="tailoring_no"> No
+                                        </label>
 
+                                    </div>
+
+                                </div>
 
                             </div>
 
@@ -43,9 +52,18 @@
                                     background-color: #deeaff;
                                     color: black;
                                     padding: 10px;
+                                    font-size:18px;
                                     border-radius: 10px;
                                 ">
-                                    This version of Thompson sampling....</p>
+
+                                     <span style="background:#f2f2f2; font-size:14px;">(log) Next 30 min step count</span> ~ <br>
+                                    α<sub>0</sub> + α<sub>1</sub> * <span style="background:#f2f2f2; font-size:14px;">Location</span><br>
+                                    + β<sub>0</sub>* <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
+                                    + β<sub>1</sub>* <span style="background:#f2f2f2; font-size:14px;">Location</span> * <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
+                                    + ϵ <br>
+
+
+                                </p>
                             </div>
 
                                 <div class="row">
@@ -54,7 +72,10 @@
                                         <div class="nav-wrapper">
                                             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
                                                 <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Explanation</a>
+                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
                                                 </li>
 
                                             </ul>
@@ -64,7 +85,12 @@
                                                 <div class="tab-content" id="myTabContent">
                                                     <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
                                                         <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
+
                                                     </div>
+                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>

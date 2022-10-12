@@ -36,15 +36,27 @@
   <!-- Argon CSS -->
   <link rel="stylesheet" href="/static/assets/css/argon.css?v=1.2.0" type="text/css">
   <link rel="stylesheet" href="/static/assets/vendor/animate.css/animate.min.css">
+<style>
+  .hr_style{
 
+    /* height: 10px; */
+    /* border-bottom: 0px; */
+    background-color: #f6f8fd !important;
+    /* color: dimgrey !important; */
+    border: solid 2px #f7f8fd !important;
+    height: 5px !important;
+    width: 100% !important;
+}
+</style>
   <!-- Specific CSS goes HERE -->
   {% block stylesheets %}{% endblock stylesheets %}
   {% include "includes/scripts.html" %}
 </head>
 
 <body class="">
-
-
+  {% if 'projects' not in url_for(request.endpoint, **request.view_args) %}
+  {% include "includes/sidenav.html" %}
+  {% endif %}
 
   <div class="main-content" id="panel">
 

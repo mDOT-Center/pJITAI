@@ -17,7 +17,7 @@
 
 <div class="container-fluid">
 
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> General Settings / Scenario <i
+    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Intervention Settings / Decision Point <i
             class="ni ni-question" aria-hidden="true"></i></h1>
     <hr>
     <div class="container col-sm-12">
@@ -28,13 +28,15 @@
                         <form>
                             <div class="row">
                             <div class="col">
+                                <label class="form-control-label" for="decision_point_opt_1">Decision Point</label>
                                 <div class="form-group">
-                                    <label class="form-control-label" for="personalized_scenario">How will you configure your personalized JITAI</label>
-                                    <select id="personalized_scenario" class="form-select" aria-label="Default select example">
-                                        <option selected>Scenario 1: I have published results from MRT</option>
+                                    <select id="decision_point_opt_1" class="form-select" aria-label="Default select example">
+                                        <option selected>5</option>
+                                    </select> times per
+                                    <select id="decision_point_opt_2" class="form-select" aria-label="Default select example">
+                                        <option selected>Day</option>
                                     </select>
                                 </div>
-
 
                             </div>
 
@@ -44,7 +46,10 @@
                                         <div class="nav-wrapper">
                                             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
                                                 <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Explanation</a>
+                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
                                                 </li>
 
                                             </ul>
@@ -54,7 +59,12 @@
                                                 <div class="tab-content" id="myTabContent">
                                                     <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
                                                         <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
+
                                                     </div>
+                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
+                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
