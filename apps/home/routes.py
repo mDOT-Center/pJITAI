@@ -60,21 +60,26 @@ def route_template(template):
 
     except:
         return render_template('home/page-500.html'), 500
-
+data = {}
 @blueprint.route('/projects')
 def projects():
     return render_template("projects/projects.html")
 
-@blueprint.route('/projects/settings/<setting_type>', methods=['GET', 'POST'])
-def project_general_settings(setting_type):
+@blueprint.route('/projects/settings/<setting_type>/', methods=['GET', 'POST'])
+def project_settings(setting_type):
+
     if setting_type=="general":
-        return render_template("projects/general_settings.html")
+        if request.method=='POST':
+            data["general"]=request.form.to_dict()
+            return data
+        else:
+            return render_template("design/projects/general_settings.html")
     elif setting_type=="personalized_method":
-        return render_template("projects/personalized_method.html")
+        return render_template("design/projects/personalized_method.html")
     elif setting_type=="scenario":
-        return render_template("projects/scenario.html")
+        return render_template("design/projects/scenario.html")
     elif setting_type=="summary":
-        return render_template("projects/summary.html")
+        return render_template("design/projects/summary.html")
 
 
 @blueprint.route('/intervention/settings/<setting_type>', methods=['GET', 'POST'])
