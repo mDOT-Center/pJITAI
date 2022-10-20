@@ -95,8 +95,8 @@ class ThompsonSampling(LearningMethodBase):
                 "default_value": 3.16
             }
         }
-        # TODO: change name -> standalone_parameters
-        # For now you can change it to "model parameters"
+        
+        # TODO Change to "model parameters"?
         self.standalone_parameters = {
             # I may want to change the names of all of these
             "alpha_0_mu_bias": {
@@ -186,7 +186,7 @@ class ThompsonSampling(LearningMethodBase):
                 "default_value": 0.3
             }
         }
-        # TODO: move to base class??
+        
         self.tuning_scheduler = {
             "name": "update_interval",
             "description": "time interval between running algorithm and update policy. Time is in seconds/minutes???",
@@ -195,6 +195,12 @@ class ThompsonSampling(LearningMethodBase):
             "upper_bound": "pinf",
             "inclusive": [True, True],
             "default_value": 0.39
+        }
+        
+        # TODO: This needs populated via the web interface when complete.
+        self.eligibility = {
+            "walking": False,
+            "driving": False,
         }
 
     def decision(self,  user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:

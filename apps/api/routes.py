@@ -106,6 +106,9 @@ def model(uuid: str) -> dict:
 def decision(uuid: str) -> dict:
     input_data = request.json
     try:
+        
+        # TODO: Do something with input_data['eligilibity'] (https://github.com/mDOT-Center/pJITAI/issues/21)
+        
         validated_data = _validate_algo_data(uuid, input_data['values'])
 
         validated_data_df = pd.DataFrame(json_to_series(validated_data)).transpose()

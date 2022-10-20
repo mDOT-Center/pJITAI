@@ -56,6 +56,7 @@ class LearningMethodBase(metaclass=ABCMeta):
         self.standalone_parameters = {}
         self.other_parameters = {}
         self.tuning_scheduler = {}
+        self.eligibility = {}
         self.features = []
         self.created_on = None
         self.created_by = None

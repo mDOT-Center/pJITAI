@@ -55,7 +55,12 @@ class RandomSampling(LearningMethodBase):
 
         }
 
-        # TODO: @Ali This is not needed for RandomSampling but can be left in place.
+        # TODO: This needs populated via the web interface when complete.
+        self.eligibility = {
+            "walking": False,
+            "driving": False,
+        }
+
         # TODO: @Ali Update Interval needs to be better defined.
         self.tuning_scheduler = {
             "name": "update_interval",
