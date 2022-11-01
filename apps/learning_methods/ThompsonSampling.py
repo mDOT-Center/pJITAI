@@ -203,6 +203,7 @@ class ThompsonSampling(LearningMethodBase):
             "driving": False,
         }
 
+    # TODO: Add a variable for elibibility based on a computation on self.eligibility in the calling method (TWH)
     def decision(self,  user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
         # These need to be read from the web user interface
