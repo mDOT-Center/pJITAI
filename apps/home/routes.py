@@ -75,7 +75,6 @@ def projects():
 
 
 @blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
-@blueprint.route('/projects/settings/<setting_type>', methods=['GET', 'POST'])
 def project_settings(setting_type, project_uuid=None):
     user_id = 1#current_user.get_id()
     project_details = {}
@@ -133,10 +132,10 @@ def update_general_settings(data,project_details_obj):
         project_details_obj.general_settings = gen_settings
         db.session.commit()
 
-@blueprint.route('/intervention/settings/<setting_type>', methods=['GET', 'POST'])
-def intervention_settings(setting_type):
+@blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+def intervention_settings(setting_type,project_uuid):
     if setting_type=="intervention_option":
-        # SAVE GENERAL SETTINGS
+
         return render_template("design/intervention/intervention_option.html")
     elif setting_type=="decision_point":
         return render_template("design/intervention/ineligibility.html")
