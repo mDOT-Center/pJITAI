@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 from apps.home import blueprint
+import copy
 from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
@@ -78,69 +79,60 @@ def projects():
 def project_settings(setting_type, project_uuid=None):
     user_id = 1#current_user.get_id()
     project_details = {}
-    if not session.get("project_settings"):
-        session["project_settings"] = {}
+    project_details_obj = None
+    general_settings= {}
 
     if project_uuid:
-        project_details = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
-        if project_details:
-            project_details = project_details.as_dict()
+        project_details_obj = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
+        if project_details_obj:
+            project_details = project_details_obj.as_dict()
         else:
             project_details={}
 
-        print("done")
-
+    if project_details.get("general_settings"):
+        general_settings= project_details.get("general_settings")
 
     if setting_type=="general":
-        return render_template("design/projects/general_settings.html", general_settings = project_details.get("general_settings",{}))
+        return render_template("design/projects/general_settings.html", general_settings = general_settings,project_uuid=project_uuid)
     elif setting_type=="personalized_method":
         if request.method=='POST':
-            gdata = request.form.to_dict()
-            gdata.pop("next")
-            Projects(created_by=user_id,
-                     uuid=project_uuid,
-                     general_settings=gdata,
-                     intervention_settings={},
-                     model_settings={},
-                     project_status=0,
-                     algo_type="algorithm_type",
-                     modified_on=datetime.now(),
-                     created_on=datetime.now()).save()
-            #session["project_settings"]["general_settings"]=request.form.to_dict().pop("next").pop("back")
-            #project_setting["general_settings"].pop("next")
-
-            return render_template("design/projects/personalized_method.html")
+            if project_details_obj:
+                update_general_settings(request.form.to_dict(),project_details_obj)
+            else:
+                gdata = request.form.to_dict()
+                gdata.pop("next")
+                Projects(created_by=user_id,
+                         uuid=project_uuid,
+                         general_settings=gdata,
+                         intervention_settings={},
+                         model_settings={},
+                         project_status=0,
+                         algo_type="algorithm_type",
+                         modified_on=datetime.now(),
+                         created_on=datetime.now()).save()
+            return render_template("design/projects/personalized_method.html", general_settings = general_settings ,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/personalized_method.html")
+            return render_template("design/projects/personalized_method.html", general_settings = general_settings ,project_uuid=project_uuid)
     elif setting_type=="scenario":
-        if request.form.get("back", "")=='update':
-            return render_template("design/projects/scenario.html", scenario=session["project_settings"].get("scenario",{}))
         if request.method=='POST':
-            session["project_settings"]["personalized_method"]=request.form.to_dict()
-            #project_setting["personalized_method"].pop("next")
-
-            return render_template("design/projects/scenario.html")
+            update_general_settings(request.form.to_dict(),project_details_obj)
+            return render_template("design/projects/scenario.html", general_settings = general_settings,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/scenario.html")
+            return render_template("design/projects/scenario.html", general_settings = general_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
-
         if request.method=='POST':
-            session["project_settings"]["scenario"]=request.form.to_dict()
-            #project_setting["scenario"].pop("next")
-            return render_template("design/projects/summary.html", scenario=session["project_settings"].get("scenario",{}))
+            update_general_settings(request.form.to_dict(),project_details_obj)
+            return render_template("design/projects/summary.html", general_settings = general_settings,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/summary.html")
+            return render_template("design/projects/summary.html", general_settings = general_settings,project_uuid=project_uuid)
 
-def save_project(project_setting, user_id, uuid):
-    Projects(created_by=user_id,
-             uuid=uuid,
-             general_settings=project_setting,
-             intervention_settings={},
-             model_settings={},
-             project_status=0,
-             algo_type="algorithm_type",
-             modified_on=datetime.now(),
-             created_on=datetime.now()).save()
+def update_general_settings(data,project_details_obj):
+    data.pop("next")
+    if project_details_obj:
+        gen_settings = copy.deepcopy(project_details_obj.general_settings)
+        gen_settings.update(data)
+        project_details_obj.general_settings = gen_settings
+        db.session.commit()
 
 @blueprint.route('/intervention/settings/<setting_type>', methods=['GET', 'POST'])
 def intervention_settings(setting_type):
