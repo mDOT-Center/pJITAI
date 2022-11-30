@@ -127,7 +127,6 @@ def project_settings(setting_type, project_uuid=None):
             return render_template("design/projects/summary.html", general_settings = general_settings,project_uuid=project_uuid)
 
 def update_general_settings(data,project_details_obj):
-    data.pop("next")
     if project_details_obj:
         gen_settings = copy.deepcopy(project_details_obj.general_settings)
         gen_settings.update(data)
