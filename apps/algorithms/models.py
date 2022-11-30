@@ -32,9 +32,31 @@ from dataclasses import dataclass
 from flask_login import UserMixin
 from datetime import datetime
 from apps import db, login_manager
+from sqlalchemy.exc import SQLAlchemyError
 
 from apps.authentication.util import hash_pass
 
+def save(obj) -> None:
+    try:
+        db.session.add(obj)
+        db.session.commit()
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        db.session.close()
+        error = str(e.__dict__['orig'])
+        raise Exception(e)
+
+def delete_from_db(obj) -> None:
+    try:
+        db.session.delete(obj)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        db.session.close()
+        error = str(e.__dict__['orig'])
+        raise Exception(e)
+    return
 
 @dataclass
 class Algorithms(db.Model):
@@ -75,3 +97,53 @@ class Algorithms(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def save(self):
+        save(self)
+    def delete(self):
+        delete_from_db(self)
+
+
+@dataclass
+class Projects(db.Model):
+    __tablename__ = 'projects'
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   nullable=False)
+    created_by = db.Column(db.Integer,
+                           db.ForeignKey('users.id'),
+                           nullable=False)
+    uuid = db.Column(db.String(36))
+    general_settings = db.Column(db.JSON, default={})
+    intervention_settings = db.Column(db.JSON, default={})
+    model_settings = db.Column(db.JSON, default={})
+    project_status = db.Column(db.Integer, default=0)
+    algo_type = db.Column(db.String(100))
+    modified_on = db.Column(db.DateTime, default=datetime.now())
+    created_on = db.Column(db.DateTime, default=datetime.now())
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                if not isinstance(value, dict):
+                    value = value[0]
+
+            if property == 'password':
+                value = hash_pass(value)  # we need bytes here (not plain str)
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.name)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def save(self):
+        save(self)
+    def delete(self):
+        delete_from_db(self)

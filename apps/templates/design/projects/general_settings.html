@@ -24,26 +24,26 @@
       <div class="col-lg-12">
         <div class="card col-sm-12">
           <div class="card-body">
-            <form method="post">
+            <form>
              <div class="col-lg-12">
                   <div class="form-group">
                     <label class="form-control-label" for="study_name">Name of the study</label>
-                    <input type="text" name="study_name" required class="form-control" placeholder="Name of the study">
+                    <input type="text" name="study_name" value="{{general_settings.get('study_name','')}}" required class="form-control" placeholder="Name of the study">
                   </div>
 
                <div class="form-group">
                  <label class="form-control-label" for="study_description">Description of the study (optional)</label>
-                 <textarea name="study_description" required rows="4" class="form-control" placeholder="Description of the study ..."></textarea>
+                 <textarea name="study_description" required rows="4" class="form-control" placeholder="Description of the study ...">{{general_settings.get('study_description','')}}</textarea>
                </div>
 
                <div class="form-group">
                  <label class="form-control-label" for="intervention_component_name">Name of the intervention component</label>
-                 <input type="text" name="intervention_component_name" required class="form-control" placeholder="Name of the intervention component">
+                 <input type="text" name="intervention_component_name" value="{{general_settings.get('intervention_component_name','')}}" required class="form-control" placeholder="Name of the intervention component">
                </div>
 
                <div class="form-group">
                  <label class="form-control-label" for="proximal_outcome_name">Name of the proximal outcome</label>
-                 <input type="text" name="proximal_outcome_name" required class="form-control" placeholder="Name of the proximal outcome">
+                 <input type="text" name="proximal_outcome_name" value="{{general_settings.get('proximal_outcome_name','')}}" required class="form-control" placeholder="Name of the proximal outcome">
                </div>
 
 
@@ -77,8 +77,8 @@
                 </div>
               </footer>
               <div class="form-group">
-                <button type="submit" name="back" class="btn btn-primary">Back</button>
-                <button type="submit" name="next" class="btn btn-primary">Next</button>
+<!--                <button type="submit" name="back" class="btn btn-primary">Back</button>-->
+                <button type="submit" formmethod="post" formaction="/projects/settings/personalized_method" name="next" class="btn btn-primary">Next</button>
               </div>
             </form>
           </div>

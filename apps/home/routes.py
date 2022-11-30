@@ -32,6 +32,12 @@ from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
 from flask import render_template, redirect, request, url_for
+from flask_login import login_required, current_user
+from apps.algorithms.models import Projects
+from apps import db
+from uuid import uuid4
+from flask import render_template, redirect, request, url_for, session, Response
+from datetime import datetime
 
 @blueprint.route('/index')
 @login_required
@@ -63,28 +69,83 @@ def route_template(template):
 data = {}
 @blueprint.route('/projects')
 def projects():
-    return render_template("projects/projects.html")
+    return render_template("design/projects/projects.html", project_uuid=uuid4())
 
-@blueprint.route('/projects/settings/<setting_type>/', methods=['GET', 'POST'])
-def project_settings(setting_type):
+
+
+@blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+@blueprint.route('/projects/settings/<setting_type>', methods=['GET', 'POST'])
+def project_settings(setting_type, project_uuid=None):
+    user_id = 1#current_user.get_id()
+    project_details = {}
+    if not session.get("project_settings"):
+        session["project_settings"] = {}
+
+    if project_uuid:
+        project_details = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
+        if project_details:
+            project_details = project_details.as_dict()
+        else:
+            project_details={}
+
+        print("done")
+
 
     if setting_type=="general":
-        if request.method=='POST':
-            data["general"]=request.form.to_dict()
-            return data
-        else:
-            return render_template("design/projects/general_settings.html")
+        return render_template("design/projects/general_settings.html", general_settings = project_details.get("general_settings",{}))
     elif setting_type=="personalized_method":
-        return render_template("design/projects/personalized_method.html")
-    elif setting_type=="scenario":
-        return render_template("design/projects/scenario.html")
-    elif setting_type=="summary":
-        return render_template("design/projects/summary.html")
+        if request.method=='POST':
+            gdata = request.form.to_dict()
+            gdata.pop("next")
+            Projects(created_by=user_id,
+                     uuid=project_uuid,
+                     general_settings=gdata,
+                     intervention_settings={},
+                     model_settings={},
+                     project_status=0,
+                     algo_type="algorithm_type",
+                     modified_on=datetime.now(),
+                     created_on=datetime.now()).save()
+            #session["project_settings"]["general_settings"]=request.form.to_dict().pop("next").pop("back")
+            #project_setting["general_settings"].pop("next")
 
+            return render_template("design/projects/personalized_method.html")
+        else:
+            return render_template("design/projects/personalized_method.html")
+    elif setting_type=="scenario":
+        if request.form.get("back", "")=='update':
+            return render_template("design/projects/scenario.html", scenario=session["project_settings"].get("scenario",{}))
+        if request.method=='POST':
+            session["project_settings"]["personalized_method"]=request.form.to_dict()
+            #project_setting["personalized_method"].pop("next")
+
+            return render_template("design/projects/scenario.html")
+        else:
+            return render_template("design/projects/scenario.html")
+    elif setting_type=="summary":
+
+        if request.method=='POST':
+            session["project_settings"]["scenario"]=request.form.to_dict()
+            #project_setting["scenario"].pop("next")
+            return render_template("design/projects/summary.html", scenario=session["project_settings"].get("scenario",{}))
+        else:
+            return render_template("design/projects/summary.html")
+
+def save_project(project_setting, user_id, uuid):
+    Projects(created_by=user_id,
+             uuid=uuid,
+             general_settings=project_setting,
+             intervention_settings={},
+             model_settings={},
+             project_status=0,
+             algo_type="algorithm_type",
+             modified_on=datetime.now(),
+             created_on=datetime.now()).save()
 
 @blueprint.route('/intervention/settings/<setting_type>', methods=['GET', 'POST'])
 def intervention_settings(setting_type):
     if setting_type=="intervention_option":
+        # SAVE GENERAL SETTINGS
         return render_template("design/intervention/intervention_option.html")
     elif setting_type=="decision_point":
         return render_template("design/intervention/ineligibility.html")

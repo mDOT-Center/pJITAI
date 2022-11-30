@@ -26,12 +26,13 @@
                 <div class="card col-sm-12">
                     <div class="card-body">
                         <form>
+
                             <div class="row">
                             <div class="col">
                                 <div class="form-group">
                                     <label class="form-control-label" for="personalization_method">Personalization Method</label>
-                                    <select id="personalization_method" class="form-select" aria-label="Default select example">
-                                        <option selected>Thompson Sampling - Two intervention option</option>
+                                    <select id="personalization_method" name="personalization_method" class="form-select" aria-label="Default select example">
+                                        <option value="Thompson Sampling - Two intervention option" selected>Thompson Sampling - Two intervention option</option>
                                     </select>
                                 </div>
 
@@ -70,8 +71,8 @@
                                         </div>
                                     </footer>
                                     <div class="form-group float-right">
-                                        <button type="button" class="btn btn-primary">Back</button>
-                                        <button type="button" class="btn btn-primary">Next</button>
+                                        <button type="submit" type="button" formaction="/projects/settings/general" formmethod="post" class="btn btn-primary">Back</button>
+                                        <button type="submit" type="button" formaction="/projects/settings/scenario" formmethod="post" class="btn btn-primary">Next</button>
                                     </div>
                                 </div>
                             </div>
