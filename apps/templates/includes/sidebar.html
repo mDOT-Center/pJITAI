@@ -1,0 +1,61 @@
+<!-- [ navigation menu ] start -->
+<nav class="pcoded-navbar">
+    <div class="navbar-wrapper">
+        <div class="navbar-brand header-logo">
+            <a href="/" class="b-brand">
+                <div class="b-bg">
+                    <i class="feather icon-anchor"></i>
+                </div>
+                <span class="b-title">pJITAI</span>
+            </a>
+            <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
+        </div>
+        <div class="navbar-content scroll-div">
+            <ul class="nav pcoded-inner-navbar">
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Navigation</label>
+                </li>
+
+
+                <li data-username="add new configuration"
+                    class="nav-item pcoded-hasmenu {% if 'new_project' in segment %} active {% endif %}">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-clipboard"></i></span><span class="pcoded-mtext">General Settings</span></a>
+                    <ul class="pcoded-submenu" style="display: none;">
+                        <li class=""><a href="/projects/settings/general/123" class="">General Info</a></li>
+                        <li class=""><a href="/projects/settings/personalized_method/123" class="">Personalization Method</a></li>
+                        <li class=""><a href="/projects/settings/scenario/123" class="">Scenario</a></li>
+                        <li class=""><a href="/projects/settings/summary/123" class="">Summary</a></li>
+                    </ul>
+                </li>
+
+                <li data-username="add new configuration"
+                    class="nav-item pcoded-hasmenu {% if 'new_project' in segment %} active {% endif %}">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-pause"></i></span><span class="pcoded-mtext">Intervention Settings</span></a>
+                    <ul class="pcoded-submenu" style="display: none;">
+                        <li class=""><a href="/intervention/settings/intervention_option/123" class="">Intervention Options</a></li>
+                        <li class=""><a href="/intervention/settings/decision_point/123" class="">Decision Point</a></li>
+                        <li class=""><a href="/intervention/settings/ineligibility/123" class="">Ineligibility</a></li>
+                        <li class=""><a href="/intervention/settings/intervention_probability/123" class="">Intervention Probability</a></li>
+                        <li class=""><a href="/intervention/settings/update_point/123" class="">Update Point</a></li>
+                        <li class=""><a href="/intervention/settings/summary/123" class="">Summary</a></li>
+                    </ul>
+                </li>
+
+                <li data-username="add new configuration"
+                    class="nav-item pcoded-hasmenu {% if 'new_project' in segment %} active {% endif %}">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-sliders"></i></span><span class="pcoded-mtext">Model Settings</span></a>
+                    <ul class="pcoded-submenu" style="display: none;">
+                        <li class=""><a href="/model/settings/proximal_outcome_attribute/123" class="">Proximal Outcome Attributes</a></li>
+                        <li class=""><a href="/model/settings/intercept/123" class="">Intercept</a></li>
+                        <li class=""><a href="/model/settings/main_treatment_effect/123" class="">Main Treatment Effect</a></li>
+                        <li class=""><a href="/model/settings/covariates/123" class="">Covariates</a></li>
+                        <li class=""><a href="/model/settings/summary/123" class="">Summary</a></li>
+                    </ul>
+                </li>
+
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- [ navigation menu ] end -->

@@ -147,24 +147,24 @@ def intervention_settings(setting_type,project_uuid):
     elif setting_type=="summary":
         return render_template("design/intervention/summary.html",project_uuid=project_uuid)
 
-@blueprint.route('/model/settings/<setting_type>', methods=['GET', 'POST'])
-def model_settings(setting_type):
+@blueprint.route('/model/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+def model_settings(setting_type,project_uuid):
     if setting_type=="proximal_outcome_attribute":
-        return render_template("design/model/proximal_outcome_attribute.html")
+        return render_template("design/model/proximal_outcome_attribute.html",project_uuid=project_uuid)
     elif setting_type=="intercept":
-        return render_template("design/model/intercept.html")
+        return render_template("design/model/intercept.html",project_uuid=project_uuid)
     elif setting_type=="main_treatment_effect":
-        return render_template("design/model/main_treatment_effect.html")
+        return render_template("design/model/main_treatment_effect.html",project_uuid=project_uuid)
     elif setting_type=="covariates":
-        return render_template("design/model/covariates.html")
+        return render_template("design/model/covariates.html",project_uuid=project_uuid)
     elif setting_type=="covariate_name":
-        return render_template("design/model/covariate_name.html")
+        return render_template("design/model/covariate_name.html",project_uuid=project_uuid)
     elif setting_type=="covariate_attributes":
-        return render_template("design/model/covariate_attributes.html")
+        return render_template("design/model/covariate_attributes.html",project_uuid=project_uuid)
     elif setting_type=="covariate_main_effect":
-        return render_template("design/model/covariate_main_effect.html")
+        return render_template("design/model/covariate_main_effect.html",project_uuid=project_uuid)
     elif setting_type=="covariate_tailored_effect":
-        return render_template("design/model/covariate_tailored_effect.html")
+        return render_template("design/model/covariate_tailored_effect.html",project_uuid=project_uuid)
     elif setting_type=="summary":
         return render_template("design/model/summary.html")
 # Helper - Extract current page name from request

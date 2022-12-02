@@ -7,6 +7,36 @@
 
 {% block content %}
 
+<script>
+    var field_id = 0;
+  function add_form_fields(val) {
+    field_id++;
+    var divtest = document.createElement("div");
+	divtest.setAttribute("class", "form-group");
+
+	var objTo = document.getElementById('all_conditions_div')
+	  var rdiv = 'feature_';
+      divtest.innerHTML =`<div id="condition_div_`+field_id+`">
+                                                <label class="form-control-label" for="condition_`+field_id+`">Name of the
+                                                    condition `+field_id+`</label>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control" placeholder="Condition `+field_id+`"
+                                                           id="condition_`+field_id+`" name="condition_`+field_id+`">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-danger" type="button" onclick="remove_form_fields(`+ field_id +`);"><i
+                                                                class="fa fa-trash float-right" aria-hidden="true">
+                                                            Delete</i></button>
+                                                    </div>
+                                                </div>
+                                            </div>`;
+    objTo.appendChild(divtest)
+}
+
+function remove_form_fields(rid) {
+    $('#condition_div_'+rid).remove();
+   }
+
+</script>
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
     <div class="pcoded-wrapper">
@@ -31,20 +61,13 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card">
-                                        <div class="card-header">
-                                            <div id="condition">
-                                                <label class="form-control-label" for="condition_1">Name of the condition 1</label>
-                                                <div class="input-group mb-3">
-                                                    <input type="text" class="form-control" placeholder="Condition 1" id="condition_1" name="condition_1">
-                                                    <div class="input-group-append">
-                                                        <button class="btn btn-danger" type="button"> <i class="fa fa-trash float-right" aria-hidden="true"> Delete</i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="card-header" id="all_conditions_div">
 
-                                            <a href=""> <p style="border: 1px dotted green; padding:5px;    font-size: 20px;margin-top: 60px;"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add a new condition</p></a>
                                         </div>
-
+                                        <a onclick="add_form_fields('parameters');"><p
+                                                style="border: 1px dotted green; padding:5px;font-size: 20px;margin-top: 60px;text-align: center;color: green;cursor: pointer;">
+                                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Add a new condition
+                                        </p></a>
                                     </div>
                                 </div>
                             </div>
@@ -56,12 +79,12 @@
 
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active text-uppercase" id="home-tab" data-toggle="tab"
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
                                                href="#home" role="tab" aria-controls="home" aria-selected="true">General
                                                 Explaination</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-uppercase" id="profile-tab" data-toggle="tab"
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
                                                href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
                                                 Example</a>
                                         </li>
@@ -105,8 +128,14 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <button type="submit" type="button" formaction="/intervention/settings/decision_point/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>
-                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_probability/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                <button type="submit" type="button"
+                                                        formaction="/intervention/settings/decision_point/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-outline-primary">Back
+                                                </button>
+                                                <button type="submit" type="button"
+                                                        formaction="/intervention/settings/intervention_probability/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                         </div>
 
