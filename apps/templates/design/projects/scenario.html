@@ -1,94 +1,123 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Page Blank {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-<script>
-
-</script>
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> General Settings / Scenario <i
-            class="ni ni-question" aria-hidden="true"></i></h1>
-    <hr>
-    <div class="container col-sm-12">
-        <div class="row">
-
-                <div class="card col-sm-12">
-                    <div class="card-body">
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
                         <form>
-                            {{scenario}}
                             <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="personalized_scenario">How will you configure your personalized JITAI</label>
-                                    <select id="personalized_scenario" name="personalized_scenario" class="form-select" aria-label="Default select example">
-                                        <option value="Scenario 1: I have published results from MRT" selected>Scenario 1: I have published results from MRT</option>
-                                    </select>
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>General Settings / Scenario</h3>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="personalized_scenario">How will you configure your personalized JITAI</label>
+                                                <select id="personalized_scenario" name="personalized_scenario" class="form-control">
+                                                    <option value="Scenario 1: I have published results from MRT" selected>Scenario 1: I have published results from MRT</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active text-uppercase" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">General
+                                                Explaination</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-uppercase" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p class="mb-0">Raw denim you probably haven't heard of them jean shorts
+                                                Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse.
+                                                Mustache cliche tempor, williamsburg carles vegan helvetica.
+                                                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater
+                                                eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia
+                                                cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
+                                                voluptate nisi qui.
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p class="mb-0">Food truck fixie locavore, accusamus mcsweeney's marfa nulla
+                                                single-origin coffee squid. Exercitation +1 labore velit, blog sartorial
+                                                PBR leggings next level wes anderson artisan four loko farm-to-table
+                                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer
+                                                mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
+                                                organic, assumenda labore aesthetic magna delectus mollit. Keytar
+                                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown.
+                                                Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
+                                                beard ut DIY ethical culpa terry richardson biodiesel. Art party
+                                                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
+                                                tattooed echo park.</p>
+                                        </div>
+
+                                    </div>
                                 </div>
 
 
+                                <!-- [ tabs ] end -->
                             </div>
-
-                                <div class="row">
-                                    <hr class="hr_style">
-                                    <footer class="">
-                                        <div class="nav-wrapper">
-                                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Explanation</a>
-                                                </li>
-
-                                            </ul>
-                                        </div>
-                                        <div class="card shadow">
-                                            <div class="card-body">
-                                                <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
-                                                    </div>
-                                                </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <button type="submit" formmethod="post" formaction="/projects/settings/personalized_method/{{project_uuid}}" type="button" class="btn btn-outline-primary">Back</button>
+                                                <button type="submit" formmethod="post" formaction="/projects/settings/summary/{{project_uuid}}" type="button" class="btn btn-primary">Next</button>
                                             </div>
                                         </div>
-                                    </footer>
-                                    <div class="form-group float-right">
-                                        <button type="submit" formmethod="post" formaction="/projects/settings/personalized_method/{{project_uuid}}" type="button" class="btn btn-primary">Back</button>
-                                        <button type="submit" formmethod="post" formaction="/projects/settings/summary/{{project_uuid}}" type="button" class="btn btn-primary">Next</button>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
-
-
-
-
+            </div>
         </div>
     </div>
-
 </div>
-
-{% include "includes/footer.html" %}
-
-</div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE -->
-{% block javascripts %}
-
-<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

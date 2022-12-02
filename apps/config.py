@@ -50,6 +50,9 @@ class Config(object):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # Assets Management
+    ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
+
 
 class ProductionConfig(Config):
     DEBUG = False
