@@ -135,18 +135,17 @@ def update_general_settings(data,project_details_obj):
 @blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def intervention_settings(setting_type,project_uuid):
     if setting_type=="intervention_option":
-
-        return render_template("design/intervention/intervention_option.html")
+        return render_template("design/intervention/intervention_option.html",project_uuid=project_uuid)
     elif setting_type=="decision_point":
-        return render_template("design/intervention/ineligibility.html")
+        return render_template("design/intervention/decision_point.html",project_uuid=project_uuid)
     elif setting_type=="ineligibility":
-        return render_template("design/intervention/ineligibility.html")
+        return render_template("design/intervention/ineligibility.html",project_uuid=project_uuid)
     elif setting_type=="intervention_probability":
-        return render_template("design/intervention/intervention_probability.html")
+        return render_template("design/intervention/intervention_probability.html",project_uuid=project_uuid)
     elif setting_type=="update_point":
-        return render_template("design/intervention/update_point.html")
+        return render_template("design/intervention/update_point.html",project_uuid=project_uuid)
     elif setting_type=="summary":
-        return render_template("design/intervention/summary.html")
+        return render_template("design/intervention/summary.html",project_uuid=project_uuid)
 
 @blueprint.route('/model/settings/<setting_type>', methods=['GET', 'POST'])
 def model_settings(setting_type):
