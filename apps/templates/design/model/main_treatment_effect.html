@@ -1,45 +1,52 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Page Blank {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-<script>
-
-</script>
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Model Settings / Main Treatment Effect</h1>
-    <hr>
-    <div class="container col-sm-12">
-        <div class="row">
-
-                <div class="card col-sm-12">
-                    <div class="card-body">
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
                         <form>
                             <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="treatment_prior_mean">Prior mean of the main treatment effect</label>
-                                    <input type="text" id="treatment_prior_mean" class="form-control" placeholder="Option B">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="treatment_prior_standard_deviation">Prior standard deviation of the main treatment effect</label>
-                                    <input type="text" id="treatment_prior_standard_deviation" class="form-control" placeholder="Option B">
-                                </div>
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Model Settings / Main Treatment Effect</h3>
+                                        </div>
 
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="col">
-                                <p style="
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="treatment_prior_mean">Prior mean of the main treatment effect</label>
+                                                        <input type="text" id="treatment_prior_mean" class="form-control" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="treatment_prior_standard_deviation">Prior standard deviation of the main treatment effect</label>
+                                                        <input type="text" id="treatment_prior_standard_deviation" class="form-control" required>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col">
+                                                    <p style="
                                     background-color: #deeaff;
                                     color: black;
                                     padding: 10px;
@@ -47,74 +54,102 @@
                                     border-radius: 10px;
                                 ">
 
-                                    (log) <span style="background:#f2f2f2; font-size:14px;">Next 30 min step count</span> ~ <br>
-                                    α_0+ <br>
-                                    + β_0* <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
-                                    + ϵ <br>
-                                    α_0~N(<span style="color:red;">μ_{α_0}, σ_{α_0}</span><sup>2</sup>) <br>
-                                   <span style="color:red;"> We're asking for the red values.</span>
+                                                        (log) <span style="background:#f2f2f2; font-size:14px;">Next 30 min step count</span> ~ <br>
+                                                        α<sub>0</sub>+ <br>
+                                                        + β<sub>0</sub>* <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
+                                                        + ϵ <br>
+                                                        α<sub>0</sub>~N(<span style="color:red;">μ<sub>{α<sub>0</sub>}</sub>, σ<sub>{α<sub>0</sub>}<sup>2</sup></sub></span>) <br>
+                                                        <span style="color:red;"> We're asking for the red values.</span>
 
-                                </p>
-                            </div>
-
-                                <div class="row">
-                                    <hr class="hr_style">
-                                    <footer class="">
-                                        <div class="nav-wrapper">
-                                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
-                                                </li>
-
-                                            </ul>
-                                        </div>
-                                        <div class="card shadow">
-                                            <div class="card-body">
-                                                <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
-
-                                                    </div>
-                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-                                                    </div>
-
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
-                                    </footer>
-                                    <div class="form-group float-right">
-                                        <button type="button" class="btn btn-primary">Back</button>
-                                        <button type="button" class="btn btn-primary">Next</button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">General
+                                                Explaination</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p class="mb-0">Raw denim you probably haven't heard of them jean shorts
+                                                Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse.
+                                                Mustache cliche tempor, williamsburg carles vegan helvetica.
+                                                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater
+                                                eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia
+                                                cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
+                                                voluptate nisi qui.
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p class="mb-0">Food truck fixie locavore, accusamus mcsweeney's marfa nulla
+                                                single-origin coffee squid. Exercitation +1 labore velit, blog sartorial
+                                                PBR leggings next level wes anderson artisan four loko farm-to-table
+                                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer
+                                                mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
+                                                organic, assumenda labore aesthetic magna delectus mollit. Keytar
+                                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown.
+                                                Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
+                                                beard ut DIY ethical culpa terry richardson biodiesel. Art party
+                                                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
+                                                tattooed echo park.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <button type="submit" type="button"
+                                                        formaction="/model/settings/intercept/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-outline-primary">Back
+                                                </button>
+                                                <button type="submit" type="button"
+                                                        formaction="/model/settings/covariates/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
-
-
-
-
+            </div>
         </div>
     </div>
-
 </div>
-
-{% include "includes/footer.html" %}
-
-</div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE -->
-{% block javascripts %}
-
-<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
