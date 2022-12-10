@@ -146,59 +146,81 @@ def update_intervention_settings(data,project_details_obj):
         project_details_obj.intervention_settings = settings
         db.session.commit()
 
+def update_model_settings(data,project_details_obj):
+    if project_details_obj:
+        settings = copy.deepcopy(project_details_obj.model_settings)
+        settings.update(data)
+        project_details_obj.model_settings = settings
+        db.session.commit()
+
 @blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def intervention_settings(setting_type,project_uuid):
     user_id = 1#current_user.get_id()
     intervention_settings= {}
-
+    decision_point_frequency_time = ['Hour', 'Day', 'Week', 'Month']
+    update_duration=['Daily', 'Weekly', 'Monthly']
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
 
     if project_details.get("intervention_settings"):
         intervention_settings= project_details.get("intervention_settings")
+        conditions = {}
+        for k,v in intervention_settings.items():
+            if k.startswith("condition"):
+                conditions[k]=v
 
     if request.method=='POST':
-        for k in list(intervention_settings.keys()):
-            if k.startswith("condition"):
-                intervention_settings.pop(k)
+        if 'ineligibility' in request.referrer:
+            for k in list(intervention_settings.keys()):
+                if k.startswith("condition"):
+                    intervention_settings.pop(k)
         update_intervention_settings(request.form.to_dict(),project_details_obj)
 
     if setting_type=="intervention_option":
         return render_template("design/intervention/intervention_option.html", segment="intervention_option", settings = intervention_settings,project_uuid=project_uuid)
 
     elif setting_type=="decision_point":
-        decision_point_frequency_time = ['Hour', 'Day', 'Week', 'Month']
+
         return render_template("design/intervention/decision_point.html", segment="intervention_decision_point",decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="ineligibility":
-        conditions = {}
-        for k,v in intervention_settings.items():
-            if k.startswith("condition"):
-                conditions[k]=v
+
         return render_template("design/intervention/ineligibility.html", segment="intervention_ineligibility", conditions=conditions, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="intervention_probability":
         return render_template("design/intervention/intervention_probability.html", segment="intervention_probability", settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="update_point":
-        return render_template("design/intervention/update_point.html", segment="intervention_update_point", settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/update_point.html", segment="intervention_update_point", update_duration=update_duration, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
-        return render_template("design/intervention/summary.html", segment="intervention_summary", settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/summary.html", segment="intervention_summary", update_duration=update_duration, conditions=conditions, decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
 
 @blueprint.route('/model/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def model_settings(setting_type,project_uuid):
+    user_id = 1#current_user.get_id()
+    model_settings= {}
+
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+
+    if project_details.get("model_settings"):
+        model_settings= project_details.get("model_settings")
+
+
+    if request.method=='POST':
+        update_model_settings(request.form.to_dict(),project_details_obj)
+
     if setting_type=="proximal_outcome_attribute":
-        return render_template("design/model/proximal_outcome_attribute.html",project_uuid=project_uuid)
+        return render_template("design/model/proximal_outcome_attribute.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="intercept":
-        return render_template("design/model/intercept.html",project_uuid=project_uuid)
+        return render_template("design/model/intercept.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="main_treatment_effect":
-        return render_template("design/model/main_treatment_effect.html",project_uuid=project_uuid)
+        return render_template("design/model/main_treatment_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="covariates":
-        return render_template("design/model/covariates.html",project_uuid=project_uuid)
+        return render_template("design/model/covariates.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="covariate_name":
-        return render_template("design/model/covariate_name.html",project_uuid=project_uuid)
+        return render_template("design/model/covariate_name.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="covariate_attributes":
-        return render_template("design/model/covariate_attributes.html",project_uuid=project_uuid)
+        return render_template("design/model/covariate_attributes.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="covariate_main_effect":
-        return render_template("design/model/covariate_main_effect.html",project_uuid=project_uuid)
+        return render_template("design/model/covariate_main_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="covariate_tailored_effect":
-        return render_template("design/model/covariate_tailored_effect.html",project_uuid=project_uuid)
+        return render_template("design/model/covariate_tailored_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
         return render_template("design/model/summary.html")
 # Helper - Extract current page name from request

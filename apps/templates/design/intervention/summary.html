@@ -1,151 +1,219 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Page Blank {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-<script>
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Intervention Settings / Summary</h3>
+                                        </div>
 
-</script>
-<style>
+                                    </div>
+                                </div>
+                            </div>
 
-</style>
 
-
-<div class="container-fluid">
-
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Intervention Settings / Summary</h1>
-    <hr class="hr_style">
-    <div class="container col-sm-12">
-        <div class="row">
-            <p style="
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <p style="
                                     background-color: #fff;
                                     color: black;
                                     padding: 10px;
                                     border: 1px dotted;
                                     border-radius: 10px;
                                 ">
-                Congrats! You have completed the intervention settings.
-                Please review and confirm.
-                After you confirm, please click “Go to Model Setting.”
-            </p>
-                <div class="card col-sm-12">
-                    <div class="card-body">
-                        <form>
-                            <div class="row">
-                            <div class="col">
-                                <h3>Intervention Settings</h3>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="intervention_option_a">Intervention Option A</label>
-                                    <input disabled type="text" id="intervention_option_a" class="form-control" placeholder="Option A">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="intervention_option_b">Intervention Option B</label>
-                                    <input disabled type="text" id="intervention_option_b" class="form-control" placeholder="Option B">
-                                </div>
-<hr class="hr_style">
-                                <h3>Decision Point</h3>
-                                <div class="form-group">
-                                    <select disabled id="decision_point_opt_1" class="form-select" aria-label="Default select example">
-                                        <option selected>5</option>
-                                    </select> times per
-                                    <select disabled id="decision_point_opt_2" class="form-select" aria-label="Default select example">
-                                        <option selected>Day</option>
-                                    </select>
-                                </div>
-                                <hr class="hr_style">
-                                <h3>Conditions</h3>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="condition_1">Name of the condition 1</label>
-                                    <input disabled type="text" id="condition_1" class="form-control" placeholder="Option A">
-                                </div>
-                                <hr class="hr_style">
-                                <h3>Intervention Probability</h3>
-                                <div class="form-group">
-                                    <label  class="form-control-label" for="intervention_probability_lower_bound">Intervention probability lower bound (when eligible)</label>
-                                    <input disabled type="text" id="intervention_probability_lower_bound" class="form-control" placeholder="Option A">
-                                </div>
+                                                Congrats! You have completed the intervention settings.
+                                                Please review and confirm.
+                                                After you confirm, please click “Go to Model Setting.”
+                                            </p>
 
-                                <div class="form-group">
-                                    <label  class="form-control-label" for="intervention_probability_upper_bound">Intervention probability upper bound (when eligible)</label>
-                                    <input disabled type="text" id="intervention_probability_upper_bound" class="form-control" placeholder="Option A">
-                                </div>
+                                            <h3>Intervention Settings</h3>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="intervention_option_a">Intervention Option A</label>
+                                                <input disabled value="{{settings.get('intervention_option_a','')}}" type="text" id="intervention_option_a" name="intervention_option_a" class="form-control" placeholder="Option A" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="intervention_option_b">Intervention Option B</label>
+                                                <input disabled value="{{settings.get('intervention_option_b','')}}" type="text" id="intervention_option_b" name="intervention_option_b" class="form-control" placeholder="Option B" required>
+                                            </div>
+                                            <hr class="hr_style">
+                                            <h3>Decision Point</h3>
+                                            <div class="form-group">
 
-                                <hr class="hr_style">
-                                <h3>Update Point</h3>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="update_day">When should the pJITAI update?</label>
-                                    <select disabled id="update_day" class="form-select" aria-label="Default select example">
-                                        <option selected>Daily</option>
-                                    </select> At
-                                    <select disabled id="update_time" class="form-select" aria-label="Default select example">
-                                        <option selected>12:00</option>
-                                    </select>
-                                </div>
-
-                            </div>
-
-                                <div class="row">
-                                    <hr class="hr_style">
-                                    <footer class="">
-                                        <div class="nav-wrapper">
-                                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
-                                                </li>
-
-                                            </ul>
-                                        </div>
-                                        <div class="card shadow">
-                                            <div class="card-body">
-                                                <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
+                                                <select disabled id="decision_point_frequency" name="decision_point_frequency" class="form-select" aria-label="Default select example">
+                                                    {% for n in range(1,25) %}
+                                                    <option {% if settings.decision_point_frequency==n|string %} selected{% endif %} value="{{n}}">{{n}}</option>
+                                                    {% endfor %}
+                                                </select> times per
+                                                <select disabled id="decision_point_frequency_time" name="decision_point_frequency_time" class="form-select" aria-label="Default select example">
+                                                    {% for tm in decision_point_frequency_time %}
+                                                    <option {% if settings.decision_point_frequency_time==tm %} selected{% endif %} value="{{tm}}">{{tm}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <hr class="hr_style">
+                                            <h3>Conditions</h3>
+                                            <div class="form-group">
+                                                {% for cond,v in conditions.items() %}
+                                                <div id="condition_div_{{loop.index}}">
+                                                    <label class="form-control-label" for="{{cond}}">Name of the
+                                                        condition {{loop.index}}</label>
+                                                    <div class="input-group mb-3">
+                                                        <input value="{{v}}" type="text" class="form-control"
+                                                               id="{{cond}}" name="{{cond}}" disabled>
 
                                                     </div>
-                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-                                                    </div>
+                                                </div>
+                                                {%endfor%}
+                                            </div>
+                                            <hr class="hr_style">
+                                            <h3>Intervention Probability</h3>
+                                            <div class="form-group">
+                                                <label  class="form-control-label" for="intervention_probability_lower_bound">Intervention probability lower bound (when eligible)</label>
+                                                <div class="input-group mb-3">
+                                                    <input disabled value="{{settings.intervention_probability_lower_bound}}" type="text" id="intervention_probability_lower_bound" name="intervention_probability_lower_bound" class="form-control" required>
 
                                                 </div>
+
+                                            </div>
+                                            <div class="form-group">
+                                                <label  class="form-control-label" for="intervention_probability_upper_bound">Intervention probability upper bound (when eligible)</label>
+                                                <div class="input-group mb-3">
+                                                    <input disabled value="{{settings.intervention_probability_upper_bound}}" type="text" id="intervention_probability_upper_bound" name="intervention_probability_upper_bound" class="form-control" required>
+
+                                                </div>
+
+                                            </div>
+
+                                            <hr class="hr_style">
+                                            <h3>Update Point</h3>
+                                            <div class="form-group">
+                                                <label  class="form-control-label" for="update_time">When should the pJITAI update?</label>
+                                                <div class="input-group">
+                                                    <select id="update_day" name="update_day" class="form-control" disabled>
+                                                        {% for udur in update_duration%}
+                                                        <option {% if settings.update_day==udur %} selected{% endif %}  value="{{udur}}">{{udur}}</option>
+                                                        {%endfor%}
+
+                                                    </select>
+                                                    <div class="input-group-append">
+                                                        <select id="update_hour" name="update_hour" class="form-control" disabled>
+                                                            {% for n in range(1,13) %}
+                                                            <option {% if settings.update_hour==n|string+':00am' %} selected{% endif %} value="{{n}}:00am">AT {{n}}:00 AM</option>
+                                                            {% endfor %}
+                                                            {% for n in range(1,13) %}
+                                                            <option {% if settings.update_hour==n|string+':00pm' %} selected{% endif %} value="{{n}}:00pm">AT {{n}}:00 PM</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
-                                    </footer>
-                                    <div class="form-group float-right">
-                                        <button type="button" class="btn btn-primary">Back</button>
-                                        <button type="button" class="btn btn-primary">Go to Model Settings</button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">General
+                                                Explaination</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p class="mb-0">Raw denim you probably haven't heard of them jean shorts
+                                                Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse.
+                                                Mustache cliche tempor, williamsburg carles vegan helvetica.
+                                                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater
+                                                eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia
+                                                cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
+                                                voluptate nisi qui.
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p class="mb-0">Food truck fixie locavore, accusamus mcsweeney's marfa nulla
+                                                single-origin coffee squid. Exercitation +1 labore velit, blog sartorial
+                                                PBR leggings next level wes anderson artisan four loko farm-to-table
+                                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer
+                                                mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
+                                                organic, assumenda labore aesthetic magna delectus mollit. Keytar
+                                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown.
+                                                Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
+                                                beard ut DIY ethical culpa terry richardson biodiesel. Art party
+                                                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
+                                                tattooed echo park.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+<!--                                                <button type="submit" name="back" class="btn btn btn-outline-primary">-->
+<!--                                                    Back-->
+<!--                                                </button>-->
+<!--                                                <button type="submit" formmethod="post"-->
+<!--                                                        formaction="/projects/settings/personalized_method/{{project_uuid}}"-->
+<!--                                                        class="btn btn-primary">Next-->
+<!--                                                </button>-->
+
+                                                <a href="/intervention/settings/update_point/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                <a href="/model/settings/proximal_outcome_attribute/{{project_uuid}}" class="btn btn-primary" role="button">Next</a>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
-
-
-
-
+            </div>
         </div>
     </div>
-
 </div>
-
-{% include "includes/footer.html" %}
-
-</div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE -->
-{% block javascripts %}
-
-<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

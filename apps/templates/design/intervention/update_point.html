@@ -36,18 +36,18 @@
                                                 <label  class="form-control-label" for="update_time">When should the pJITAI update?</label>
                                                 <div class="input-group">
                                                     <select id="update_day" name="update_day" class="form-control">
-                                                        <option selected value="day">Daily</option>
-                                                        <option value="week">Weekly</option>
-                                                        <option value="month">Monthly</option>
+                                                        {% for udur in update_duration%}
+                                                        <option {% if settings.update_day==udur %} selected{% endif %}  value="{{udur}}">{{udur}}</option>
+                                                        {%endfor%}
+
                                                     </select>
                                                     <div class="input-group-append">
-
                                                         <select id="update_hour" name="update_hour" class="form-control">
                                                             {% for n in range(1,13) %}
-                                                                <option value="{{n}}:00am">AT {{n}}:00 AM</option>
+                                                                <option {% if settings.update_hour==n|string+':00am' %} selected{% endif %} value="{{n}}:00am">AT {{n}}:00 AM</option>
                                                             {% endfor %}
                                                             {% for n in range(1,13) %}
-                                                            <option value="{{n}}:00pm">AT {{n}}:00 PM</option>
+                                                            <option {% if settings.update_hour==n|string+':00pm' %} selected{% endif %} value="{{n}}:00pm">AT {{n}}:00 PM</option>
                                                             {% endfor %}
                                                         </select>
                                                     </div>
@@ -119,7 +119,8 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_probability/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>
+                                                <a href="/intervention/settings/intervention_probability/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
+<!--                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_probability/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
                                                 <button type="submit" type="button" formaction="/intervention/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
                                             </div>
                                         </div>
