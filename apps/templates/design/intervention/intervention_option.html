@@ -34,11 +34,11 @@
                                         <div class="card-header">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="intervention_option_a">Intervention Option A</label>
-                                                <input type="text" id="intervention_option_a" class="form-control" placeholder="Option A" required>
+                                                <input value="{{settings.get('intervention_option_a','')}}" type="text" id="intervention_option_a" name="intervention_option_a" class="form-control" placeholder="Option A" required>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-control-label" for="intervention_option_b">Intervention Option B</label>
-                                                <input type="text" id="intervention_option_b" class="form-control" placeholder="Option B" required>
+                                                <input value="{{settings.get('intervention_option_b','')}}" type="text" id="intervention_option_b" name="intervention_option_b" class="form-control" placeholder="Option B" required>
                                             </div>
                                             <p style="color:red;">Option A and Option B cannot be interchanged. Please read the explanation to make sure that you define them correctly.</p>
                                         </div>
@@ -103,7 +103,8 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <button type="submit" type="button" formaction="/projects/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>
+                                                <a href="/projects/settings/summary/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
+<!--                                                <button type="submit" type="button" formaction="/projects/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
                                                 <button type="submit" type="button" formaction="/intervention/settings/decision_point/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
                                             </div>
                                         </div>

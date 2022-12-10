@@ -8,7 +8,8 @@
 {% block content %}
 
 <script>
-    var field_id = 0;
+console.log();
+    var field_id = {{conditions|length}};
   function add_form_fields(val) {
     field_id++;
     var divtest = document.createElement("div");
@@ -21,7 +22,7 @@
                                                     condition `+field_id+`</label>
                                                 <div class="input-group mb-3">
                                                     <input type="text" class="form-control" placeholder="Condition `+field_id+`"
-                                                           id="condition_`+field_id+`" name="condition_`+field_id+`">
+                                                           id="condition_`+field_id+`" name="condition_`+field_id+`" required>
                                                     <div class="input-group-append">
                                                         <button class="btn btn-danger" type="button" onclick="remove_form_fields(`+ field_id +`);"><i
                                                                 class="fa fa-trash float-right" aria-hidden="true">
@@ -62,7 +63,21 @@ function remove_form_fields(rid) {
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header" id="all_conditions_div">
-
+                                        {% for cond,v in conditions.items() %}
+                                            <div id="condition_div_{{loop.index}}">
+                                                <label class="form-control-label" for="{{cond}}">Name of the
+                                                    condition {{loop.index}}</label>
+                                                <div class="input-group mb-3">
+                                                    <input value="{{v}}" type="text" class="form-control"
+                                                           id="{{cond}}" name="{{cond}}" required>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-danger" type="button" onclick="remove_form_fields({{loop.index}});"><i
+                                                                class="fa fa-trash float-right" aria-hidden="true">
+                                                            Delete</i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {%endfor%}
                                         </div>
                                         <a onclick="add_form_fields('parameters');"><p
                                                 style="border: 1px dotted green; padding:5px;font-size: 20px;margin-top: 60px;text-align: center;color: green;cursor: pointer;">
@@ -128,10 +143,7 @@ function remove_form_fields(rid) {
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <button type="submit" type="button"
-                                                        formaction="/intervention/settings/decision_point/{{project_uuid}}"
-                                                        formmethod="post" class="btn btn-outline-primary">Back
-                                                </button>
+                                                <a href="/intervention/settings/decision_point/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
                                                 <button type="submit" type="button"
                                                         formaction="/intervention/settings/intervention_probability/{{project_uuid}}"
                                                         formmethod="post" class="btn btn-primary">Next

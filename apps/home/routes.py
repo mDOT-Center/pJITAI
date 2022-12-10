@@ -72,15 +72,7 @@ data = {}
 def projects():
     return render_template("design/projects/projects.html", project_uuid=uuid4())
 
-
-
-@blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
-def project_settings(setting_type, project_uuid=None):
-    user_id = 1#current_user.get_id()
-    project_details = {}
-    project_details_obj = None
-    general_settings= {}
-
+def get_project_details(project_uuid, user_id):
     if project_uuid:
         project_details_obj = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
         if project_details_obj:
@@ -88,11 +80,26 @@ def project_settings(setting_type, project_uuid=None):
         else:
             project_details={}
 
+    return project_details, project_details_obj
+
+@blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+def project_settings(setting_type, project_uuid=None):
+    user_id = 1#current_user.get_id()
+    general_settings= {}
+
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    # if project_uuid:
+    #     project_details_obj = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
+    #     if project_details_obj:
+    #         project_details = project_details_obj.as_dict()
+    #     else:
+    #         project_details={}
+
     if project_details.get("general_settings"):
         general_settings= project_details.get("general_settings")
 
     if setting_type=="general":
-        return render_template("design/projects/general_settings.html", general_settings = general_settings,project_uuid=project_uuid)
+        return render_template("design/projects/general_settings.html", segment="general_settings", general_settings = general_settings,project_uuid=project_uuid)
     elif setting_type=="personalized_method":
         if request.method=='POST':
             if project_details_obj:
@@ -109,21 +116,21 @@ def project_settings(setting_type, project_uuid=None):
                          algo_type="algorithm_type",
                          modified_on=datetime.now(),
                          created_on=datetime.now()).save()
-            return render_template("design/projects/personalized_method.html", general_settings = general_settings ,project_uuid=project_uuid)
+            return render_template("design/projects/personalized_method.html", segment="general_personalized_method", general_settings = general_settings ,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/personalized_method.html", general_settings = general_settings ,project_uuid=project_uuid)
+            return render_template("design/projects/personalized_method.html", segment="general_personalized_method", general_settings = general_settings ,project_uuid=project_uuid)
     elif setting_type=="scenario":
         if request.method=='POST':
             update_general_settings(request.form.to_dict(),project_details_obj)
-            return render_template("design/projects/scenario.html", general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/scenario.html", segment="general_scenario", general_settings = general_settings,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/scenario.html", general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/scenario.html", segment="general_scenario", general_settings = general_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
         if request.method=='POST':
             update_general_settings(request.form.to_dict(),project_details_obj)
-            return render_template("design/projects/summary.html", general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/summary.html", segment="general_summary", general_settings = general_settings,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/summary.html", general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/summary.html", segment="general_summary", general_settings = general_settings,project_uuid=project_uuid)
 
 def update_general_settings(data,project_details_obj):
     if project_details_obj:
@@ -132,20 +139,47 @@ def update_general_settings(data,project_details_obj):
         project_details_obj.general_settings = gen_settings
         db.session.commit()
 
+def update_intervention_settings(data,project_details_obj):
+    if project_details_obj:
+        settings = copy.deepcopy(project_details_obj.intervention_settings)
+        settings.update(data)
+        project_details_obj.intervention_settings = settings
+        db.session.commit()
+
 @blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def intervention_settings(setting_type,project_uuid):
+    user_id = 1#current_user.get_id()
+    intervention_settings= {}
+
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+
+    if project_details.get("intervention_settings"):
+        intervention_settings= project_details.get("intervention_settings")
+
+    if request.method=='POST':
+        for k in list(intervention_settings.keys()):
+            if k.startswith("condition"):
+                intervention_settings.pop(k)
+        update_intervention_settings(request.form.to_dict(),project_details_obj)
+
     if setting_type=="intervention_option":
-        return render_template("design/intervention/intervention_option.html",project_uuid=project_uuid)
+        return render_template("design/intervention/intervention_option.html", segment="intervention_option", settings = intervention_settings,project_uuid=project_uuid)
+
     elif setting_type=="decision_point":
-        return render_template("design/intervention/decision_point.html",project_uuid=project_uuid)
+        decision_point_frequency_time = ['Hour', 'Day', 'Week', 'Month']
+        return render_template("design/intervention/decision_point.html", segment="intervention_decision_point",decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="ineligibility":
-        return render_template("design/intervention/ineligibility.html",project_uuid=project_uuid)
+        conditions = {}
+        for k,v in intervention_settings.items():
+            if k.startswith("condition"):
+                conditions[k]=v
+        return render_template("design/intervention/ineligibility.html", segment="intervention_ineligibility", conditions=conditions, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="intervention_probability":
-        return render_template("design/intervention/intervention_probability.html",project_uuid=project_uuid)
+        return render_template("design/intervention/intervention_probability.html", segment="intervention_probability", settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="update_point":
-        return render_template("design/intervention/update_point.html",project_uuid=project_uuid)
+        return render_template("design/intervention/update_point.html", segment="intervention_update_point", settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
-        return render_template("design/intervention/summary.html",project_uuid=project_uuid)
+        return render_template("design/intervention/summary.html", segment="intervention_summary", settings = intervention_settings,project_uuid=project_uuid)
 
 @blueprint.route('/model/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def model_settings(setting_type,project_uuid):

@@ -18,13 +18,13 @@
 
 
                 <li data-username="add new configuration"
-                    class="nav-item pcoded-hasmenu {% if 'new_project' in segment %} active {% endif %}">
+                    class="nav-item pcoded-hasmenu {% if 'general' in segment %} active {% endif %}">
                     <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-clipboard"></i></span><span class="pcoded-mtext">General Settings</span></a>
                     <ul class="pcoded-submenu" style="display: none;">
-                        <li class=""><a href="/projects/settings/general/123" class="">General Info</a></li>
-                        <li class=""><a href="/projects/settings/personalized_method/123" class="">Personalization Method</a></li>
-                        <li class=""><a href="/projects/settings/scenario/123" class="">Scenario</a></li>
-                        <li class=""><a href="/projects/settings/summary/123" class="">Summary</a></li>
+                        <li class="{% if 'general_settings' in segment %} active {% endif %}"><a href="/projects/settings/general/123" class="">General Info</a></li>
+                        <li class="{% if 'personalized_method' in segment %} active {% endif %}"><a href="/projects/settings/personalized_method/123" class="">Personalization Method</a></li>
+                        <li class="{% if 'scenario' in segment %} active {% endif %}"><a href="/projects/settings/scenario/123" class="">Scenario</a></li>
+                        <li class="{% if 'general_summary' in segment %} active {% endif %}"><a href="/projects/settings/summary/123" class="">Summary</a></li>
                     </ul>
                 </li>
 
