@@ -130,7 +130,11 @@
                                         <div class="card-header">
                                             <div class="form-group">
                                                 <a href="/covariates/settings/covariate_attributes/{{project_uuid}}/{{cov_id}}" class="btn btn-outline-primary" role="button">Back</a>
-                                                <button type="submit" type="button" formaction="/covariates/settings/covariate_tailored_effect/{{project_uuid}}/{{cov_id}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                {% if is_tailoring=="yes" %}
+                                                    <button type="submit" type="button" formaction="/covariates/settings/covariate_tailored_effect/{{project_uuid}}/{{cov_id}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                {% else %}
+                                                    <button type="submit" type="button" formaction="/covariates/settings/covariate_summary/{{project_uuid}}/{{cov_id}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                {% endif %}
                                             </div>
                                         </div>
 

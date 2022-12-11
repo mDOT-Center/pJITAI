@@ -230,10 +230,7 @@ def model_settings(setting_type,project_uuid):
 
 def update_covariates_settings(data,project_details_obj, cov_id=None):
     cov_vars = {}
-    if not cov_id:
-        project_details_obj.covariates = data
-        db.session.commit()
-    elif project_details_obj:
+    if project_details_obj:
         settings = copy.deepcopy(project_details_obj.covariates)
         if settings.get(cov_id):
             settings.get(cov_id).update(data)
@@ -260,7 +257,27 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
             settings = project_details.get("covariates").get(cov_id)
 
     if request.method=='POST':
-        update_covariates_settings(request.form.to_dict(),project_details_obj, cov_id)
+        if "covariate_attributes" in request.referrer:
+            form_data = request.form.to_dict()
+            if form_data.get("covariate_type")!="Binary":
+                form_data.pop("covariate_meaning_0")
+                form_data.pop("covariate_meaning_1")
+                project_details_obj.covariates.get(cov_id).pop("covariate_meaning_0", None)
+                project_details_obj.covariates.get(cov_id).pop("covariate_meaning_1", None)
+        else:
+            form_data = request.form.to_dict()
+
+        if "covariate_main_effect" in request.referrer:
+            if project_details_obj.covariates.get(cov_id).get("tailoring_variable", "")=="no":
+                all_covs = copy.deepcopy(project_details_obj.covariates)
+                all_covs.get(cov_id).pop("interaction_coefficient_prior_mean",None)
+                all_covs.get(cov_id).pop("interaction_coefficient_prior_standard_deviation",None)
+
+                project_details_obj.covariates = all_covs
+                db.session.commit()
+
+        update_covariates_settings(form_data,project_details_obj, cov_id)
+
 
     if setting_type=="all":
         new_uuid = uuid4()
@@ -270,11 +287,12 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
     elif setting_type=="covariate_attributes":
         return render_template("design/covariates/covariate_attributes.html", segment="intervention_option", covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_main_effect":
-        return render_template("design/covariates/covariate_main_effect.html", segment="intervention_option", settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        is_tailoring = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
+        return render_template("design/covariates/covariate_main_effect.html", segment="intervention_option", is_tailoring=is_tailoring, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_tailored_effect":
         return render_template("design/covariates/covariate_tailored_effect.html", segment="intervention_option", settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_summary":
-        return render_template("design/covariates/covariate_summary.html", segment="intervention_option", covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_summary.html", segment="intervention_option", all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
 
 @blueprint.route('/covariates/settings/delete/<project_uuid>/<cov_id>', methods=['GET'])
 def delete_covariate(project_uuid,cov_id=None):

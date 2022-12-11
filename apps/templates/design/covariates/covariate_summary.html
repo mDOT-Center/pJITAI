@@ -73,16 +73,18 @@
                                                     {%endfor%}
                                                 </select>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="covariate_meaning_0">Meaning of the "Covariate=0"</label><br>
-                                                <input disabled value="{{settings.covariate_meaning_0}}" type="text" name="covariate_meaning_0" class="form-control" placeholder="">
-                                            </div>
 
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="covariate_meaning_1">Meaning of the "Covariate=1"</label><br>
-                                                <input disabled value="{{settings.covariate_meaning_1}}" type="text" name="covariate_meaning_1" class="form-control" placeholder="">
-                                            </div>
+                                            {% if all_covariates.get(cov_id).get("covariate_type")=="Binary" %}
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="covariate_meaning_0">Meaning of the "Covariate=0"</label><br>
+                                                    <input disabled value="{{settings.covariate_meaning_0}}" type="text" name="covariate_meaning_0" class="form-control" placeholder="">
+                                                </div>
 
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="covariate_meaning_1">Meaning of the "Covariate=1"</label><br>
+                                                    <input disabled value="{{settings.covariate_meaning_1}}" type="text" name="covariate_meaning_1" class="form-control" placeholder="">
+                                                </div>
+                                            {% endif %}
 
                                             <h5>Covariate Main Effect</h5>
                                             <hr>
@@ -95,18 +97,19 @@
                                                 <input disabled value="{{settings.main_effect_prior_standard_deviation}}"  type="text" name="main_effect_prior_standard_deviation" class="form-control" placeholder="">
 
                                             </div>
+                                            {% if all_covariates.get(cov_id).get("tailoring_variable")=="yes" %}
+                                                <h5>Covariate Tailored Effect</h5>
+                                                <hr>
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="interaction_coefficient_prior_mean">Prior mean of the interaction coefficient</label>
+                                                    <input disabled value="{{settings.interaction_coefficient_prior_mean}}" type="text" name="interaction_coefficient_prior_mean" class="form-control" placeholder="">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="interaction_coefficient_prior_standard_deviation">Prior standard deviation of the interaction coefficient</label><br>
+                                                    <input disabled value="{{settings.interaction_coefficient_prior_standard_deviation}}" type="text" name="interaction_coefficient_prior_standard_deviation" class="form-control" placeholder="">
 
-                                            <h5>Covariate Tailored Effect</h5>
-                                            <hr>
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="interaction_coefficient_prior_mean">Prior mean of the interaction coefficient</label>
-                                                <input disabled value="{{settings.interaction_coefficient_prior_mean}}" type="text" name="interaction_coefficient_prior_mean" class="form-control" placeholder="">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="interaction_coefficient_prior_standard_deviation">Prior standard deviation of the interaction coefficient</label><br>
-                                                <input disabled disabled value="{{settings.interaction_coefficient_prior_standard_deviation}}" type="text" name="interaction_coefficient_prior_standard_deviation" class="form-control" placeholder="">
-
-                                            </div>
+                                                </div>
+                                            {% endif %}
                                         </div>
 
                                     </div>
@@ -169,7 +172,12 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/covariates/settings/covariate_tailored_effect/{{project_uuid}}/{{cov_id}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                {% if is_tailoring=="yes" %}
+                                                    <a href="/covariates/settings/covariate_tailored_effect/{{project_uuid}}/{{cov_id}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                {% else %}
+                                                    <a href="/covariates/settings/covariate_main_effect/{{project_uuid}}/{{cov_id}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                {% endif %}
+
                                                 <a href="/covariates/settings/all/{{project_uuid}}" class="btn btn-primary" role="button">Back to Covariates</a>
                                             </div>
                                         </div>
