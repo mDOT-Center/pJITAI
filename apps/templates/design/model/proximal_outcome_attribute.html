@@ -112,6 +112,9 @@
 <!--                                                <button type="submit" type="button" formaction="/intervention/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
                                                 <button type="submit" type="button" formaction="/model/settings/intercept/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
                                             </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
                                         </div>
 
                                     </div>

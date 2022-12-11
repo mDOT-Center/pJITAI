@@ -149,6 +149,9 @@ var inputBox = document.getElementById('covariate_name');
                                                 <a href="/covariates/settings/all/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
                                                 <button id="covirate_next_form" type="submit" type="button" formaction="/covariates/settings/covariate_attributes/{{project_uuid}}/{{cov_id}}" formmethod="post" class="btn btn-primary">Next</button>
                                             </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
                                         </div>
 
                                     </div>
