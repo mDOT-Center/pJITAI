@@ -20,7 +20,7 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h3>Model Settings / Covariates</h3>
+                                            <h3>Model Settings / Covariates / Attributes</h3>
                                         </div>
 
                                     </div>
@@ -32,40 +32,30 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <div class="accordion" id="accordionExample">
-                                                <div class="card">
-                                                    <div class="card-header" id="headingOne">
-                                                        <h5 class="mb-0"><a href="#!" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Collapsible Group Item #1</a></h5>
-                                                    </div>
-                                                    <div id="collapseOne" class=" card-body collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                                                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore
-                                                        sustainable VHS.
-                                                    </div>
-                                                </div>
-                                                <div class="card">
-                                                    <div class="card-header" id="headingTwo">
-                                                        <h5 class="mb-0"><a href="#!" class="collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Collapsible Group Item #2</a></h5>
-                                                    </div>
-                                                    <div id="collapseTwo" class="collapse card-body" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                                                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore
-                                                        sustainable VHS.
-                                                    </div>
-                                                </div>
-                                                <div class="card">
-                                                    <div class="card-header" id="headingThree">
-                                                        <h5 class="mb-0"><a href="#!" class="collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Collapsible Group Item #3</a></h5>
-                                                    </div>
-                                                    <div id="collapseThree" class="card-body collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum
-                                                        eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
-                                                        sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore
-                                                        sustainable VHS.
-                                                    </div>
-                                                </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_min_val">Minimum value of the covariate</label>
+                                                <input value="{{settings.covariate_min_val}}" type="text" name="covariate_min_val" class="form-control" placeholder="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_max_val">Maximum value of the covariate</label>
+                                                <input value="{{settings.covariate_max_val}}" type="text" name="covariate_max_val" class="form-control" placeholder="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_type">Type of the covariate</label><br>
+                                                <select name="covariate_type" class="form-control">
+                                                    {% for ct in covariates_types%}
+                                                    <option value="{{ct}}" {{ "selected" if settings.covariate_type == ct }}>{{ct}}</option>
+                                                    {%endfor%}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_meaning_0">Meaning of the "Covariate=0"</label><br>
+                                                <input value="{{settings.covariate_meaning_0}}" type="text" name="covariate_meaning_0" class="form-control" placeholder="">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_meaning_1">Meaning of the "Covariate=1"</label><br>
+                                                <input value="{{settings.covariate_meaning_1}}" type="text" name="covariate_meaning_1" class="form-control" placeholder="">
                                             </div>
                                         </div>
 
@@ -129,15 +119,8 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-<!--                                                <button type="submit" type="button"-->
-<!--                                                        formaction="/model/settings/main_treatment_effect/{{project_uuid}}"-->
-<!--                                                        formmethod="post" class="btn btn-outline-primary">Back-->
-<!--                                                </button>-->
-                                                <a href="/model/settings/main_treatment_effect/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-                                                <button type="submit" type="button"
-                                                        formaction="/model/settings/summary/{{project_uuid}}"
-                                                        formmethod="post" class="btn btn-primary">Next
-                                                </button>
+                                                <a href="/covariates/settings/covariate_name/{{project_uuid}}/{{cov_id}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                <button type="submit" type="button" formaction="/covariates/settings/covariate_main_effect/{{project_uuid}}/{{cov_id}}" formmethod="post" class="btn btn-primary">Next</button>
                                             </div>
                                         </div>
 

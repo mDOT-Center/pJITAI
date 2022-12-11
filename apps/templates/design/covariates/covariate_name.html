@@ -6,7 +6,15 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<script>
 
+
+function dummyy(){
+var inputBox = document.getElementById('covariate_name');
+    //document.getElementById('heading_div').innerHTML = 'Model Settings / Covariates / '+inputBox.value+' / Name';
+    //document.getElementById("covirate_next_form").formAction = "/covariates/settings/covariate_attributes/{{project_uuid}}/"+inputBox.value;
+}
+</script>
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
     <div class="pcoded-wrapper">
@@ -19,8 +27,8 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card">
-                                        <div class="card-header">
-                                            <h3>General Settings / Summary</h3>
+                                        <div  class="card-header">
+                                            <h3 id="heading_div">Model Settings / Covariates / Name</h3>
                                         </div>
 
                                     </div>
@@ -32,55 +40,48 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <div class="col-lg-12">
-                                                <p style="
-                                    background-color: #fff;
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="covariate_name">Name of the covariate</label>
+                                                        <input onkeyup="dummyy()" value="{{settings.covariate_name}}" type="text" id="covariate_name" name="covariate_name" class="form-control" placeholder="covariate name">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="tailoring_variable">Is this covariate a tailoring variable?</label><br>
+
+
+                                                        <div class="btn-group" data-toggle="buttons">
+                                                            <fieldset id="tailoring_variable">
+                                                                <label class="btn btn-outline-success">
+                                                                    <input type="radio" name="tailoring_variable" value="yes" {{ "checked" if settings.tailoring_variable == "yes" }} required> Yes
+                                                                </label>
+                                                                <label class="btn btn-outline-primary">
+                                                                    <input type="radio" name="tailoring_variable" value="no" {{ "checked" if settings.tailoring_variable == "no" }} required> No
+                                                                </label>
+                                                            </fieldset>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col">
+                                                    <p style="
+                                    background-color: #deeaff;
                                     color: black;
                                     padding: 10px;
-                                    border: 1px dotted;
+                                    font-size:18px;
                                     border-radius: 10px;
                                 ">
-                                                    Congrats! You have finished setting up the general settings.
-                                                    Please review and confirm.
-                                                    After you confirm, please click “Start my Design.” Once you start designing your personalizing JITAI, you <span style="color:red;">cannot</span> return and edit your “personalization method” or “scenario”. If you need to change these settings later, you will need to create another intervention component design.
-                                                </p>
-                                                <h5>General Information</h5>
-                                                <hr>
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="study_name">Name of the study</label>
-                                                    <input disabled type="text" name="study_name" id="study_name" value="{{general_settings.get('study_name','')}}" required class="form-control" placeholder="Name of the study">
-                                                </div>
 
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="study_description">Description of the study (optional)</label>
-                                                    <textarea disabled name="study_description" id="study_description" required rows="4" class="form-control" placeholder="Description of the study ...">{{general_settings.get('study_description','')}}</textarea>
-                                                </div>
+                                                        <span style="background:#f2f2f2; font-size:14px;">(log) Next 30 min step count</span> ~ <br>
+                                                        α<sub>0</sub> + α<sub>1</sub> * <span style="background:#f2f2f2; font-size:14px;">Location</span><br>
+                                                        + β<sub>0</sub>* <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
+                                                        + β<sub>1</sub>* <span style="background:#f2f2f2; font-size:14px;">Location</span> * <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
+                                                        + ϵ <br>
 
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="intervention_component_name">Name of the intervention component</label>
-                                                    <input disabled type="text" name="intervention_component_name" id="intervention_component_name" value="{{general_settings.get('intervention_component_name','')}}" required class="form-control" placeholder="Name of the intervention component">
-                                                </div>
 
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="proximal_outcome_name">Name of the proximal outcome</label>
-                                                    <input disabled type="text" name="proximal_outcome_name" id="proximal_outcome_name" value="{{general_settings.get('proximal_outcome_name','')}}" required class="form-control" placeholder="Name of the proximal outcome">
-                                                </div>
-                                                <h5>Personalization Method</h5>
-                                                <hr>
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="personalization_method">Personalization Method</label>
-
-                                                    <select id="personalization_method" class="form-control" disabled>
-                                                        <option selected>{{general_settings.get('personalization_method','Error')}}</option>
-                                                    </select>
-                                                </div>
-                                                <h5>Scenario</h5>
-                                                <hr>
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="personalized_scenario">How will you configure your personalized JITAI</label>
-                                                    <select id="personalized_scenario" class="form-control" disabled>
-                                                        <option selected>{{general_settings.get('personalized_scenario','Error')}}</option>
-                                                    </select>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -145,10 +146,8 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/projects/settings/scenario/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-                                                <a href="/intervention/settings/intervention_option/{{project_uuid}}" class="btn btn-primary" role="button">Next</a>
-<!--                                                <button type="submit" type="button" formaction="/projects/settings/scenario/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
-<!--                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_option/{{project_uuid}}" formmethod="post" class="btn btn-primary">Start My Design</button>-->
+                                                <a href="/covariates/settings/all/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                <button id="covirate_next_form" type="submit" type="button" formaction="/covariates/settings/covariate_attributes/{{project_uuid}}/{{cov_id}}" formmethod="post" class="btn btn-primary">Next</button>
                                             </div>
                                         </div>
 

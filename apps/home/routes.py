@@ -153,6 +153,8 @@ def update_model_settings(data,project_details_obj):
         project_details_obj.model_settings = settings
         db.session.commit()
 
+
+
 @blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def intervention_settings(setting_type,project_uuid):
     user_id = 1#current_user.get_id()
@@ -211,18 +213,83 @@ def model_settings(setting_type,project_uuid):
         return render_template("design/model/intercept.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="main_treatment_effect":
         return render_template("design/model/main_treatment_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
-    elif setting_type=="covariates":
-        return render_template("design/model/covariates.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
-    elif setting_type=="covariate_name":
-        return render_template("design/model/covariate_name.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
-    elif setting_type=="covariate_attributes":
-        return render_template("design/model/covariate_attributes.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
-    elif setting_type=="covariate_main_effect":
-        return render_template("design/model/covariate_main_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
-    elif setting_type=="covariate_tailored_effect":
-        return render_template("design/model/covariate_tailored_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
+    # elif setting_type=="covariates":
+    #     return render_template("design/model/covariates.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
+    # elif setting_type=="covariate_name":
+    #     return render_template("design/model/covariate_name.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
+    # elif setting_type=="covariate_attributes":
+    #     return render_template("design/model/covariate_attributes.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
+    # elif setting_type=="covariate_main_effect":
+    #     return render_template("design/model/covariate_main_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
+    # elif setting_type=="covariate_tailored_effect":
+    #     return render_template("design/model/covariate_tailored_effect.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
+    # elif setting_type=="covariate_summary":
+    #    return render_template("design/model/covariate_summary.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
-        return render_template("design/model/summary.html")
+        return render_template("design/model/summary.html", segment="intervention_option", settings = model_settings,project_uuid=project_uuid)
+
+def update_covariates_settings(data,project_details_obj, cov_id=None):
+    cov_vars = {}
+    if not cov_id:
+        project_details_obj.covariates = data
+        db.session.commit()
+    elif project_details_obj:
+        settings = copy.deepcopy(project_details_obj.covariates)
+        if settings.get(cov_id):
+            settings.get(cov_id).update(data)
+        else:
+            cov_vars[cov_id] = data
+            settings.update(cov_vars)
+        project_details_obj.covariates = settings
+        db.session.commit()
+
+
+@blueprint.route('/covariates/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+@blueprint.route('/covariates/settings/<setting_type>/<project_uuid>/<cov_id>', methods=['GET', 'POST'])
+def covariates_settings(setting_type,project_uuid,cov_id=None):
+    user_id = 1#current_user.get_id()
+    settings= {}
+    all_covariates = {}
+    covariates_types = ['Binary','Integer', 'Continuous']
+
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+
+    if project_details.get("covariates"):
+        all_covariates = project_details.get("covariates")
+        if project_details.get("covariates").get(cov_id):
+            settings = project_details.get("covariates").get(cov_id)
+
+    if request.method=='POST':
+        update_covariates_settings(request.form.to_dict(),project_details_obj, cov_id)
+
+    if setting_type=="all":
+        new_uuid = uuid4()
+        return render_template("design/covariates/covariates.html", segment="intervention_option", all_covariates=all_covariates, settings = settings,new_uuid=new_uuid,project_uuid=project_uuid, cov_id=cov_id)
+    elif setting_type=="covariate_name":
+        return render_template("design/covariates/covariate_name.html", segment="intervention_option", settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+    elif setting_type=="covariate_attributes":
+        return render_template("design/covariates/covariate_attributes.html", segment="intervention_option", covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+    elif setting_type=="covariate_main_effect":
+        return render_template("design/covariates/covariate_main_effect.html", segment="intervention_option", settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+    elif setting_type=="covariate_tailored_effect":
+        return render_template("design/covariates/covariate_tailored_effect.html", segment="intervention_option", settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+    elif setting_type=="covariate_summary":
+        return render_template("design/covariates/covariate_summary.html", segment="intervention_option", covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+
+@blueprint.route('/covariates/settings/delete/<project_uuid>/<cov_id>', methods=['GET'])
+def delete_covariate(project_uuid,cov_id=None):
+    user_id = 1#current_user.get_id()
+
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    covariates = copy.deepcopy(project_details.get("covariates",{}))
+    if covariates.get(cov_id):
+        covariates.pop(cov_id)
+        project_details_obj.covariates = covariates
+        db.session.commit()
+
+    return redirect("/covariates/settings/all/"+project_uuid)
+
+
 # Helper - Extract current page name from request
 def get_segment(request):
 

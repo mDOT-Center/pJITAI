@@ -117,6 +117,7 @@ class Projects(db.Model):
     general_settings = db.Column(db.JSON, default={})
     intervention_settings = db.Column(db.JSON, default={})
     model_settings = db.Column(db.JSON, default={})
+    covariates = db.Column(db.JSON, default={})
     project_status = db.Column(db.Integer, default=0)
     algo_type = db.Column(db.String(100))
     modified_on = db.Column(db.DateTime, default=datetime.now())
