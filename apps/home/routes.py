@@ -187,7 +187,7 @@ def intervention_settings(setting_type,project_uuid):
         return render_template("design/intervention/decision_point.html", segment="intervention_decision_point",modified_on=modified_on,decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="ineligibility":
 
-        return render_template("design/intervention/ineligibility.html", segment="intervention_ineligibility", modified_on=modified_on,conditions=conditions, settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/ineligibility.html", segment="intervention_decision_point", modified_on=modified_on,conditions=conditions, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="intervention_probability":
         return render_template("design/intervention/intervention_probability.html", segment="intervention_probability", modified_on=modified_on,settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="update_point":
@@ -213,13 +213,13 @@ def model_settings(setting_type,project_uuid):
         update_model_settings(request.form.to_dict(),project_details_obj)
 
     if setting_type=="proximal_outcome_attribute":
-        return render_template("design/model/proximal_outcome_attribute.html", segment="intervention_option", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/proximal_outcome_attribute.html", segment="model_proximal_outcome_attribute", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="intercept":
-        return render_template("design/model/intercept.html", segment="intervention_option", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/intercept.html", segment="model_intercept", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="main_treatment_effect":
-        return render_template("design/model/main_treatment_effect.html", segment="intervention_option", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/main_treatment_effect.html", segment="model_main_treatment_effect", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
-        return render_template("design/model/summary.html", segment="intervention_option",modified_on=modified_on,all_covariates=all_covariates, settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/summary.html", segment="model_summary",modified_on=modified_on,all_covariates=all_covariates, settings = model_settings,project_uuid=project_uuid)
 
 def update_covariates_settings(data,project_details_obj, cov_id=None):
     cov_vars = {}
@@ -279,18 +279,18 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
 
     if setting_type=="all":
         new_uuid = uuid4()
-        return render_template("design/covariates/covariates.html", segment="intervention_option", modified_on=modified_on,all_covariates=all_covariates, settings = settings,new_uuid=new_uuid,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariates.html", segment="covariates", modified_on=modified_on,all_covariates=all_covariates, settings = settings,new_uuid=new_uuid,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_name":
-        return render_template("design/covariates/covariate_name.html", segment="intervention_option", modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_name.html", segment="covariates", modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_attributes":
-        return render_template("design/covariates/covariate_attributes.html", segment="intervention_option", modified_on=modified_on,covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_attributes.html", segment="covariates", modified_on=modified_on,covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_main_effect":
         is_tailoring = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
-        return render_template("design/covariates/covariate_main_effect.html", segment="intervention_option", modified_on=modified_on,is_tailoring=is_tailoring, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_main_effect.html", segment="covariates", modified_on=modified_on,is_tailoring=is_tailoring, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_tailored_effect":
-        return render_template("design/covariates/covariate_tailored_effect.html", segment="intervention_option", modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_tailored_effect.html", segment="covariates", modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_summary":
-        return render_template("design/covariates/covariate_summary.html", segment="intervention_option", modified_on=modified_on,all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_summary.html", segment="covariates", modified_on=modified_on,all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
 
 @blueprint.route('/covariates/settings/delete/<project_uuid>/<cov_id>', methods=['GET'])
 def delete_covariate(project_uuid,cov_id=None):
