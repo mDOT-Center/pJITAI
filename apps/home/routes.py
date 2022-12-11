@@ -67,20 +67,36 @@ def route_template(template):
 
     except:
         return render_template('home/page-500.html'), 500
-data = {}
-@blueprint.route('/projects')
-def projects():
-    return render_template("design/projects/projects.html", project_uuid=uuid4())
 
 def get_project_details(project_uuid, user_id):
     if project_uuid:
+
         project_details_obj = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
+
         if project_details_obj:
             project_details = project_details_obj.as_dict()
         else:
             project_details={}
 
-    return project_details, project_details_obj
+        return project_details, project_details_obj
+
+@blueprint.route('/projects')
+def projects():
+    user_id = 1#current_user.get_id()
+    data = []
+    all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).all()
+    for aproj in all_projects:
+        aproj.general_settings["project_uuid"] = aproj.uuid
+        aproj.general_settings["project_status"] = aproj.project_status
+        aproj.general_settings["algo_type"] = aproj.algo_type
+        aproj.general_settings["modified_on"] = aproj.modified_on
+        aproj.general_settings["created_on"] = aproj.created_on
+
+        data.append(aproj.general_settings)
+
+    return render_template("design/projects/projects.html", project_uuid=uuid4(), data=data)
+
+
 
 @blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def project_settings(setting_type, project_uuid=None):
@@ -306,6 +322,21 @@ def delete_covariate(project_uuid,cov_id=None):
 
     return redirect("/covariates/settings/all/"+project_uuid)
 
+
+@blueprint.route('/projects/delete/<project_uuid>', methods=['GET'])
+def delete_project(project_uuid):
+    user_id = 1#current_user.get_id()
+    Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).delete()
+    db.session.commit()
+    return redirect("/projects")
+
+@blueprint.route('/projects/duplicate/<project_uuid>', methods=['GET'])
+def duplicate_project(project_uuid):
+    user_id = 1#current_user.get_id()
+    proj = copy.deepcopy(Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first())
+    proj.uuid = str(uuid4())
+    db.session.commit()
+    return redirect("/projects")
 
 # Helper - Extract current page name from request
 def get_segment(request):

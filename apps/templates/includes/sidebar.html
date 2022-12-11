@@ -11,12 +11,14 @@
             <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
         </div>
         <div class="navbar-content scroll-div">
+
             <ul class="nav pcoded-inner-navbar">
                 <li class="nav-item pcoded-menu-caption">
-                    <label>Navigation</label>
+                    <label>Project Name</label>
                 </li>
 
-                <li data-username="add new configuration" class="nav-item pcoded-hasmenu {% if 'general' in segment %} active pcoded-trigger {% endif %}">
+
+                <li class="nav-item pcoded-hasmenu {% if 'general' in segment %} active pcoded-trigger {% endif %}">
                     <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-clipboard"></i></span><span class="pcoded-mtext">General Settings</span></a>
                     <ul class="pcoded-submenu" {% if 'general' not in segment %} style="display: none;" {% endif %}>
                         <li class="{% if 'general_settings' in segment %} active {% endif %}"><a href="/projects/settings/general/123" class="">General Info</a></li>
@@ -26,8 +28,7 @@
                     </ul>
                 </li>
 
-                <li data-username="add new configuration"
-                    class="nav-item pcoded-hasmenu {% if 'intervention' in segment %} active pcoded-trigger {% endif %}">
+                <li class="nav-item pcoded-hasmenu {% if 'intervention' in segment %} active pcoded-trigger {% endif %}">
                     <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-pause"></i></span><span class="pcoded-mtext">Intervention Settings</span></a>
 
                     <ul class="pcoded-submenu" {% if 'intervention' not in segment %} style="display: none;" {% endif %}>
@@ -40,8 +41,7 @@
                     </ul>
                 </li>
 
-                <li data-username="add new configuration"
-                    class="nav-item pcoded-hasmenu {% if 'model' in segment or 'covariates' in segment %} active pcoded-trigger {% endif %}">
+                <li class="nav-item pcoded-hasmenu {% if 'model' in segment or 'covariates' in segment %} active pcoded-trigger {% endif %}">
                     <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-sliders"></i></span><span class="pcoded-mtext">Model Settings</span></a>
                     <ul class="pcoded-submenu" {% if 'model' not in segment  and not 'covariates' %} style="display: none;" {% endif %}>
                         <li class="{% if 'model_proximal_outcome_attribute' in segment %} active {% endif %}"><a href="/model/settings/proximal_outcome_attribute/123" class="">Proximal Outcome Attributes</a></li>
