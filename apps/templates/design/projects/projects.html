@@ -16,9 +16,15 @@
                     <div class="page-wrapper">
                         <!-- [ Main Content ] start -->
                         <form>
+
                             <div class="row">
 
+                                {% if data|length ==0%}
+                                <div class="alert alert-primary" role="alert">
+                                    There is no project. Please click on "Add a New Project" to create a new project.
+                                </div>
 
+                                {% endif %}
                                 <!-- START OF PROJECT DIV -->
                                     {% for proj in data %}
                                     <div class="col-lg-4 mb-4">

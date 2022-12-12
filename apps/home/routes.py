@@ -81,10 +81,18 @@ def get_project_details(project_uuid, user_id):
         return project_details, project_details_obj
 
 @blueprint.route('/projects')
-def projects():
+@blueprint.route('/projects/<project_type>')
+def projects(project_type=None):
     user_id = 1#current_user.get_id()
     data = []
-    all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).all()
+    modified_on = datetime.now()
+    if not project_type or project_type=="all":
+        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).all()
+    elif project_type=="in_progress":
+        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.project_status==0).all()
+    elif project_type=="finalized":
+        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.project_status==1).all()
+
     for aproj in all_projects:
         aproj.general_settings["project_uuid"] = aproj.uuid
         aproj.general_settings["project_status"] = aproj.project_status
@@ -94,7 +102,31 @@ def projects():
 
         data.append(aproj.general_settings)
 
-    return render_template("design/projects/projects.html", project_uuid=uuid4(), data=data)
+    return render_template("design/projects/projects.html", project_uuid=uuid4(), data=data, segment="main_project_page", modified_on=modified_on)
+
+
+@blueprint.route('/projects/delete/<project_uuid>', methods=['GET'])
+def delete_project(project_uuid):
+    user_id = 1#current_user.get_id()
+    Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).delete()
+    db.session.commit()
+    return redirect("/projects")
+
+@blueprint.route('/projects/duplicate/<project_uuid>', methods=['GET'])
+def duplicate_project(project_uuid):
+    user_id = 1#current_user.get_id()
+    proj = Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
+    if proj:
+        Projects(created_by=user_id,
+                 uuid=uuid4(),
+                 general_settings=proj.general_settings,
+                 intervention_settings=proj.intervention_settings,
+                 model_settings=proj.model_settings,
+                 project_status=0,
+                 algo_type="algorithm_type",
+                 modified_on=datetime.now(),
+                 created_on=datetime.now()).save()
+    return redirect("/projects")
 
 
 
@@ -110,6 +142,8 @@ def project_settings(setting_type, project_uuid=None):
         general_settings= project_details.get("general_settings")
         modified_on = project_details.get("modified_on","")
 
+    if not modified_on:
+        modified_on = datetime.now()
 
     if setting_type=="general":
         return render_template("design/projects/general_settings.html", segment="general_settings", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
@@ -188,6 +222,9 @@ def intervention_settings(setting_type,project_uuid):
             if k.startswith("condition"):
                 conditions[k]=v
 
+    if not modified_on:
+        modified_on = datetime.now()
+
     if request.method=='POST':
         if 'ineligibility' in request.referrer:
             for k in list(intervention_settings.keys()):
@@ -223,6 +260,9 @@ def model_settings(setting_type,project_uuid):
         all_covariates = project_details.get("covariates")
         model_settings= project_details.get("model_settings")
         modified_on = project_details.get("modified_on","")
+
+    if not modified_on:
+        modified_on = datetime.now()
 
 
     if request.method=='POST':
@@ -268,6 +308,9 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
         all_covariates = project_details.get("covariates")
         if project_details.get("covariates").get(cov_id):
             settings = project_details.get("covariates").get(cov_id)
+
+    if not modified_on:
+        modified_on = datetime.now()
 
     if request.method=='POST':
         if "covariate_attributes" in request.referrer:
@@ -322,21 +365,6 @@ def delete_covariate(project_uuid,cov_id=None):
 
     return redirect("/covariates/settings/all/"+project_uuid)
 
-
-@blueprint.route('/projects/delete/<project_uuid>', methods=['GET'])
-def delete_project(project_uuid):
-    user_id = 1#current_user.get_id()
-    Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).delete()
-    db.session.commit()
-    return redirect("/projects")
-
-@blueprint.route('/projects/duplicate/<project_uuid>', methods=['GET'])
-def duplicate_project(project_uuid):
-    user_id = 1#current_user.get_id()
-    proj = copy.deepcopy(Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first())
-    proj.uuid = str(uuid4())
-    db.session.commit()
-    return redirect("/projects")
 
 # Helper - Extract current page name from request
 def get_segment(request):

@@ -50,7 +50,12 @@
     </div>
     <!-- [ Pre-loader ] End -->
 
-    {% include 'includes/sidebar.html' %}
+    {% if 'main_project_page' in segment %}
+        {% include 'includes/sidebar_project.html' %}
+    {% else %}
+        {% include 'includes/sidebar.html' %}
+    {% endif %}
+
 
     {% include 'includes/navigation.html' %}
 
