@@ -110,28 +110,14 @@ var inputBox = document.getElementById('covariate_name');
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p class="mb-0">Raw denim you probably haven't heard of them jean shorts
-                                                Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse.
-                                                Mustache cliche tempor, williamsburg carles vegan helvetica.
-                                                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater
-                                                eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia
-                                                cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
-                                                voluptate nisi qui.
+                                            <p class="mb-0">Enter the name of the covariate that is likely to be correlated with (predictive of) the proximal outcome.  If the covariate is likely to interact with the intervention, then the covariate is potentially a tailoring variable.
                                             </p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p class="mb-0">Food truck fixie locavore, accusamus mcsweeney's marfa nulla
-                                                single-origin coffee squid. Exercitation +1 labore velit, blog sartorial
-                                                PBR leggings next level wes anderson artisan four loko farm-to-table
-                                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer
-                                                mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
-                                                organic, assumenda labore aesthetic magna delectus mollit. Keytar
-                                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown.
-                                                Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
-                                                beard ut DIY ethical culpa terry richardson biodiesel. Art party
-                                                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
-                                                tattooed echo park.</p>
+                                            <p>In HeartSteps, both the location of the individual and 30-minute step count just prior to an intervention were found to be correlated with the  proximal outcome of (log) Next 30 minute step count.</p>
+
+                                            <p>In addition, the paper (we are using scenario 1) indicates that the effect of sending an activity suggestion was weaker if the individual was not at home/work (i.e., in an unknown location).  That is, location interacts with (moderates) the effect of “Activity suggestion” on “Next 30 minute step count.”  Thus, we include location (unknown location vs home/work) as a tailoring variable.</p>
                                         </div>
 
                                     </div>

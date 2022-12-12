@@ -231,9 +231,7 @@ function showControl() {
         <div class="navbar-content scroll-div">
 
             <ul class="nav pcoded-inner-navbar">
-                <a href="#instructionModel" data-toggle="modal" data-target="#instructionModel">Load me</a>
-
-                <li class="nav-item pcoded-hasmenu {% if 'general' in segment %} active pcoded-trigger {% endif %}">
+               <li class="nav-item pcoded-hasmenu {% if 'general' in segment %} active pcoded-trigger {% endif %}">
                     <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="fas fa-plus"></i></span><span class="pcoded-mtext">Add New Project</span></a>
                     <ul class="pcoded-submenu" {% if 'general' not in segment %} style="display: none;" {% endif %}>
                         <li class="{% if 'general_settings' in segment %} active {% endif %}"><a href="/projects/settings/general/{{project_uuid}}" class=""><i class="fas fa-plus-circle"></i> Add a new intervention component</a></li>

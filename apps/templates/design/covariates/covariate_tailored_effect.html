@@ -93,28 +93,17 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p class="mb-0">Raw denim you probably haven't heard of them jean shorts
-                                                Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse.
-                                                Mustache cliche tempor, williamsburg carles vegan helvetica.
-                                                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater
-                                                eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia
-                                                cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
-                                                voluptate nisi qui.
-                                            </p>
+                                            <p>The interaction coefficient is how much the treatment effect changes when the covariate changes by one unit.</p>
+
+                                            <p>If you don’t have good information about the prior mean and prior standard deviation, then we suggest you set the prior mean to be 0 and the prior standard deviation to be 10.  Please read [tutorial] for more details.</p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p class="mb-0">Food truck fixie locavore, accusamus mcsweeney's marfa nulla
-                                                single-origin coffee squid. Exercitation +1 labore velit, blog sartorial
-                                                PBR leggings next level wes anderson artisan four loko farm-to-table
-                                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer
-                                                mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
-                                                organic, assumenda labore aesthetic magna delectus mollit. Keytar
-                                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown.
-                                                Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
-                                                beard ut DIY ethical culpa terry richardson biodiesel. Art party
-                                                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
-                                                tattooed echo park.</p>
+                                            <p>HeartSteps V1 shows that Location is a promising tailoring variable. However, it does not provide us with an estimate of the interaction coefficient. Thus, we demonstrate using the default values here, i.e., prior mean = 0 and prior standard deviation = 10. Since some papers may provide this information, we create a mark-up example below based on HeartSteps V2 to help you understand and find these values if reported.</p>
+
+                                            <p>Say we find that the treatment effect is diminished by 28% if a subject is neither at home nor at work (e<sup>b</sup> = .72, 95% CI = 0.05 to 11.36) when compared to being either at home or at work.</p>
+
+                                            <p>In this case, the prior mean of the interaction coefficient is approximately log<sub>e</sub>(0.72)=-0.33. The prior standard deviation is approximately (log<sub>e</sub>(11.36)-log<sub>e</sub>(0.05))/4=1.38. (Note that all these values were log-transformed because the proximal outcome is log-transformed.)</p>
                                         </div>
 
                                     </div>

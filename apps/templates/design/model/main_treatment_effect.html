@@ -90,28 +90,17 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p class="mb-0">Raw denim you probably haven't heard of them jean shorts
-                                                Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse.
-                                                Mustache cliche tempor, williamsburg carles vegan helvetica.
-                                                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater
-                                                eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia
-                                                cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
-                                                voluptate nisi qui.
-                                            </p>
+
+                                                <p>The prior mean of the main treatment effect is a rough guess at the mean change in the proximal outcome when an intervention option A is provided versus intervention option B.</p>
+
+                                               <p> If you don’t have good information about the prior mean and prior standard deviation then we suggest you set the prior mean to be 0 and the prior standard deviation to be 10.  Please read [tutorial] for more details.</p>
+
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p class="mb-0">Food truck fixie locavore, accusamus mcsweeney's marfa nulla
-                                                single-origin coffee squid. Exercitation +1 labore velit, blog sartorial
-                                                PBR leggings next level wes anderson artisan four loko farm-to-table
-                                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer
-                                                mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
-                                                organic, assumenda labore aesthetic magna delectus mollit. Keytar
-                                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown.
-                                                Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
-                                                beard ut DIY ethical culpa terry richardson biodiesel. Art party
-                                                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
-                                                tattooed echo park.</p>
+                                            <p>In the primary analysis paper of HeartSteps V1, the authors found that providing a suggestion versus providing no suggestion increased step count by 14% (eb = 1.14, p = .06, 95% CI = 0.99 to 1.31), or an additional 35 steps, on average.</p>
+
+                                            <p> In this case, the prior mean of the interaction coefficient is approximately log<sub>e</sub>(1.14)=0.13. The prior standard deviation is approximately (log<sub>e</sub>(1.31)-log<sub>e</sub>(0.99))/4=0.07. (Note that all these values were log-transformed because the proximal outcome is log-transformed.)</p>
                                         </div>
 
                                     </div>
@@ -132,7 +121,7 @@
 <!--                                                </button>-->
                                                 <a href="/model/settings/intercept/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
                                                 <button type="submit" type="button"
-                                                        formaction="/model/settings/covariates/{{project_uuid}}"
+                                                        formaction="/covariates/settings/all/{{project_uuid}}"
                                                         formmethod="post" class="btn btn-primary">Next
                                                 </button>
                                             </div>

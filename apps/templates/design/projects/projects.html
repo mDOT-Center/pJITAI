@@ -16,7 +16,16 @@
                     <div class="page-wrapper">
                         <!-- [ Main Content ] start -->
                         <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Intervention Components <span data-toggle='tooltip' title='Please click the intervention component to start editing it. If you want to duplicate or delete the project, you can click the three dots on the top right. You can only edit/delete in progress projects.'> <i class=" align-text-top questionmark far fa-question-circle"></i></span></h3>
+                                        </div>
 
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
 
                                 {% if data|length ==0%}
@@ -28,11 +37,12 @@
                                 <!-- START OF PROJECT DIV -->
                                     {% for proj in data %}
                                     <div class="col-lg-4 mb-4">
-                                        <div class="card" style="width: 18rem">
+                                        <div class="card" style="width: 18rem; border-radius:25px;">
 
                                             <div class="card-body">
 
-                                                <h3 class="card-title "> {{proj.get("study_name")}}
+                                                <h3 class="card-title"> {{proj.get("study_name")}}
+                                                    {% if proj.get("project_status")==0 %}
                                                     <ul class="navbar-nav ml-lg-auto float-right">
 
                                                         <li class="nav-item dropdown">
@@ -41,17 +51,21 @@
 
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
-                                                                <a class="dropdown-item" href="projects/settings/general/{{proj.project_uuid}}"><i class="fas fa-edit"></i> Edit the project</a>
+                                                                <a class="dropdown-item" href="/projects/settings/general/{{proj.project_uuid}}"><i class="fas fa-edit"></i> Edit the project</a>
                                                                 <a class="dropdown-item" href="/projects/duplicate/{{proj.project_uuid}}" onclick="return confirm('Are you sure you want to duplicate the project - {{proj.get("study_name")}}?');"><i class="fa fa-clone" aria-hidden="true"></i> Duplicate the project</a>
                                                                 <div class="dropdown-divider"></div>
                                                                 <a class="dropdown-item" style="color:red" href="/projects/delete/{{proj.project_uuid}}" onclick="return confirm('Are you sure you want to delete the project - {{proj.get("study_name")}}?');"><i class="fa fa-trash" aria-hidden="true"></i> Delete the project</a>
                                                             </div>
                                                         </li>
                                                     </ul>
+                                                    {% endif %}
                                                 </h3>
 
                                                 <p class="card-text">Intervention: {{proj.get("intervention_component_name")}}</p>
-                                                <a href="#" class="small">{{proj.get("study_description")}}</a>
+                                                <a href="#" class="small">{{proj.get("study_description")[:70]}}</a>
+                                                {% if proj.get("project_status")==1 %}
+                                                <p><a href="" class="btn btn-info"><i class="fas fa-code-branch"></i> Get your API</a></p>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
