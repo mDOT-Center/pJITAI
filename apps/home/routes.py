@@ -365,6 +365,24 @@ def delete_covariate(project_uuid,cov_id=None):
 
     return redirect("/covariates/settings/all/"+project_uuid)
 
+@blueprint.route('/configuration/<config_type>/<project_uuid>', methods=['GET'])
+def configuration_summary(config_type,project_uuid):
+    user_id = 1#current_user.get_id()
+    modified_on=""
+
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+
+    if project_details.get("covariates"):
+        modified_on = project_details.get("modified_on","")
+
+
+    if not modified_on:
+        modified_on = datetime.now()
+    if config_type=="summary":
+        return render_template("design/config_summary/summary.html", segment="configuration_summary", modified_on=modified_on,project_uuid=project_uuid)
+    elif config_type=="final":
+        return render_template("design/config_summary/final.html", segment="configuration_final", modified_on=modified_on,project_uuid=project_uuid)
+
 
 # Helper - Extract current page name from request
 def get_segment(request):

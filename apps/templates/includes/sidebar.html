@@ -52,8 +52,13 @@
                     </ul>
                 </li>
 
-            <li class="nav-item {% if 'intervention' in segment %} active pcoded-trigger {% endif %}">
-                <a href="/projects/finalized" class="nav-link "><span class="pcoded-micon"><i class="fas fa-cogs"></i></span><span class="pcoded-mtext">Configuration Summary</span></a>
+            <li class="nav-item pcoded-hasmenu {% if 'configuration' in segment %} active pcoded-trigger {% endif %}">
+                <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="fas fa-cogs"></i></span><span class="pcoded-mtext">Configuration Summary</span></a>
+                <ul class="pcoded-submenu" {% if 'configuration' not in segment %} style="display: none;" {% endif %}>
+            <li class="{% if 'configuration_summary' in segment %} active {% endif %}"><a href="/configuration/summary/{{project_uuid}}" class="">Summary</a></li>
+            <li class="{% if 'configuration_final' in segment %} active {% endif %}"><a href="/configuration/final/{{project_uuid}}" class="">Finalize</a></li>
+
+            </ul>
             </li>
 
             </ul>
