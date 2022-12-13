@@ -253,13 +253,19 @@ def model_settings(setting_type,project_uuid):
     user_id = 1#current_user.get_id()
     model_settings= {}
     all_covariates = {}
+    modified_on = ""
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    # proximal_outcome_name (general settings)
+    # intervention_component_name (general settings)
 
     if project_details.get("model_settings"):
         all_covariates = project_details.get("covariates")
         model_settings= project_details.get("model_settings")
         modified_on = project_details.get("modified_on","")
+
+        model_settings["proximal_outcome_name"] = project_details.get("general_settings",{}).get("proximal_outcome_name")
+        model_settings["intervention_component_name"] = project_details.get("general_settings",{}).get("intervention_component_name")
 
     if not modified_on:
         modified_on = datetime.now()
@@ -306,8 +312,13 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
     if project_details.get("covariates"):
         modified_on = project_details.get("modified_on","")
         all_covariates = project_details.get("covariates")
+
+
+
         if project_details.get("covariates").get(cov_id):
             settings = project_details.get("covariates").get(cov_id)
+            settings["proximal_outcome_name"] = project_details.get("general_settings",{}).get("proximal_outcome_name")
+            settings["intervention_component_name"] = project_details.get("general_settings",{}).get("intervention_component_name")
 
     if not modified_on:
         modified_on = datetime.now()
@@ -333,7 +344,10 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
                 project_details_obj.modified_on = datetime.now()
                 db.session.commit()
 
-        update_covariates_settings(form_data,project_details_obj, cov_id)
+        if cov_id:
+            update_covariates_settings(form_data,project_details_obj, cov_id)
+        else:
+            update_model_settings(request.form.to_dict(),project_details_obj)
 
 
     if setting_type=="all":

@@ -9,11 +9,30 @@
 <script>
 
 
-function dummyy(){
-var inputBox = document.getElementById('covariate_name');
-    //document.getElementById('heading_div').innerHTML = 'Model Settings / Covariates / '+inputBox.value+' / Name';
+function copy_cov_name_to_span(){
+    var cov_name = document.getElementById('covariate_name').value;
+    document.getElementById('cov_name_span1').innerHTML = cov_name;
+    document.getElementById('cov_name_span2').innerHTML = cov_name
     //document.getElementById("covirate_next_form").formAction = "/covariates/settings/covariate_attributes/{{project_uuid}}/"+inputBox.value;
 }
+
+$(document).ready(function(){
+    function is_tailoring_variable(){
+
+
+        $('#tailoring_variable input:radio').on('change', function() {
+          var value = $(this).val();
+          if(value=="yes"){
+            var beta1 = `+ β<sub>1</sub>* <span id="cov_name_span2" style="background:#f2f2f2; font-size:14px;">{{settings.covariate_name}}</span> * <span style="background:#f2f2f2; font-size:14px;"> {{settings.intervention_component_name}} </span> <br>`;
+            document.getElementById('beta_1').innerHTML = beta1;
+          }else{
+               document.getElementById('beta_1').innerHTML = "";
+          }
+        });
+    }
+    is_tailoring_variable();
+});
+
 </script>
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
@@ -44,7 +63,7 @@ var inputBox = document.getElementById('covariate_name');
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="covariate_name">Name of the covariate</label>
-                                                        <input onkeyup="dummyy()" value="{{settings.covariate_name}}" type="text" id="covariate_name" name="covariate_name" class="form-control" placeholder="covariate name">
+                                                        <input onkeyup="copy_cov_name_to_span()" value="{{settings.covariate_name}}" type="text" id="covariate_name" name="covariate_name" class="form-control" placeholder="covariate name">
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="tailoring_variable">Is this covariate a tailoring variable?</label><br>
@@ -74,10 +93,10 @@ var inputBox = document.getElementById('covariate_name');
                                     border-radius: 10px;
                                 ">
 
-                                                        <span style="background:#f2f2f2; font-size:14px;">(log) Next 30 min step count</span> ~ <br>
-                                                        α<sub>0</sub> + α<sub>1</sub> * <span style="background:#f2f2f2; font-size:14px;">Location</span><br>
-                                                        + β<sub>0</sub>* <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
-                                                        + β<sub>1</sub>* <span style="background:#f2f2f2; font-size:14px;">Location</span> * <span style="background:#f2f2f2; font-size:14px;"> Activity suggestion </span><br>
+                                                        <span style="background:#f2f2f2; font-size:14px;">{{settings.proximal_outcome_name}}</span> ~ <br>
+                                                        α<sub>0</sub> + α<sub>1</sub> * <span id="cov_name_span1" style="background:#f2f2f2; font-size:14px;">{{settings.covariate_name}}</span><br>
+                                                        + β<sub>0</sub>* <span style="background:#f2f2f2; font-size:14px;"> {{settings.intervention_component_name}} </span><br>
+                                                        <span id="beta_1">+ β<sub>1</sub>* <span id="cov_name_span2" style="background:#f2f2f2; font-size:14px;">{{settings.covariate_name}}</span> * <span style="background:#f2f2f2; font-size:14px;"> {{settings.intervention_component_name}} </span> <br></span>
                                                         + ϵ <br>
 
 
