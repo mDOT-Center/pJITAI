@@ -8,13 +8,31 @@
 {% block content %}
 
 <script>
+
+
 $(document).ready(function(){
+    function calculate_on_load(){
+        dp_freq = $('#dp_freq').text()
+        result1 = ($('#interven_lower').text() * dp_freq).toFixed(1)
+        result2 = ($('#interven_upper').text() * dp_freq).toFixed(1)
+        $('#result_1').html(result1);
+        $('#result_2').html(result2);
+    }
+    calculate_on_load();
+
+
     $("input[name=intervention_probability_lower_bound]").on('keyup', function () {
         $('#interven_lower').html($(this).val());
+        dp_freq = $('#dp_freq').text()
+        result1 = ($('#interven_lower').text() * dp_freq).toFixed(1)
+        $('#result_1').html(result1);
     });
 
     $("input[name=intervention_probability_upper_bound]").on('keyup', function () {
         $('#interven_upper').html($(this).val());
+        dp_freq = $('#dp_freq').text()
+        result2 = ($('#interven_upper').text() * dp_freq).toFixed(1)
+        $('#result_2').html(result2);
     });
 });
 
@@ -50,7 +68,7 @@ $(document).ready(function(){
                                                     <div class="input-group mb-3">
                                                         <input value="{{settings.intervention_probability_lower_bound}}" type="text" id="intervention_probability_lower_bound" name="intervention_probability_lower_bound" class="form-control" required>
                                                         <div class="input-group-append">
-                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;"> <span id="interven_lower"> {{settings.intervention_probability_lower_bound}} </span> &nbsp; x &nbsp;  5  &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points/day </span>&nbsp;&nbsp; = &nbsp;&nbsp; 0.5 &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">Activity Suggestions/day</span></span>
+                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;"> <span id="interven_lower"> {{settings.intervention_probability_lower_bound}} </span> &nbsp; x &nbsp;  <span id="dp_freq"> {{settings.decision_point_frequency}}</span>  &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points / {{settings.decision_point_frequency_time}} </span>&nbsp;&nbsp; = &nbsp;&nbsp; <span id="result_1"></span> &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">{{settings.intervention_option_a}} / {{settings.decision_point_frequency_time}}</span></span>
                                                         </div>
                                                     </div>
 
@@ -60,7 +78,7 @@ $(document).ready(function(){
                                                     <div class="input-group mb-3">
                                                         <input value="{{settings.intervention_probability_upper_bound}}" type="text" id="intervention_probability_upper_bound" name="intervention_probability_upper_bound" class="form-control" required>
                                                         <div class="input-group-append">
-                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;"><span id="interven_upper"> {{settings.intervention_probability_upper_bound}} </span> &nbsp; x &nbsp; 5 &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points/day </span>&nbsp;&nbsp; = &nbsp;&nbsp; 0.5 &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">Activity Suggestions/day</span></span>
+                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;"><span id="interven_upper"> {{settings.intervention_probability_upper_bound}} </span> &nbsp; x &nbsp; {{settings.decision_point_frequency}} &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points / {{settings.decision_point_frequency_time}} </span>&nbsp;&nbsp; = &nbsp;&nbsp; <span id="result_2"></span> &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">{{settings.intervention_option_a}} / {{settings.decision_point_frequency_time}}</span></span>
                                                         </div>
                                                     </div>
 
