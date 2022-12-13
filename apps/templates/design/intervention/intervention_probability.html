@@ -7,6 +7,18 @@
 
 {% block content %}
 
+<script>
+$(document).ready(function(){
+    $("input[name=intervention_probability_lower_bound]").on('keyup', function () {
+        $('#interven_lower').html($(this).val());
+    });
+
+    $("input[name=intervention_probability_upper_bound]").on('keyup', function () {
+        $('#interven_upper').html($(this).val());
+    });
+});
+
+</script>
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
     <div class="pcoded-wrapper">
@@ -38,7 +50,7 @@
                                                     <div class="input-group mb-3">
                                                         <input value="{{settings.intervention_probability_lower_bound}}" type="text" id="intervention_probability_lower_bound" name="intervention_probability_lower_bound" class="form-control" required>
                                                         <div class="input-group-append">
-                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;">0.1 x 5 &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points/day </span>&nbsp;&nbsp; = &nbsp;&nbsp; 0.5 &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">Activity Suggestions/day</span></span>
+                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;"> <span id="interven_lower"> {{settings.intervention_probability_lower_bound}} </span> &nbsp; x &nbsp;  5  &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points/day </span>&nbsp;&nbsp; = &nbsp;&nbsp; 0.5 &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">Activity Suggestions/day</span></span>
                                                         </div>
                                                     </div>
 
@@ -48,7 +60,7 @@
                                                     <div class="input-group mb-3">
                                                         <input value="{{settings.intervention_probability_upper_bound}}" type="text" id="intervention_probability_upper_bound" name="intervention_probability_upper_bound" class="form-control" required>
                                                         <div class="input-group-append">
-                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;">0.1 x 5 &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points/day </span>&nbsp;&nbsp; = &nbsp;&nbsp; 0.5 &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">Activity Suggestions/day</span></span>
+                                                            <span class="input-group-text" style="background-color: #fff; border: dotted;"><span id="interven_upper"> {{settings.intervention_probability_upper_bound}} </span> &nbsp; x &nbsp; 5 &nbsp;&nbsp;<span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;"> decision points/day </span>&nbsp;&nbsp; = &nbsp;&nbsp; 0.5 &nbsp;&nbsp; <span style="background-color: #e0e0e0;border-radius: 5px;padding: 2px;">Activity Suggestions/day</span></span>
                                                         </div>
                                                     </div>
 

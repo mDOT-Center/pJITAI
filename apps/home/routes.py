@@ -153,7 +153,7 @@ def project_settings(setting_type, project_uuid=None):
                 update_general_settings(request.form.to_dict(),project_details_obj)
             else:
                 gdata = request.form.to_dict()
-                gdata.pop("next")
+
                 Projects(created_by=user_id,
                          uuid=project_uuid,
                          general_settings=gdata,
