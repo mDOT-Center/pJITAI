@@ -29,60 +29,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from apps.home import blueprint
 import copy
-from flask import render_template, request
-from flask_login import login_required
-from jinja2 import TemplateNotFound
-from flask import render_template, redirect, request, url_for
-from flask_login import login_required, current_user
 from apps.algorithms.models import Projects
 from apps import db
 from uuid import uuid4
-from flask import render_template, redirect, request, url_for, session, Response
+from flask import render_template, redirect, request
 from datetime import datetime
 
-@blueprint.route('/index')
-@login_required
-def index():
-
-    return render_template('home/index.html', segment='index')
+from apps.home.helper import get_project_details, update_general_settings, update_intervention_settings, \
+    update_model_settings, update_covariates_settings
 
 
-@blueprint.route('/<template>')
-@login_required
-def route_template(template):
-
-    try:
-
-        if not template.endswith('.html'):
-            template += '.html'
-
-        # Detect the current page
-        segment = get_segment(request)
-
-        # Serve the file (if exists) from app/templates/home/FILE.html
-        return render_template("home/" + template, segment=segment)
-
-    except TemplateNotFound:
-        return render_template('home/page-404.html'), 404
-
-    except:
-        return render_template('home/page-500.html'), 500
-
-def get_project_details(project_uuid, user_id):
-    if project_uuid:
-
-        project_details_obj = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
-
-        if project_details_obj:
-            project_details = project_details_obj.as_dict()
-        else:
-            project_details={}
-
-        return project_details, project_details_obj
-
-@blueprint.route('/projects')
 @blueprint.route('/projects/<project_type>')
-def projects(project_type=None):
+def projects(project_type):
     user_id = 1#current_user.get_id()
     data = []
     modified_on = datetime.now()
@@ -150,7 +108,7 @@ def project_settings(setting_type, project_uuid=None):
     elif setting_type=="personalized_method":
         if request.method=='POST':
             if project_details_obj:
-                update_general_settings(request.form.to_dict(),project_details_obj)
+                update_general_settings(request.form.to_dict(), project_details_obj)
             else:
                 gdata = request.form.to_dict()
 
@@ -168,41 +126,16 @@ def project_settings(setting_type, project_uuid=None):
             return render_template("design/projects/personalized_method.html", segment="general_personalized_method", modified_on=modified_on, general_settings = general_settings ,project_uuid=project_uuid)
     elif setting_type=="scenario":
         if request.method=='POST':
-            update_general_settings(request.form.to_dict(),project_details_obj)
+            update_general_settings(request.form.to_dict(), project_details_obj)
             return render_template("design/projects/scenario.html", segment="general_scenario", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
         else:
             return render_template("design/projects/scenario.html", segment="general_scenario", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
         if request.method=='POST':
-            update_general_settings(request.form.to_dict(),project_details_obj)
+            update_general_settings(request.form.to_dict(), project_details_obj)
             return render_template("design/projects/summary.html", segment="general_summary", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
         else:
             return render_template("design/projects/summary.html", segment="general_summary", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
-
-def update_general_settings(data,project_details_obj):
-    if project_details_obj:
-        gen_settings = copy.deepcopy(project_details_obj.general_settings)
-        gen_settings.update(data)
-        project_details_obj.general_settings = gen_settings
-        project_details_obj.modified_on = datetime.now()
-        db.session.commit()
-
-def update_intervention_settings(data,project_details_obj):
-    if project_details_obj:
-        settings = copy.deepcopy(project_details_obj.intervention_settings)
-        settings.update(data)
-        project_details_obj.intervention_settings = settings
-        project_details_obj.modified_on = datetime.now()
-        db.session.commit()
-
-def update_model_settings(data,project_details_obj):
-    if project_details_obj:
-        settings = copy.deepcopy(project_details_obj.model_settings)
-        settings.update(data)
-        project_details_obj.model_settings = settings
-        project_details_obj.modified_on = datetime.now()
-        db.session.commit()
-
 
 
 @blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
@@ -230,7 +163,7 @@ def intervention_settings(setting_type,project_uuid):
             for k in list(intervention_settings.keys()):
                 if k.startswith("condition"):
                     intervention_settings.pop(k)
-        update_intervention_settings(request.form.to_dict(),project_details_obj)
+        update_intervention_settings(request.form.to_dict(), project_details_obj)
 
     if setting_type=="intervention_option":
         return render_template("design/intervention/intervention_option.html", segment="intervention_option", modified_on=modified_on,settings = intervention_settings,project_uuid=project_uuid)
@@ -272,7 +205,7 @@ def model_settings(setting_type,project_uuid):
 
 
     if request.method=='POST':
-        update_model_settings(request.form.to_dict(),project_details_obj)
+        update_model_settings(request.form.to_dict(), project_details_obj)
 
     if setting_type=="proximal_outcome_attribute":
         return render_template("design/model/proximal_outcome_attribute.html", segment="model_proximal_outcome_attribute", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
@@ -282,20 +215,6 @@ def model_settings(setting_type,project_uuid):
         return render_template("design/model/main_treatment_effect.html", segment="model_main_treatment_effect", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
         return render_template("design/model/summary.html", segment="model_summary",modified_on=modified_on,all_covariates=all_covariates, settings = model_settings,project_uuid=project_uuid)
-
-def update_covariates_settings(data,project_details_obj, cov_id=None):
-    cov_vars = {}
-    if project_details_obj:
-        settings = copy.deepcopy(project_details_obj.covariates)
-        if settings.get(cov_id):
-            settings.get(cov_id).update(data)
-        elif data:
-            cov_vars[cov_id] = data
-            settings.update(cov_vars)
-        if settings:
-            project_details_obj.covariates = settings
-            project_details_obj.modified_on = datetime.now()
-            db.session.commit()
 
 
 @blueprint.route('/covariates/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
@@ -345,9 +264,9 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
                 db.session.commit()
 
         if cov_id:
-            update_covariates_settings(form_data,project_details_obj, cov_id)
+            update_covariates_settings(form_data, project_details_obj, cov_id)
         else:
-            update_model_settings(request.form.to_dict(),project_details_obj)
+            update_model_settings(request.form.to_dict(), project_details_obj)
 
 
     if setting_type=="all":
@@ -397,18 +316,3 @@ def configuration_summary(config_type,project_uuid):
     elif config_type=="final":
         return render_template("design/config_summary/final.html", segment="configuration_final", modified_on=modified_on,project_uuid=project_uuid)
 
-
-# Helper - Extract current page name from request
-def get_segment(request):
-
-    try:
-
-        segment = request.path.split('/')[-1]
-
-        if segment == '':
-            segment = 'index'
-
-        return segment
-
-    except:
-        return None
