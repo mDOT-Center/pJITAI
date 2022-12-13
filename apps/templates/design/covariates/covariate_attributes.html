@@ -7,6 +7,31 @@
 
 {% block content %}
 
+<script>
+$(document).ready(function(){
+
+    $('#covariate_type').change(function(){
+
+        if($(this).val() == 'Binary'){
+            $("#covariate_min_val").attr('min', 0);
+            $("#covariate_min_val").attr("max",0);
+            $("#covariate_min_val").attr("step",1);
+
+            $("#covariate_max_val").attr("min",1);
+            $("#covariate_max_val").attr("max",1);
+            $("#covariate_max_val").attr("step",1);
+        }else{
+
+            $("#covariate_min_val").removeAttr('min');
+            $("#covariate_min_val").removeAttr("max");
+            $("#covariate_max_val").removeAttr("min");
+            $("#covariate_max_val").removeAttr("max");
+        }
+    });
+});
+</script>
+
+
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
     <div class="pcoded-wrapper">
@@ -34,11 +59,11 @@
                                         <div class="card-header">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="covariate_min_val">Minimum value of the covariate</label>
-                                                <input value="{{settings.covariate_min_val}}" type="text" name="covariate_min_val" class="form-control" placeholder="">
+                                                <input value="{{settings.covariate_min_val}}" type="number" {% if settings.covariate_type=="Binary" %} min="0" max="0" {% endif %} step="0.01" id="covariate_min_val" name="covariate_min_val" class="form-control" placeholder="">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-control-label" for="covariate_max_val">Maximum value of the covariate</label>
-                                                <input value="{{settings.covariate_max_val}}" type="text" name="covariate_max_val" class="form-control" placeholder="">
+                                                <input value="{{settings.covariate_max_val}}" type="number" {% if settings.covariate_type=="Binary" %} min="1" max="1" {% endif %} step="0.01" id="covariate_max_val" name="covariate_max_val" class="form-control" placeholder="">
                                             </div>
                                             <script>
                                                 function remove_binary_div(){
@@ -55,7 +80,7 @@
                                             </script>
                                             <div class="form-group">
                                                 <label class="form-control-label" for="covariate_type">Type of the covariate</label><br>
-                                                <select id="covariate_type" name="covariate_type" onchange="remove_binary_div()" class="form-control">
+                                                <select id="covariate_type" name="covariate_type" id="covariate_type" onchange="remove_binary_div()" class="form-control">
                                                     {% for ct in covariates_types%}
                                                     <option value="{{ct}}" {{ "selected" if settings.covariate_type == ct }}>{{ct}}</option>
                                                     {%endfor%}

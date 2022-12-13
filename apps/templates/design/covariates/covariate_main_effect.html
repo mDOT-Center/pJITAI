@@ -36,11 +36,11 @@
                                                 <div class="col">
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="main_effect_prior_mean">Prior mean of the main effect</label>
-                                                        <input value="{{settings.main_effect_prior_mean}}" type="text" name="main_effect_prior_mean" class="form-control" placeholder="">
+                                                        <input value="{{settings.main_effect_prior_mean}}" type="number" step="0.01" name="main_effect_prior_mean" class="form-control" placeholder="">
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="form-control-label" for="main_effect_prior_standard_deviation">Prior standard deviation of the main effect</label><br>
-                                                        <input value="{{settings.main_effect_prior_standard_deviation}}"  type="text" name="main_effect_prior_standard_deviation" class="form-control" placeholder="">
+                                                        <input value="{{settings.main_effect_prior_standard_deviation}}"  type="number" min="0" step="0.01" name="main_effect_prior_standard_deviation" class="form-control" placeholder="">
 
                                                     </div>
 
