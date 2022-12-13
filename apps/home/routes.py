@@ -316,3 +316,16 @@ def configuration_summary(config_type,project_uuid):
     elif config_type=="final":
         return render_template("design/config_summary/final.html", segment="configuration_final", modified_on=modified_on,project_uuid=project_uuid)
 
+
+@blueprint.route('/pages/<page_type>', methods=['GET'])
+def static_pages(page_type):
+
+    if page_type=="about":
+        return render_template("design/static_pages/about_us.html", segment="static_pages")
+    elif page_type=="faqs":
+        return render_template("design/static_pages/faqs.html", segment="static_pages")
+    elif page_type=="contact":
+        return render_template("design/static_pages/contact_us.html", segment="static_pages")
+    else:
+        return "Page not found",404
+

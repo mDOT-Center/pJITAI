@@ -73,7 +73,8 @@
     text-align: left;
 }
 </style>
-    {% if 'main_project_page' in segment %}
+
+    {% if 'main_project_page' in segment or 'static_pages' in segment%}
         {% include 'includes/sidebar_project.html' %}
     {% else %}
         {% include 'includes/sidebar.html' %}
