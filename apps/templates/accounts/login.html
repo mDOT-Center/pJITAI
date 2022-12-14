@@ -6,7 +6,31 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<style>
+.img_social_logo {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    position: relative
+}
+.bordert:after {
+        left: 25%
+    }
+.bordert {
+    border-top: 1px solid #aaa;
+    position: relative
+}
 
+.bordert:after {
+    content: "or connect with";
+    position: absolute;
+    top: -13px;
+    left: 33%;
+    background-color: #fff;
+    padding: 0px 8px
+}
+</style>
     <!-- Page content -->
     <div class="container mt--8 pb-5">
       <div class="row justify-content-center">
@@ -14,7 +38,7 @@
           <div class="card bg-secondary shadow border-0">
             <div class="card-header bg-transparent pb-5">
 
-              <div class="text-muted text-center mt-2 mb-3">              
+              <div class="text-muted text-center mt-2 mb-3">
                 LOGIN
                 <br />
                 {% if msg %}
@@ -25,7 +49,7 @@
                 </span>
                 {% endif %}
               </div>
-              
+
             </div>
             <div class="card-body px-lg-5 py-lg-5">
 
@@ -54,7 +78,22 @@
                   <button type="submit" name="login" class="btn btn-primary my-4">Sign in</button>
                 </div>
               </form>
+              <div class="mx-3 my-2 py-2 bordert">
+                <div class="text-center py-3">
+                  <a href="https://wwww.facebook.com" target="_blank" class="px-2">
+                    <img class="img_social_logo" src="https://www.dpreview.com/files/p/articles/4698742202/facebook.jpeg" alt="">
+                  </a>
+                  <a href="https://www.google.com" target="_blank" class="px-2">
+                    <img class="img_social_logo" src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png" alt="">
+                  </a>
+                  <a href="https://www.github.com" target="_blank" class="px-2">
+                    <img class="img_social_logo" src="https://www.freepnglogos.com/uploads/512x512-logo-png/512x512-logo-github-icon-35.png" alt="">
+                  </a>
+                </div>
+              </div>
             </div>
+
+
           </div>
           <div class="row mt-3 text-center">
             <div class="col-12">
