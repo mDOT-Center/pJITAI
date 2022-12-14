@@ -225,13 +225,14 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
     modified_on=""
     all_covariates = {}
     covariates_types = ['Binary','Integer', 'Continuous']
+    formula=""
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
 
     if project_details.get("covariates"):
         modified_on = project_details.get("modified_on","")
         all_covariates = project_details.get("covariates")
-
+        formula = generate_formula(project_uuid=project_uuid,is_summary_page="no",add_red_note="yes")
 
 
         if project_details.get("covariates").get(cov_id):
@@ -277,12 +278,14 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
     elif setting_type=="covariate_attributes":
         return render_template("design/covariates/covariate_attributes.html", segment="covariates", modified_on=modified_on,covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_main_effect":
+
         is_tailoring = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
-        return render_template("design/covariates/covariate_main_effect.html", segment="covariates", modified_on=modified_on,is_tailoring=is_tailoring, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_main_effect.html", segment="covariates", formula=formula, modified_on=modified_on,is_tailoring=is_tailoring, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_tailored_effect":
-        return render_template("design/covariates/covariate_tailored_effect.html", segment="covariates", modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_tailored_effect.html", segment="covariates", formula=formula, modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_summary":
-        return render_template("design/covariates/covariate_summary.html", segment="covariates", modified_on=modified_on,all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        formula = generate_formula(project_uuid=project_uuid,is_summary_page="yes",add_red_note="no")
+        return render_template("design/covariates/covariate_summary.html", segment="covariates", formula=formula, modified_on=modified_on,all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
 
 @blueprint.route('/covariates/settings/delete/<project_uuid>/<cov_id>', methods=['GET'])
 def delete_covariate(project_uuid,cov_id=None):
@@ -329,3 +332,75 @@ def static_pages(page_type):
     else:
         return "Page not found",404
 
+
+@blueprint.route('/generate_formula/<project_uuid>/<page_type>/<add_red_note>', methods=['GET','POST'])
+def generate_formula(project_uuid,is_summary_page,add_red_note):
+    user_id = 1#current_user.get_id()
+    alphas = ""
+    betas = ""
+
+    alpha_counter,beta_counter = 1,1
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+
+    proximal_outcome_name = project_details.get("general_settings",{}).get("proximal_outcome_name")
+    intervention_component_name = project_details.get("general_settings",{}).get("intervention_component_name")
+
+    intercept_prior_mean = project_details.get("model_settings",{}).get("intercept_prior_mean")
+    intercept_prior_standard_deviation = project_details.get("model_settings",{}).get("intercept_prior_standard_deviation")
+    treatment_prior_mean = project_details.get("model_settings",{}).get("treatment_prior_mean")
+    treatment_prior_standard_deviation = project_details.get("model_settings",{}).get("treatment_prior_standard_deviation")
+
+    covariates = project_details.get("covariates")
+
+    alpha_vars = f'α<sub>0</sub>~N({intercept_prior_mean}, {intercept_prior_standard_deviation}<sup>2</sup>)<br>'
+    beta_vars = f'β<sub>0</sub>~N({treatment_prior_mean}, {treatment_prior_standard_deviation}<sup>2</sup>)<br>'
+
+    for acov in reversed(covariates):
+        covariates.get(acov)
+        cov_vars = covariates.get(acov,{})
+        name = covariates.get(acov,{}).get("covariate_name")
+        is_tailoring = cov_vars.get("tailoring_variable")
+        alphas += f"""<br>+ α<sub>{alpha_counter}</sub> * <span id="cov_name_span1" style="background:#f2f2f2; font-size:14px;">{name}</span> """
+        alpha_vars += f'α<sub>{alpha_counter}</sub>~N({cov_vars.get("main_effect_prior_mean")}, {cov_vars.get("main_effect_prior_standard_deviation")}<sup>2</sup>)<br>'
+        alpha_counter +=1
+        if is_tailoring=="yes":
+            betas += f"""<br><span id="beta_{beta_counter}">+ β<sub>{beta_counter}</sub>* <span id="cov_name_span2" style="background:#f2f2f2; font-size:14px;">{name}</span>  * <span style="background:#f2f2f2; font-size:14px;"> {intervention_component_name} </span></span>"""
+            beta_vars += f'β<sub>{beta_counter}</sub>~N({cov_vars.get("main_effect_prior_mean")}, {cov_vars.get("main_effect_prior_standard_deviation")}<sup>2</sup>)<br>'
+            beta_counter+=1
+
+    htmll = f"""<p style="
+                    background-color: #deeaff;
+                    color: black;
+                    padding: 10px;
+                    font-size:18px;
+                    border-radius: 10px;
+                    ">
+
+                    <span style="background:#f2f2f2; font-size:14px;">{proximal_outcome_name}</span> ~ <br>
+                    α<sub>0</sub> 
+                    
+                    {alphas}
+                    
+                    <br><br>
+                    + β<sub>0</sub> * <span style="background:#f2f2f2; font-size:14px;"> {intervention_component_name} </span>
+                                                      
+                    {betas}
+                    
+                    <br>+ ϵ <br>
+                    RED_NOTE
+                    <br>
+                    ALPHA_VARS 
+                    BETA_VARS
+                </p>"""
+    if is_summary_page=="yes":
+        htmll = htmll.replace("ALPHA_VARS",alpha_vars)
+        htmll = htmll.replace("BETA_VARS",beta_vars)
+    else:
+        htmll = htmll.replace("ALPHA_VARS","")
+        htmll = htmll.replace("BETA_VARS","")
+
+    if add_red_note=="yes":
+        htmll = htmll.replace("RED_NOTE", 'α<sub>1</sub>~N(<span style="color:red;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub><sup>2</sup></sub></span>) <br> <span style="color:red;"> We are asking for the red values.</span>')
+    else:
+        htmll = htmll.replace("RED_NOTE","")
+    return htmll

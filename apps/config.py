@@ -46,7 +46,8 @@ class Config(object):
         config('DB_PASS', default='pass'),
         config('DB_HOST', default='localhost'),
         config('DB_PORT', default=3306),
-        config('DB_NAME', default='pJITAI')
+        config('DB_NAME', default='pJITAI'),
+
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

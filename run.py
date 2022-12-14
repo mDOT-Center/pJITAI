@@ -30,6 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from flask_migrate import Migrate
 from sys import exit
 from decouple import config
+import json
+import collections
+from functools import partial
 
 from apps.config import config_dict
 from apps import create_app, db
@@ -48,8 +51,11 @@ try:
 except KeyError:
     exit('Error: Invalid <config_mode>. Expected values [Debug, Production] ')
 
-
 app = create_app(app_config)
+
+#NOTE: for json fields, use ordereddict
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"json_deserializer": partial(json.loads,object_pairs_hook=collections.OrderedDict)}
+
 Migrate(app, db)
 
 if DEBUG:
