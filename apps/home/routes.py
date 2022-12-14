@@ -38,6 +38,10 @@ from datetime import datetime
 from apps.home.helper import get_project_details, update_general_settings, update_intervention_settings, \
     update_model_settings, update_covariates_settings
 
+def menu_items():
+    algo_menu = {
+
+    }
 
 @blueprint.route('/projects/<project_type>')
 def projects(project_type):
@@ -95,16 +99,17 @@ def project_settings(setting_type, project_uuid=None):
     modified_on = ""
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    project_name = project_details.get("general_settings",{}).get("study_name","")
 
     if project_details.get("general_settings"):
-        general_settings= project_details.get("general_settings")
+        general_settings= project_details.get("general_settings",{})
         modified_on = project_details.get("modified_on","")
 
     if not modified_on:
         modified_on = datetime.now()
 
     if setting_type=="general":
-        return render_template("design/projects/general_settings.html", segment="general_settings", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
+        return render_template("design/projects/general_settings.html", segment="general_settings", menu_number=1,project_name=project_name, modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
     elif setting_type=="personalized_method":
         if request.method=='POST':
             if project_details_obj:
@@ -121,21 +126,21 @@ def project_settings(setting_type, project_uuid=None):
                          algo_type="algorithm_type",
                          modified_on=datetime.now(),
                          created_on=datetime.now()).save()
-            return render_template("design/projects/personalized_method.html", segment="general_personalized_method", modified_on=modified_on, general_settings = general_settings ,project_uuid=project_uuid)
+            return render_template("design/projects/personalized_method.html", segment="general_personalized_method",menu_number=2,project_name=project_name, modified_on=modified_on, general_settings = general_settings ,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/personalized_method.html", segment="general_personalized_method", modified_on=modified_on, general_settings = general_settings ,project_uuid=project_uuid)
+            return render_template("design/projects/personalized_method.html", segment="general_personalized_method",menu_number=2,project_name=project_name, modified_on=modified_on, general_settings = general_settings ,project_uuid=project_uuid)
     elif setting_type=="scenario":
         if request.method=='POST':
             update_general_settings(request.form.to_dict(), project_details_obj)
-            return render_template("design/projects/scenario.html", segment="general_scenario", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/scenario.html", segment="general_scenario", modified_on=modified_on,menu_number=3,project_name=project_name, general_settings = general_settings,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/scenario.html", segment="general_scenario", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/scenario.html", segment="general_scenario", modified_on=modified_on,menu_number=3,project_name=project_name, general_settings = general_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
         if request.method=='POST':
             update_general_settings(request.form.to_dict(), project_details_obj)
-            return render_template("design/projects/summary.html", segment="general_summary", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/summary.html", segment="general_summary", modified_on=modified_on,menu_number=4,project_name=project_name, general_settings = general_settings,project_uuid=project_uuid)
         else:
-            return render_template("design/projects/summary.html", segment="general_summary", modified_on=modified_on, general_settings = general_settings,project_uuid=project_uuid)
+            return render_template("design/projects/summary.html", segment="general_summary", modified_on=modified_on,menu_number=4,project_name=project_name, general_settings = general_settings,project_uuid=project_uuid)
 
 
 @blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
@@ -146,6 +151,7 @@ def intervention_settings(setting_type,project_uuid):
     decision_point_frequency_time = ['Hour', 'Day', 'Week', 'Month']
     update_duration=['Daily', 'Weekly', 'Monthly']
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    project_name = project_details.get("general_settings",{}).get("study_name","")
 
     if project_details.get("intervention_settings"):
         intervention_settings= project_details.get("intervention_settings")
@@ -166,20 +172,20 @@ def intervention_settings(setting_type,project_uuid):
         update_intervention_settings(request.form.to_dict(), project_details_obj)
 
     if setting_type=="intervention_option":
-        return render_template("design/intervention/intervention_option.html", segment="intervention_option", modified_on=modified_on,settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/intervention_option.html", segment="intervention_option",menu_number=5,project_name=project_name, modified_on=modified_on,settings = intervention_settings,project_uuid=project_uuid)
 
     elif setting_type=="decision_point":
 
-        return render_template("design/intervention/decision_point.html", segment="intervention_decision_point",modified_on=modified_on,decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/decision_point.html", segment="intervention_decision_point",menu_number=6,project_name=project_name,modified_on=modified_on,decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="ineligibility":
 
-        return render_template("design/intervention/ineligibility.html", segment="intervention_decision_point", modified_on=modified_on,conditions=conditions, settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/ineligibility.html", segment="intervention_decision_point", menu_number=7,project_name=project_name,modified_on=modified_on,conditions=conditions, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="intervention_probability":
-        return render_template("design/intervention/intervention_probability.html", segment="intervention_probability", modified_on=modified_on,settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/intervention_probability.html", segment="intervention_probability",menu_number=8,project_name=project_name, modified_on=modified_on,settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="update_point":
-        return render_template("design/intervention/update_point.html", segment="intervention_update_point", modified_on=modified_on,update_duration=update_duration, settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/update_point.html", segment="intervention_update_point", menu_number=9,project_name=project_name,modified_on=modified_on,update_duration=update_duration, settings = intervention_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
-        return render_template("design/intervention/summary.html", segment="intervention_summary", modified_on=modified_on,update_duration=update_duration, conditions=conditions, decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
+        return render_template("design/intervention/summary.html", segment="intervention_summary", menu_number=10,project_name=project_name,modified_on=modified_on,update_duration=update_duration, conditions=conditions, decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
 
 @blueprint.route('/model/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def model_settings(setting_type,project_uuid):
@@ -189,6 +195,8 @@ def model_settings(setting_type,project_uuid):
     modified_on = ""
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    project_name = project_details.get("general_settings",{}).get("study_name","")
+
     # proximal_outcome_name (general settings)
     # intervention_component_name (general settings)
 
@@ -208,13 +216,13 @@ def model_settings(setting_type,project_uuid):
         update_model_settings(request.form.to_dict(), project_details_obj)
 
     if setting_type=="proximal_outcome_attribute":
-        return render_template("design/model/proximal_outcome_attribute.html", segment="model_proximal_outcome_attribute", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/proximal_outcome_attribute.html", segment="model_proximal_outcome_attribute", menu_number=11,project_name=project_name,modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="intercept":
-        return render_template("design/model/intercept.html", segment="model_intercept", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/intercept.html", segment="model_intercept", menu_number=12,project_name=project_name,modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="main_treatment_effect":
-        return render_template("design/model/main_treatment_effect.html", segment="model_main_treatment_effect", modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/main_treatment_effect.html", segment="model_main_treatment_effect", menu_number=13,project_name=project_name,modified_on=modified_on,settings = model_settings,project_uuid=project_uuid)
     elif setting_type=="summary":
-        return render_template("design/model/summary.html", segment="model_summary",modified_on=modified_on,all_covariates=all_covariates, settings = model_settings,project_uuid=project_uuid)
+        return render_template("design/model/summary.html", segment="model_summary",menu_number=16,project_name=project_name,modified_on=modified_on,all_covariates=all_covariates, settings = model_settings,project_uuid=project_uuid)
 
 
 @blueprint.route('/covariates/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
@@ -228,6 +236,7 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
     formula=""
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    project_name = project_details.get("general_settings",{}).get("study_name","")
 
     if project_details.get("covariates"):
         modified_on = project_details.get("modified_on","")
@@ -272,20 +281,20 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
 
     if setting_type=="all":
         new_uuid = uuid4()
-        return render_template("design/covariates/covariates.html", segment="covariates", modified_on=modified_on,all_covariates=all_covariates, settings = settings,new_uuid=new_uuid,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariates.html", segment="covariates", menu_number=14,project_name=project_name,modified_on=modified_on,all_covariates=all_covariates, settings = settings,new_uuid=new_uuid,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_name":
-        return render_template("design/covariates/covariate_name.html", segment="covariates", modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_name.html", segment="covariates", menu_number=14,project_name=project_name,modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_attributes":
-        return render_template("design/covariates/covariate_attributes.html", segment="covariates", modified_on=modified_on,covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_attributes.html", segment="covariates", menu_number=14,project_name=project_name,modified_on=modified_on,covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_main_effect":
 
         is_tailoring = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
-        return render_template("design/covariates/covariate_main_effect.html", segment="covariates", formula=formula, modified_on=modified_on,is_tailoring=is_tailoring, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_main_effect.html", segment="covariates", formula=formula, menu_number=14,project_name=project_name,modified_on=modified_on,is_tailoring=is_tailoring, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_tailored_effect":
-        return render_template("design/covariates/covariate_tailored_effect.html", segment="covariates", formula=formula, modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_tailored_effect.html", segment="covariates", formula=formula, menu_number=14,project_name=project_name,modified_on=modified_on,settings = settings,project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type=="covariate_summary":
         formula = generate_formula(project_uuid=project_uuid,is_summary_page="yes",add_red_note="no")
-        return render_template("design/covariates/covariate_summary.html", segment="covariates", formula=formula, modified_on=modified_on,all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
+        return render_template("design/covariates/covariate_summary.html", segment="covariates", formula=formula, menu_number=14,project_name=project_name,modified_on=modified_on,all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
 
 @blueprint.route('/covariates/settings/delete/<project_uuid>/<cov_id>', methods=['GET'])
 def delete_covariate(project_uuid,cov_id=None):
