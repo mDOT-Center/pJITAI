@@ -314,8 +314,11 @@ def delete_covariate(project_uuid,cov_id=None):
 def configuration_summary(config_type,project_uuid):
     user_id = 1#current_user.get_id()
     modified_on=""
+    settings = {}
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    settings["intervention_probability_lower_bound"] = project_details.get("intervention_settings",{}).get("intervention_probability_lower_bound")
+    settings["intervention_probability_upper_bound"] = project_details.get("intervention_settings",{}).get("intervention_probability_upper_bound")
 
     if project_details.get("covariates"):
         modified_on = project_details.get("modified_on","")
@@ -324,9 +327,9 @@ def configuration_summary(config_type,project_uuid):
     if not modified_on:
         modified_on = datetime.now()
     if config_type=="summary":
-        return render_template("design/config_summary/summary.html", segment="configuration_summary", modified_on=modified_on,project_uuid=project_uuid)
+        return render_template("design/config_summary/summary.html", segment="configuration_summary",settings=settings,menu_number=16, modified_on=modified_on,project_uuid=project_uuid)
     elif config_type=="final":
-        return render_template("design/config_summary/final.html", segment="configuration_final", modified_on=modified_on,project_uuid=project_uuid)
+        return render_template("design/config_summary/final.html", segment="configuration_final", settings=settings, menu_number=17, modified_on=modified_on,project_uuid=project_uuid)
 
 
 @blueprint.route('/pages/<page_type>', methods=['GET'])
@@ -369,29 +372,23 @@ def generate_formula(project_uuid,is_summary_page,add_red_note):
         cov_vars = covariates.get(acov,{})
         name = covariates.get(acov,{}).get("covariate_name")
         is_tailoring = cov_vars.get("tailoring_variable")
-        alphas += f"""<br>+ α<sub>{alpha_counter}</sub> * <span id="cov_name_span1" style="background:#f2f2f2; font-size:14px;">{name}</span> """
+        alphas += f"""<br>+ α<sub>{alpha_counter}</sub> * <span id="cov_name_span1" style="background:#888; font-size:14px;">{name}</span> """
         alpha_vars += f'α<sub>{alpha_counter}</sub>~N({cov_vars.get("main_effect_prior_mean")}, {cov_vars.get("main_effect_prior_standard_deviation")}<sup>2</sup>)<br>'
         alpha_counter +=1
         if is_tailoring=="yes":
-            betas += f"""<br><span id="beta_{beta_counter}">+ β<sub>{beta_counter}</sub>* <span id="cov_name_span2" style="background:#f2f2f2; font-size:14px;">{name}</span>  * <span style="background:#f2f2f2; font-size:14px;"> {intervention_component_name} </span></span>"""
+            betas += f"""<br><span id="beta_{beta_counter}">+ β<sub>{beta_counter}</sub>* <span id="cov_name_span2" style="background:#888; font-size:14px;">{name}</span>  * <span style="background:#888; font-size:14px;"> {intervention_component_name} </span></span>"""
             beta_vars += f'β<sub>{beta_counter}</sub>~N({cov_vars.get("main_effect_prior_mean")}, {cov_vars.get("main_effect_prior_standard_deviation")}<sup>2</sup>)<br>'
             beta_counter+=1
 
-    htmll = f"""<p style="
-                    background-color: #deeaff;
-                    color: black;
-                    padding: 10px;
-                    font-size:18px;
-                    border-radius: 10px;
-                    ">
+    htmll = f"""<p class="rightsidebluetextbox">
 
-                    <span style="background:#f2f2f2; font-size:14px;">{proximal_outcome_name}</span> ~ <br>
+                    <span style="background:#888; font-size:14px;">{proximal_outcome_name}</span> ~ <br>
                     α<sub>0</sub> 
                     
                     {alphas}
                     
                     <br><br>
-                    + β<sub>0</sub> * <span style="background:#f2f2f2; font-size:14px;"> {intervention_component_name} </span>
+                    + β<sub>0</sub> * <span style="background:#888; font-size:14px;"> {intervention_component_name} </span>
                                                       
                     {betas}
                     
@@ -409,7 +406,7 @@ def generate_formula(project_uuid,is_summary_page,add_red_note):
         htmll = htmll.replace("BETA_VARS","")
 
     if add_red_note=="yes":
-        htmll = htmll.replace("RED_NOTE", 'α<sub>1</sub>~N(<span style="color:red;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub><sup>2</sup></sub></span>) <br> <span style="color:red;"> We are asking for the red values.</span>')
+        htmll = htmll.replace("RED_NOTE", 'α<sub>1</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub><sup>2</sup></sub></span>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
     else:
         htmll = htmll.replace("RED_NOTE","")
     return htmll

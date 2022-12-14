@@ -90,4 +90,22 @@ body.dark {
   body.dark .pcoded-header .main-search.open .input-group .search-close {
     background-color: transparent; }
 
+body.dark .rightsidebluetextbox{
+        background-color: #082033;
+        color: #fff;
+        padding: 17px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+body.dark .text_white{
+        color: #fff;
+    }
+
+body.dark .congratstextbox{
+        background-color: #082032;
+        color: white;
+        padding: 10px;
+        border: 1px dotted;
+        border-radius: 10px;
+    }
 /*# sourceMappingURL=dark.css.map */

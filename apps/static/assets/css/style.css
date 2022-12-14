@@ -10598,3 +10598,23 @@ div.code-toolbar > .toolbar span:hover {
 		box-shadow: 0 0 0 0 rgba(4, 169, 245, 0)
 	}
 }
+
+.rightsidebluetextbox{
+        background-color: #deeaff;
+        color: #000;
+        padding: 17px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+
+ .text_white{
+         color: #000;
+     }
+
+ .congratstextbox{
+         background-color: #fff;
+         color: black;
+         padding: 10px;
+         border: 1px dotted;
+         border-radius: 10px;
+     }
