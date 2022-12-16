@@ -32,6 +32,7 @@ import copy
 from apps.algorithms.models import Projects
 from apps import db
 from sqlalchemy import desc
+from flask_login import login_required, current_user
 from uuid import uuid4
 from flask import render_template, redirect, request
 from datetime import datetime
@@ -41,8 +42,9 @@ from apps.home.helper import get_project_details, update_general_settings, updat
 
 
 @blueprint.route('/projects/<project_type>')
+@login_required
 def projects(project_type):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     data = []
     segment = "main_project_page_"
     modified_on = datetime.now()
@@ -68,15 +70,17 @@ def projects(project_type):
 
 
 @blueprint.route('/projects/delete/<project_uuid>', methods=['GET'])
+@login_required
 def delete_project(project_uuid):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).delete()
     db.session.commit()
-    return redirect("/projects")
+    return redirect("/projects/in_progress")
 
 @blueprint.route('/projects/duplicate/<project_uuid>', methods=['GET'])
+@login_required
 def duplicate_project(project_uuid):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     proj = Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid==project_uuid).first()
     if proj:
         Projects(created_by=user_id,
@@ -88,12 +92,13 @@ def duplicate_project(project_uuid):
                  algo_type="algorithm_type",
                  modified_on=datetime.now(),
                  created_on=datetime.now()).save()
-    return redirect("/projects")
+    return redirect("/projects/in_progress")
 
 
 @blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+@login_required
 def project_settings(setting_type, project_uuid=None):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     general_settings= {}
     modified_on = ""
 
@@ -139,8 +144,9 @@ def project_settings(setting_type, project_uuid=None):
 
 
 @blueprint.route('/intervention/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+@login_required
 def intervention_settings(setting_type,project_uuid):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     intervention_settings= {}
     modified_on=""
     decision_point_frequency_time = ['Hour', 'Day', 'Week', 'Month']
@@ -187,8 +193,9 @@ def intervention_settings(setting_type,project_uuid):
         return render_template("design/intervention/summary.html", segment="intervention_summary", all_menus=all_menus,menu_number=10,project_name=project_name,modified_on=modified_on,update_duration=update_duration, conditions=conditions, decision_point_frequency_time=decision_point_frequency_time, settings = intervention_settings,project_uuid=project_uuid)
 
 @blueprint.route('/model/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
+@login_required
 def model_settings(setting_type,project_uuid):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     model_settings= {}
     all_covariates = {}
     modified_on = ""
@@ -229,8 +236,9 @@ def model_settings(setting_type,project_uuid):
 
 @blueprint.route('/covariates/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 @blueprint.route('/covariates/settings/<setting_type>/<project_uuid>/<cov_id>', methods=['GET', 'POST'])
+@login_required
 def covariates_settings(setting_type,project_uuid,cov_id=None):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     settings= {}
     modified_on=""
     all_covariates = {}
@@ -302,8 +310,9 @@ def covariates_settings(setting_type,project_uuid,cov_id=None):
         return render_template("design/covariates/covariate_summary.html", segment="covariates", formula=formula, all_menus=all_menus,menu_number=14,project_name=project_name,modified_on=modified_on,all_covariates=all_covariates, covariates_types=covariates_types, settings = settings,project_uuid=project_uuid, cov_id=cov_id)
 
 @blueprint.route('/covariates/settings/delete/<project_uuid>/<cov_id>', methods=['GET'])
+@login_required
 def delete_covariate(project_uuid,cov_id=None):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
     covariates = copy.deepcopy(project_details.get("covariates",{}))
@@ -316,8 +325,9 @@ def delete_covariate(project_uuid,cov_id=None):
     return redirect("/covariates/settings/all/"+project_uuid)
 
 @blueprint.route('/configuration/<config_type>/<project_uuid>', methods=['GET'])
+@login_required
 def configuration_summary(config_type,project_uuid):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     modified_on=""
     settings = {}
 
@@ -339,6 +349,7 @@ def configuration_summary(config_type,project_uuid):
 
 
 @blueprint.route('/pages/<page_type>', methods=['GET'])
+@login_required
 def static_pages(page_type):
 
     if page_type=="about":
@@ -352,8 +363,9 @@ def static_pages(page_type):
 
 
 @blueprint.route('/generate_formula/<project_uuid>/<page_type>/<add_red_note>', methods=['GET','POST'])
+@login_required
 def generate_formula(project_uuid,is_summary_page,add_red_note):
-    user_id = 1#current_user.get_id()
+    user_id = current_user.get_id()
     alphas = ""
     betas = ""
 
