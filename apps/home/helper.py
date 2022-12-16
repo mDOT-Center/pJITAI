@@ -1,8 +1,10 @@
 import copy
 from datetime import datetime
 
+from flask import request
+
 from apps import db
-from apps.algorithms.models import Projects
+from apps.algorithms.models import Projects, ProjectMenu
 
 
 def get_project_details(project_uuid, user_id):
@@ -58,3 +60,16 @@ def update_covariates_settings(data,project_details_obj, cov_id=None):
             project_details_obj.covariates = settings
             project_details_obj.modified_on = datetime.now()
             db.session.commit()
+
+
+def add_menu(user_id, project_uuid, page_url):
+    if not db.session.query(ProjectMenu).filter(ProjectMenu.created_by == user_id).filter(ProjectMenu.page_url==page_url).first():
+        ProjectMenu(created_by=user_id,project_uuid=project_uuid, page_url=request.path).save()
+
+
+def get_project_menu_pages(user_id, project_uuid):
+    result = []
+    all_pages = db.session.query(ProjectMenu).filter(ProjectMenu.created_by == user_id).filter(ProjectMenu.project_uuid==project_uuid).all()
+    for ap in all_pages:
+        result.append(ap.page_url)
+    return result

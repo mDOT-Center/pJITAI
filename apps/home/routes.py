@@ -29,19 +29,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from apps.home import blueprint
 import copy
-from apps.algorithms.models import Projects, ProjectMenu
+from apps.algorithms.models import Projects
 from apps import db
+from sqlalchemy import desc
 from uuid import uuid4
 from flask import render_template, redirect, request
 from datetime import datetime
 
 from apps.home.helper import get_project_details, update_general_settings, update_intervention_settings, \
-    update_model_settings, update_covariates_settings
+    update_model_settings, update_covariates_settings, add_menu, get_project_menu_pages
 
-def menu_items():
-    algo_menu = {
-
-    }
 
 @blueprint.route('/projects/<project_type>')
 def projects(project_type):
@@ -50,13 +47,13 @@ def projects(project_type):
     segment = "main_project_page_"
     modified_on = datetime.now()
     if not project_type or project_type=="all":
-        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).all()
+        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).order_by(desc(Projects.created_on)).all()
     elif project_type=="in_progress":
         segment += "in_progress"
-        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.project_status==0).all()
+        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).order_by(desc(Projects.created_on)).filter(Projects.project_status==0).all()
     elif project_type=="finalized":
         segment += "finalized"
-        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).filter(Projects.project_status==1).all()
+        all_projects = db.session.query(Projects).filter(Projects.created_by == user_id).order_by(desc(Projects.created_on)).filter(Projects.project_status==1).all()
 
     for aproj in all_projects:
         aproj.general_settings["project_uuid"] = aproj.uuid
@@ -93,16 +90,6 @@ def duplicate_project(project_uuid):
                  created_on=datetime.now()).save()
     return redirect("/projects")
 
-def add_menu(user_id, project_uuid, page_url):
-    if not db.session.query(ProjectMenu).filter(ProjectMenu.created_by == user_id).filter(ProjectMenu.page_url==page_url).first():
-        ProjectMenu(created_by=user_id,project_uuid=project_uuid, page_url=request.path).save()
-
-def get_project_menu_pages(user_id, project_uuid):
-    result = []
-    all_pages = db.session.query(ProjectMenu).filter(ProjectMenu.created_by == user_id).filter(ProjectMenu.project_uuid==project_uuid).all()
-    for ap in all_pages:
-        result.append(ap.page_url)
-    return result
 
 @blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 def project_settings(setting_type, project_uuid=None):
