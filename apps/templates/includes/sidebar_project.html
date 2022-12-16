@@ -238,10 +238,10 @@ function showControl() {
                         <li class="{% if 'personalized_method' in segment %} active {% endif %}"><a href="/projects/duplicate/{{project_uuid}}" class=""><i class="fas fa-clone"></i> Add another HeartSteps Demo</a></li>
                     </ul>
                 </li>
-                <li class="nav-item {% if 'intervention' in segment %} active{% endif %}">
+                <li class="nav-item {% if 'in_progress' in segment %} active{% endif %}">
                     <a href="/projects/in_progress" class="nav-link "><span class="pcoded-micon"><i class="fas fa-history"></i></span><span class="pcoded-mtext">In Progress </span></a>
                 </li>
-                <li class="nav-item {% if 'intervention' in segment %} active pcoded-trigger {% endif %}">
+                <li class="nav-item {% if 'finalized' in segment %} active pcoded-trigger {% endif %}">
                     <a href="/projects/finalized" class="nav-link "><span class="pcoded-micon"><i class="fas fa-clipboard-check"></i></span><span class="pcoded-mtext">Finalized</span></a>
                 </li>
 

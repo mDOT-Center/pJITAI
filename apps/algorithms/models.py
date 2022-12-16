@@ -148,3 +148,43 @@ class Projects(db.Model):
         save(self)
     def delete(self):
         delete_from_db(self)
+
+
+@dataclass
+class ProjectMenu(db.Model):
+    __tablename__ = 'projectsMenu'
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   nullable=False)
+    created_by = db.Column(db.Integer,
+                           db.ForeignKey('users.id'),
+                           nullable=False)
+    project_uuid = db.Column(db.String(36))
+    page_url = db.Column(db.String(256))
+    created_on = db.Column(db.DateTime, default=datetime.now())
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                if not isinstance(value, dict):
+                    value = value[0]
+
+            if property == 'password':
+                value = hash_pass(value)  # we need bytes here (not plain str)
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.name)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def save(self):
+        save(self)
+    def delete(self):
+        delete_from_db(self)
