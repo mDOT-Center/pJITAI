@@ -27,9 +27,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-import os
 import importlib
-import inspect
+import os
 
 # Must be absolute path for this to work.
 base_learning_method_path = 'apps.learning_methods.'
@@ -39,7 +38,8 @@ def get_all_available_methods():
     models = {}
 
     for module in os.listdir(os.path.dirname(__file__)):
-        if module == '__init__.py' or module[-3:] != '.py' or module == "learning_method_service.py" or module == "LearningMethodBase.py":
+        if module == '__init__.py' or module[
+                                      -3:] != '.py' or module == "learning_method_service.py" or module == "LearningMethodBase.py":
             continue
 
         module_name = module[:-3]

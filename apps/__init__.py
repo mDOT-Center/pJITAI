@@ -27,11 +27,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
+from importlib import import_module
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from importlib import import_module
-
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -49,7 +49,6 @@ def register_blueprints(app):
 
 
 def configure_database(app):
-
     @app.before_first_request
     def initialize_database():
         db.create_all()

@@ -37,6 +37,7 @@ function remove_form_fields(rid) {
     $('#condition_div_'+rid).remove();
    }
 
+
 </script>
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
@@ -63,7 +64,7 @@ function remove_form_fields(rid) {
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header" id="all_conditions_div">
-                                        {% for cond,v in conditions.items() %}
+                                            {% for cond,v in conditions.items() %}
                                             <div id="condition_div_{{loop.index}}">
                                                 <label class="form-control-label" for="{{cond}}">Name of the
                                                     condition {{loop.index}}</label>
@@ -71,13 +72,14 @@ function remove_form_fields(rid) {
                                                     <input value="{{v}}" type="text" class="form-control"
                                                            id="{{cond}}" name="{{cond}}" required>
                                                     <div class="input-group-append">
-                                                        <button class="btn btn-danger" type="button" onclick="remove_form_fields({{loop.index}});"><i
+                                                        <button class="btn btn-danger" type="button"
+                                                                onclick="remove_form_fields({{loop.index}});"><i
                                                                 class="fa fa-trash float-right" aria-hidden="true">
                                                             Delete</i></button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        {%endfor%}
+                                            {%endfor%}
                                         </div>
                                         <a onclick="add_form_fields('parameters');"><p
                                                 style="border: 1px dotted green; padding:5px;font-size: 20px;margin-top: 60px;text-align: center;color: green;cursor: pointer;">
@@ -108,14 +110,21 @@ function remove_form_fields(rid) {
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
                                             <p>
-                                            <p>Please list all the conditions when Intervention Option A is <span style="color:#f65959;"> not</span> eligible to be delivered to an individual. That is, only intervention Option B should be provided.</p>
+                                            <p>Please list all the conditions when Intervention Option A is <span
+                                                    style="color:#f65959;"> not</span> eligible to be delivered to an
+                                                individual. That is, only intervention Option B should be provided.</p>
 
                                             <p>If you want to remove a condition, please click on the trash can.</p>
                                             </p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p>HeartSteps should deliver activity suggestions to participants only if, at a decision point, they are eligible. Participants are considered to be ineligible if they are currently walking or running, because the activity suggestion concerns a new physical activity.  To minimize burden, participants are ineligible if they had finished an activity bout in the previous 90 min. </p>
+                                            <p>HeartSteps should deliver activity suggestions to participants only if,
+                                                at a decision point, they are eligible. Participants are considered to
+                                                be ineligible if they are currently walking or running, because the
+                                                activity suggestion concerns a new physical activity. To minimize
+                                                burden, participants are ineligible if they had finished an activity
+                                                bout in the previous 90 min. </p>
                                         </div>
 
                                     </div>
@@ -130,7 +139,8 @@ function remove_form_fields(rid) {
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/intervention/settings/decision_point/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                <a href="/intervention/settings/decision_point/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
                                                 <button type="submit" type="button"
                                                         formaction="/intervention/settings/intervention_probability/{{project_uuid}}"
                                                         formmethod="post" class="btn btn-primary">Next

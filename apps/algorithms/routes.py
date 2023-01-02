@@ -28,21 +28,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 import datetime
+from uuid import uuid4
 
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required, current_user
 
 from apps import db
-from flask_login import login_required, current_user
 from apps.algorithms import blueprint
 from apps.algorithms.models import Algorithms
 from apps.learning_methods.learning_method_service import get_all_available_methods
-from uuid import uuid4
 
 
 @blueprint.route('/algorithms_definitions', methods=['GET'])
 @login_required
 def algorithms_definitions():
-
     algorithms_definitions = list_algorithms()
     return render_template('algorithms/algorithms_definitions.html',
                            msg='No Message',
@@ -63,7 +62,6 @@ def my_algorithms():
 @blueprint.route('/algorithm_form/<algorithm_name>', methods=['GET', 'POST'])
 @login_required
 def algorithm_form(algorithm_name):
-
     algorithm_definition = list_algorithms(algorithm_name)
     return render_template('algorithms/add_algorithm.html',
                            msg='No Message',
@@ -80,13 +78,13 @@ def edit_algorithm(algorithm_id):
     algo["algorithm_definition"] = list_algorithms(algo["user_algorithm"].type)
 
     if request.headers.get("Referer") is not None and "algorithm_form" in request.headers.get("Referer"):
-        msg = "Algorithm "+algo["user_algorithm"].name+" type of " + \
-            algo["algorithm_definition"].get(
-                "type")+" has been saved successfully."
+        msg = "Algorithm " + algo["user_algorithm"].name + " type of " + \
+              algo["algorithm_definition"].get(
+                  "type") + " has been saved successfully."
     elif request.headers.get("Referer") is not None and "edit_algorithm" in request.headers.get("Referer"):
-        msg = "Algorithm "+algo["user_algorithm"].name+" type of " + \
-            algo["algorithm_definition"].get(
-                "type")+" has been updated successfully."
+        msg = "Algorithm " + algo["user_algorithm"].name + " type of " + \
+              algo["algorithm_definition"].get(
+                  "type") + " has been updated successfully."
     else:
         msg = ""
 
@@ -116,7 +114,7 @@ def add_update_algo():
         other_parameter = {}
 
         for param in request.form:
-            arr = param. split("__")
+            arr = param.split("__")
             if param.startswith("feature"):
                 if not features.get(arr[-1]):
                     features[arr[-1]] = {}

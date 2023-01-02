@@ -27,43 +27,45 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-from datetime import datetime
-from functools import wraps
 import inspect
 import traceback
-from flask import request
+from datetime import datetime
+from functools import wraps
 
-from apps.algorithms.models import Algorithms
-from apps.api.codes import StatusCode
-from apps import db
+from flask import request
 from sqlalchemy.exc import SQLAlchemyError
 
+from apps import db
+from apps.algorithms.models import Algorithms
+from apps.api.codes import StatusCode
 from .models import Log
 
+
 def pJITAI_token_required(f):
-    @ wraps(f)
+    @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('pJITAI_token')
         if not token:
             return {
-                'status_code': StatusCode.ERROR.value,
-                'status_message': 'Token not found'
-            }, 400
+                       'status_code': StatusCode.ERROR.value,
+                       'status_message': 'Token not found'
+                   }, 400
 
         result = db.session.query(Algorithms).filter(Algorithms.auth_token == token).first()
         if result:
             return f(*args, **kwargs)
         else:
             return {
-                'status_code': StatusCode.ERROR.value,
-                'status_message': 'Invalid security token'
-            }, 400
+                       'status_code': StatusCode.ERROR.value,
+                       'status_message': 'Invalid security token'
+                   }, 400
 
     return decorated
 
 
 def time_8601(time=datetime.now()) -> str:
     return time.astimezone().isoformat()
+
 
 def time_8601_to_datetime(input_time):
     return datetime.fromisoformat(input_time)
@@ -86,7 +88,7 @@ def _validate_algo_data(uuid: str, feature_values: list) -> list:
     feature_map = {}
     for ft in algorithm_features_:
         feature_map[algorithm_features_[ft]
-                    ['feature_name']] = algorithm_features_[ft]
+        ['feature_name']] = algorithm_features_[ft]
 
     # Check input_request to ensure that the number of items matches what is expected
     if len(feature_values) == len(feature_map):
@@ -126,7 +128,8 @@ def _is_valid(feature_vector: dict, features_config: dict) -> dict:
         # This is teh defined data type of the feature defined in the config
         feature_data_type = ft_def['feature_data_type']
         if feature_data_type != feature_value_type.__name__:
-            raise Exception(f"Incorrect feature type for {feature_name}, expected: {feature_data_type} received: {feature_value_type}")
+            raise Exception(
+                f"Incorrect feature type for {feature_name}, expected: {feature_data_type} received: {feature_value_type}")
 
         if feature_data_type == 'int':
             try:
@@ -136,13 +139,15 @@ def _is_valid(feature_vector: dict, features_config: dict) -> dict:
                     lower_bound = int(lower_bound_value)
                     if feature_value < lower_bound:
                         validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-                        validation['status_message'] = f'{feature_name} with value {feature_value} is lower than the lower bound value {lower_bound}.'
+                        validation[
+                            'status_message'] = f'{feature_name} with value {feature_value} is lower than the lower bound value {lower_bound}.'
                 upper_bound_value = str(ft_def['feature_upper_bound'])
                 if 'inf' not in upper_bound_value:
                     upper_bound = int(upper_bound_value)
                     if feature_value > upper_bound:
                         validation['status_code'] = StatusCode.WARNING_OUT_OF_BOUNDS.value
-                        validation['status_message'] = f'{feature_name} with value {feature_value} is greater than the upper bound value {upper_bound}.'
+                        validation[
+                            'status_message'] = f'{feature_name} with value {feature_value} is greater than the upper bound value {upper_bound}.'
             except Exception as e:
                 validation['status_code'] = StatusCode.ERROR.value
                 validation['status_message'] = f'{feature_name} {e}'
@@ -167,8 +172,8 @@ def _is_valid(feature_vector: dict, features_config: dict) -> dict:
     return feature_vector
 
 
-def _add_log(algo_uuid:str=None,log_detail: dict=None, ) -> dict:
-    calling_method = inspect.stack()[1][3] # Look at the calling stack for the parent method
+def _add_log(algo_uuid: str = None, log_detail: dict = None, ) -> dict:
+    calling_method = inspect.stack()[1][3]  # Look at the calling stack for the parent method
     calling_file = inspect.stack()[1][1]
     try:
         log_detail['calling_method'] = calling_method

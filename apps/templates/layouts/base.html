@@ -26,7 +26,7 @@
             integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
             crossorigin="anonymous"></script>
     <!-- Favicon icon -->
-    <link rel="icon" href="{{ config.ASSETS_ROOT }}/images/favicon.ico" type="image/x-icon">
+    <!--    <link rel="icon" href="{{ config.ASSETS_ROOT }}/images/favicon.ico" type="image/x-icon">-->
     <!-- fontawesome icon -->
     <link rel="stylesheet" href="{{ config.ASSETS_ROOT }}/fonts/fontawesome/css/fontawesome-all.min.css">
     <!-- animation css -->
@@ -42,13 +42,13 @@
 </head>
 <body>
 
-    <!-- [ Pre-loader ] start -->
-    <div class="loader-bg">
-        <div class="loader-track">
-            <div class="loader-fill"></div>
-        </div>
+<!-- [ Pre-loader ] start -->
+<div class="loader-bg">
+    <div class="loader-track">
+        <div class="loader-fill"></div>
     </div>
-    <!-- [ Pre-loader ] End -->
+</div>
+<!-- [ Pre-loader ] End -->
 <style>
     .questionmark{
     font-size: 15px;
@@ -59,24 +59,25 @@
     .tooltip-inner {
     text-align: left;
 }
+
 </style>
 
-    {% if 'main_project_page' in segment or 'static_pages' in segment%}
-        {% include 'includes/sidebar_project.html' %}
-    {% else %}
-        {% include 'includes/sidebar.html' %}
-    {% endif %}
+{% if 'main_project_page' in segment or 'static_pages' in segment%}
+{% include 'includes/sidebar_project.html' %}
+{% else %}
+{% include 'includes/sidebar.html' %}
+{% endif %}
 
 
-    {% include 'includes/navigation.html' %}
+{% include 'includes/navigation.html' %}
 
 
-    {% block content %}{% endblock content %}
+{% block content %}{% endblock content %}
 
-    {% include 'includes/scripts.html' %}
+{% include 'includes/scripts.html' %}
 
-    <!-- Specific Page JS goes HERE  -->
-    {% block javascripts %}{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
 
 </body>
 </html>

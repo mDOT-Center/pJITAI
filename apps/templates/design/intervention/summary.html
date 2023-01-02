@@ -34,14 +34,15 @@
                                         <div class="card-header">
                                             <div class="row congratstextbox" style="margin-bottom: 30px;">
                                                 <div class="col-1">
-                                                    <img src="{{ config.ASSETS_ROOT }}/images/pjitai/celebration.png" class="img-responsive">
+                                                    <img src="{{ config.ASSETS_ROOT }}/images/pjitai/celebration.png"
+                                                         class="img-responsive">
                                                 </div>
                                                 <div class="col-11">
 
 
                                                     <p>Congrats! You have completed the intervention settings.<br>
-                                                    Please review and confirm.<br>
-                                                    After you confirm, please click “Go to Model Setting.”</p>
+                                                        Please review and confirm.<br>
+                                                        After you confirm, please click “Go to Model Setting.”</p>
 
                                                 </div>
 
@@ -51,26 +52,42 @@
                                             <h5>Intervention Settings</h5>
                                             <hr>
                                             <div class="form-group">
-                                                <label class="form-control-label" for="intervention_option_a">Intervention Option A</label>
-                                                <input disabled value="{{settings.get('intervention_option_a','')}}" type="text" id="intervention_option_a" name="intervention_option_a" class="form-control" placeholder="Option A" required>
+                                                <label class="form-control-label" for="intervention_option_a">Intervention
+                                                    Option A</label>
+                                                <input disabled value="{{settings.get('intervention_option_a','')}}"
+                                                       type="text" id="intervention_option_a"
+                                                       name="intervention_option_a" class="form-control"
+                                                       placeholder="Option A" required>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-control-label" for="intervention_option_b">Intervention Option B</label>
-                                                <input disabled value="{{settings.get('intervention_option_b','')}}" type="text" id="intervention_option_b" name="intervention_option_b" class="form-control" placeholder="Option B" required>
+                                                <label class="form-control-label" for="intervention_option_b">Intervention
+                                                    Option B</label>
+                                                <input disabled value="{{settings.get('intervention_option_b','')}}"
+                                                       type="text" id="intervention_option_b"
+                                                       name="intervention_option_b" class="form-control"
+                                                       placeholder="Option B" required>
                                             </div>
 
                                             <h5>Decision Point</h5>
                                             <hr>
                                             <div class="form-group">
 
-                                                <select disabled id="decision_point_frequency" name="decision_point_frequency" class="form-select" aria-label="Default select example">
+                                                <select disabled id="decision_point_frequency"
+                                                        name="decision_point_frequency" class="form-select"
+                                                        aria-label="Default select example">
                                                     {% for n in range(1,25) %}
-                                                    <option {% if settings.decision_point_frequency==n|string %} selected{% endif %} value="{{n}}">{{n}}</option>
+                                                    <option {% if settings.decision_point_frequency==n|string %}
+                                                            selected{% endif %} value="{{n}}">{{n}}
+                                                    </option>
                                                     {% endfor %}
                                                 </select> times per
-                                                <select disabled id="decision_point_frequency_time" name="decision_point_frequency_time" class="form-select" aria-label="Default select example">
+                                                <select disabled id="decision_point_frequency_time"
+                                                        name="decision_point_frequency_time" class="form-select"
+                                                        aria-label="Default select example">
                                                     {% for tm in decision_point_frequency_time %}
-                                                    <option {% if settings.decision_point_frequency_time==tm %} selected{% endif %} value="{{tm}}">{{tm}}</option>
+                                                    <option {% if settings.decision_point_frequency_time==tm %}
+                                                            selected{% endif %} value="{{tm}}">{{tm}}
+                                                    </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -93,17 +110,29 @@
                                             <h5>Intervention Probability</h5>
                                             <hr>
                                             <div class="form-group">
-                                                <label  class="form-control-label" for="intervention_probability_lower_bound">Intervention probability lower bound (when eligible)</label>
+                                                <label class="form-control-label"
+                                                       for="intervention_probability_lower_bound">Intervention
+                                                    probability lower bound (when eligible)</label>
                                                 <div class="input-group mb-3">
-                                                    <input disabled value="{{settings.intervention_probability_lower_bound}}" type="text" id="intervention_probability_lower_bound" name="intervention_probability_lower_bound" class="form-control" required>
+                                                    <input disabled
+                                                           value="{{settings.intervention_probability_lower_bound}}"
+                                                           type="text" id="intervention_probability_lower_bound"
+                                                           name="intervention_probability_lower_bound"
+                                                           class="form-control" required>
 
                                                 </div>
 
                                             </div>
                                             <div class="form-group">
-                                                <label  class="form-control-label" for="intervention_probability_upper_bound">Intervention probability upper bound (when eligible)</label>
+                                                <label class="form-control-label"
+                                                       for="intervention_probability_upper_bound">Intervention
+                                                    probability upper bound (when eligible)</label>
                                                 <div class="input-group mb-3">
-                                                    <input disabled value="{{settings.intervention_probability_upper_bound}}" type="text" id="intervention_probability_upper_bound" name="intervention_probability_upper_bound" class="form-control" required>
+                                                    <input disabled
+                                                           value="{{settings.intervention_probability_upper_bound}}"
+                                                           type="text" id="intervention_probability_upper_bound"
+                                                           name="intervention_probability_upper_bound"
+                                                           class="form-control" required>
 
                                                 </div>
 
@@ -112,21 +141,32 @@
                                             <h5>Update Point</h5>
                                             <hr>
                                             <div class="form-group">
-                                                <label  class="form-control-label" for="update_time">When should the pJITAI update?</label>
+                                                <label class="form-control-label" for="update_time">When should the
+                                                    pJITAI update?</label>
                                                 <div class="input-group">
-                                                    <select id="update_day" name="update_day" class="form-control" disabled>
+                                                    <select id="update_day" name="update_day" class="form-control"
+                                                            disabled>
                                                         {% for udur in update_duration%}
-                                                        <option {% if settings.update_day==udur %} selected{% endif %}  value="{{udur}}">{{udur}}</option>
+                                                        <option {% if settings.update_day==udur %} selected{% endif %}
+                                                                value="{{udur}}">{{udur}}
+                                                        </option>
                                                         {%endfor%}
 
                                                     </select>
                                                     <div class="input-group-append">
-                                                        <select id="update_hour" name="update_hour" class="form-control" disabled>
+                                                        <select id="update_hour" name="update_hour" class="form-control"
+                                                                disabled>
                                                             {% for n in range(1,13) %}
-                                                            <option {% if settings.update_hour==n|string+':00am' %} selected{% endif %} value="{{n}}:00am">AT {{n}}:00 AM</option>
+                                                            <option {% if settings.update_hour==n|string+':00am' %}
+                                                                    selected{% endif %} value="{{n}}:00am">AT {{n}}:00
+                                                                AM
+                                                            </option>
                                                             {% endfor %}
                                                             {% for n in range(1,13) %}
-                                                            <option {% if settings.update_hour==n|string+':00pm' %} selected{% endif %} value="{{n}}:00pm">AT {{n}}:00 PM</option>
+                                                            <option {% if settings.update_hour==n|string+':00pm' %}
+                                                                    selected{% endif %} value="{{n}}:00pm">AT {{n}}:00
+                                                                PM
+                                                            </option>
                                                             {% endfor %}
                                                         </select>
                                                     </div>
@@ -140,23 +180,26 @@
                             </div>
 
 
-
                             <!-- [ Main Content ] end -->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-<!--                                                <button type="submit" name="back" class="btn btn btn-outline-primary">-->
-<!--                                                    Back-->
-<!--                                                </button>-->
-<!--                                                <button type="submit" formmethod="post"-->
-<!--                                                        formaction="/projects/settings/personalized_method/{{project_uuid}}"-->
-<!--                                                        class="btn btn-primary">Next-->
-<!--                                                </button>-->
+                                                <!--                                                <button type="submit" name="back" class="btn btn btn-outline-primary">-->
+                                                <!--                                                    Back-->
+                                                <!--                                                </button>-->
+                                                <!--                                                <button type="submit" formmethod="post"-->
+                                                <!--                                                        formaction="/projects/settings/personalized_method/{{project_uuid}}"-->
+                                                <!--                                                        class="btn btn-primary">Next-->
+                                                <!--                                                </button>-->
 
-                                                <a href="/intervention/settings/update_point/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-                                                <button type="submit" formmethod="post" formaction=="/model/settings/proximal_outcome_attribute/{{project_uuid}}" class="btn btn-primary" role="button">Go to Model Settings</button>
+                                                <a href="/intervention/settings/update_point/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <button type="submit" formmethod="post"
+                                                        formaction="/model/settings/proximal_outcome_attribute/{{project_uuid}}"
+                                                        class="btn btn-primary" role="button">Go to Model Settings
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

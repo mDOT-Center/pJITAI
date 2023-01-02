@@ -28,21 +28,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 import traceback
-from functools import wraps
 
 import pandas as pd
+from flask import jsonify, request
+from flask_login import login_required
+from sqlalchemy.exc import SQLAlchemyError
+
 from apps import db
 from apps.algorithms.models import Algorithms
 from apps.api import blueprint
 from apps.api.codes import StatusCode
 from apps.api.sql_helper import get_tuned_params, json_to_series, save_decision, store_tuned_params
 from apps.learning_methods.learning_method_service import get_all_available_methods
-from flask import jsonify, request
-from flask_login import login_required
-from sqlalchemy.exc import SQLAlchemyError
-
-from .models import Data, Decision, Log
-from .util import get_class_object, pJITAI_token_required, time_8601, _validate_algo_data, _add_log
+from .models import Data, Decision
+from .util import get_class_object, pJITAI_token_required, _validate_algo_data, _add_log
 
 
 def _save_each_data_row(user_id: str,
@@ -53,9 +52,9 @@ def _save_each_data_row(user_id: str,
                         algo_uuid=None) -> dict:
     resp = "Data has successfully added"
     try:
-        
+
         decision_obj = Decision.query.filter(Decision.decision_id == decision_id).first()
-        
+
         if decision_obj:
             data_obj = Data(algo_uuid=algo_uuid,
                             values=data,
@@ -66,7 +65,7 @@ def _save_each_data_row(user_id: str,
             db.session.add(data_obj)
             db.session.commit()
         else:
-           raise Exception(f'Error saving data: {resp}. {decision_id} was not found.') 
+            raise Exception(f'Error saving data: {resp}. {decision_id} was not found.')
 
     except SQLAlchemyError as e:
         resp = str(e.__dict__['orig'])
@@ -120,21 +119,22 @@ def decision(uuid: str) -> dict:
 
         tuned_params = get_tuned_params(user_id=user_id)
         tuned_params_df = None
-        
+
         timestamp = request.json['timestamp']
-        
+
         if len(tuned_params) > 0:
             tuned_params = tuned_params.iloc[0]['configuration']
             tuned_params_df = pd.json_normalize(tuned_params)
 
         decision = obj.decision(user_id, timestamp, tuned_params_df, input_data)
-        save_decision(decision) # Save the decision to the database
+        save_decision(decision)  # Save the decision to the database
         decision_output = decision.as_dataframe()
         if len(decision_output) > 0:
-            
+
             # Only one row is currently supported.  Extract it and convert to a dictionary before returning to the calling library.
             result = decision_output.iloc[0].to_dict()
-            _add_log(algo_uuid=uuid, log_detail={'input_data': input_data.iloc[0].to_dict(), 'response': result, 'http_status_code': 200})
+            _add_log(algo_uuid=uuid, log_detail={'input_data': input_data.iloc[0].to_dict(), 'response': result,
+                                                 'http_status_code': 200})
             return result, 200
         else:
             result = {
@@ -150,7 +150,8 @@ def decision(uuid: str) -> dict:
             "status_code": StatusCode.ERROR.value,
             "status_message": str(e),
         }
-        _add_log(algo_uuid=uuid, log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
+        _add_log(algo_uuid=uuid,
+                 log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
         return result, 400
 
 
@@ -170,7 +171,8 @@ def upload(uuid: str) -> dict:
             "status_code": StatusCode.SUCCESS.value,
             "status_message": f"Data uploaded fo model {uuid}"
         }
-        _add_log(algo_uuid=uuid, log_detail={'input_data': validated_input_data, 'response': result, 'http_status_code': 200})
+        _add_log(algo_uuid=uuid,
+                 log_detail={'input_data': validated_input_data, 'response': result, 'http_status_code': 200})
         return result, 200
     except Exception as e:
         traceback.print_exc()
@@ -178,7 +180,8 @@ def upload(uuid: str) -> dict:
             'status_code': StatusCode.ERROR.value,
             'status_message': f'A decision was unable to be made for: {uuid} with input data: {input_data}'
         }
-        _add_log(algo_uuid=uuid, log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
+        _add_log(algo_uuid=uuid,
+                 log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
         return result, 400
 
 
@@ -206,7 +209,8 @@ def update(uuid: str) -> dict:
             "status_code": StatusCode.ERROR.value,
             "status_message": str(e),
         }
-        _add_log(algo_uuid=uuid, log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
+        _add_log(algo_uuid=uuid,
+                 log_detail={'input_data': input_data, 'response': None, 'error': result, 'http_status_code': 400})
         return result, 400
 
 

@@ -33,28 +33,37 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <label  class="form-control-label" for="update_time">When should the pJITAI update?</label>
+                                                <label class="form-control-label" for="update_time">When should the
+                                                    pJITAI update?</label>
                                                 <div class="input-group">
                                                     <select id="update_day" name="update_day" class="form-control">
                                                         {% for udur in update_duration%}
-                                                        <option {% if settings.update_day==udur %} selected{% endif %}  value="{{udur}}">{{udur}}</option>
+                                                        <option {% if settings.update_day==udur %} selected{% endif %}
+                                                                value="{{udur}}">{{udur}}
+                                                        </option>
                                                         {%endfor%}
 
                                                     </select>
                                                     <div class="input-group-append">
-                                                        <select id="update_hour" name="update_hour" class="form-control">
+                                                        <select id="update_hour" name="update_hour"
+                                                                class="form-control">
                                                             {% for n in range(1,13) %}
-                                                                <option {% if settings.update_hour==n|string+':00am' %} selected{% endif %} value="{{n}}:00am">AT {{n}}:00 AM</option>
+                                                            <option {% if settings.update_hour==n|string+':00am' %}
+                                                                    selected{% endif %} value="{{n}}:00am">AT {{n}}:00
+                                                                AM
+                                                            </option>
                                                             {% endfor %}
                                                             {% for n in range(1,13) %}
-                                                            <option {% if settings.update_hour==n|string+':00pm' %} selected{% endif %} value="{{n}}:00pm">AT {{n}}:00 PM</option>
+                                                            <option {% if settings.update_hour==n|string+':00pm' %}
+                                                                    selected{% endif %} value="{{n}}:00pm">AT {{n}}:00
+                                                                PM
+                                                            </option>
                                                             {% endfor %}
                                                         </select>
                                                     </div>
                                                 </div>
 
                                             </div>
-
 
 
                                         </div>
@@ -83,16 +92,24 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p>At each update point, for each individual,  the personalization method is updated.
-                                                (In other words, the parameters in the Bayesian linear regression model for the proximal outcome are updated.)
+                                            <p>At each update point, for each individual, the personalization method is
+                                                updated.
+                                                (In other words, the parameters in the Bayesian linear regression model
+                                                for the proximal outcome are updated.)
 
 
                                             </p>
-                                            <p>To choose the update point, you can consider choosing it to be different from the decision points so that by the update point, all the data from the previous decision points have been uploaded to the cloud.</p>
+                                            <p>To choose the update point, you can consider choosing it to be different
+                                                from the decision points so that by the update point, all the data from
+                                                the previous decision points have been uploaded to the cloud.</p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p>In HeartSteps, the personalizing JITAI updated the parameters each day at midnight because midnight is not close to any of the five decision points. If a temporary wifi issue occurs when data is uploaded to the cloud from a mobile device, it provides enough time for the data to be re-uploaded if needed.</p>
+                                            <p>In HeartSteps, the personalizing JITAI updated the parameters each day at
+                                                midnight because midnight is not close to any of the five decision
+                                                points. If a temporary wifi issue occurs when data is uploaded to the
+                                                cloud from a mobile device, it provides enough time for the data to be
+                                                re-uploaded if needed.</p>
                                         </div>
 
                                     </div>
@@ -107,9 +124,13 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/intervention/settings/intervention_probability/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-<!--                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_probability/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
-                                                <button type="submit" type="button" formaction="/intervention/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                <a href="/intervention/settings/intervention_probability/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_probability/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/intervention/settings/summary/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

@@ -33,14 +33,22 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="intervention_option_a">Intervention Option A</label>
-                                                <input value="{{settings.get('intervention_option_a','')}}" type="text" id="intervention_option_a" name="intervention_option_a" class="form-control" placeholder="Option A" required>
+                                                <label class="form-control-label" for="intervention_option_a">Intervention
+                                                    Option A</label>
+                                                <input value="{{settings.get('intervention_option_a','')}}" type="text"
+                                                       id="intervention_option_a" name="intervention_option_a"
+                                                       class="form-control" placeholder="Option A" required>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-control-label" for="intervention_option_b">Intervention Option B</label>
-                                                <input value="{{settings.get('intervention_option_b','')}}" type="text" id="intervention_option_b" name="intervention_option_b" class="form-control" placeholder="Option B" required>
+                                                <label class="form-control-label" for="intervention_option_b">Intervention
+                                                    Option B</label>
+                                                <input value="{{settings.get('intervention_option_b','')}}" type="text"
+                                                       id="intervention_option_b" name="intervention_option_b"
+                                                       class="form-control" placeholder="Option B" required>
                                             </div>
-                                            <p style="color:#f65959;">Option A and Option B cannot be interchanged. Please read the explanation to make sure that you define them correctly.</p>
+                                            <p style="color:#f65959;">Option A and Option B cannot be interchanged.
+                                                Please read the explanation to make sure that you define them
+                                                correctly.</p>
                                         </div>
 
                                     </div>
@@ -67,18 +75,35 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p>In the current method (Thompson sampling -- two options), there are two intervention options.  Intervention options usually correspond to different buckets of messages or no message.</p>
+                                            <p>In the current method (Thompson sampling -- two options), there are two
+                                                intervention options. Intervention options usually correspond to
+                                                different buckets of messages or no message.</p>
 
-                                            <p>Here's how we distinguish Intervention Option A from Intervention Option B:</p>
+                                            <p>Here's how we distinguish Intervention Option A from Intervention Option
+                                                B:</p>
                                             <ol>
-                                                <li>The “main treatment effect” is defined as the change in the proximal outcome when Intervention option A is provided versus Intervention option B. In the Bayesian linear regression (see Eq.(3.1) in the tutorial), “Intervention=1” if Intervention option A is provided, and “Intervention=0” if Intervention option B is provided.</li>
-                                                <li>In some predefined states (which you’ll define two pages from now), one may not wish to provide Intervention Option A. In those states, Intervention Option B will be provided. In other words, Intervention Option B is often less burdensome. In fact, it is often the “do nothing” option.</li>
+                                                <li>The “main treatment effect” is defined as the change in the proximal
+                                                    outcome when Intervention option A is provided versus Intervention
+                                                    option B. In the Bayesian linear regression (see Eq.(3.1) in the
+                                                    tutorial), “Intervention=1” if Intervention option A is provided,
+                                                    and “Intervention=0” if Intervention option B is provided.
+                                                </li>
+                                                <li>In some predefined states (which you’ll define two pages from now),
+                                                    one may not wish to provide Intervention Option A. In those states,
+                                                    Intervention Option B will be provided. In other words, Intervention
+                                                    Option B is often less burdensome. In fact, it is often the “do
+                                                    nothing” option.
+                                                </li>
                                             </ol>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
                                             <p>
-                                                In HeartSteps V1, the goal of the JITAI is to encourage a person to walk more by sending activity suggestions. The options are to send an activity suggestion or not to send a suggestion. The treatment effect is the change in (log) next 30-minute step count when a suggestion is sent versus not sent.
+                                                In HeartSteps V1, the goal of the JITAI is to encourage a person to walk
+                                                more by sending activity suggestions. The options are to send an
+                                                activity suggestion or not to send a suggestion. The treatment effect is
+                                                the change in (log) next 30-minute step count when a suggestion is sent
+                                                versus not sent.
                                             </p>
                                         </div>
 
@@ -94,9 +119,13 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/projects/settings/summary/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-<!--                                                <button type="submit" type="button" formaction="/projects/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
-                                                <button type="submit" type="button" formaction="/intervention/settings/decision_point/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                <a href="/projects/settings/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/projects/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/intervention/settings/decision_point/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

@@ -27,16 +27,17 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-
+import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from apps import db
-import uuid
+
 import pandas as pd
+
+from apps import db
 
 
 def time_8601() -> str:
-    time=datetime.now()
+    time = datetime.now()
     return time.astimezone().isoformat()
 
 
@@ -63,7 +64,6 @@ class AlgorithmTunedParams(db.Model):
 
 @dataclass
 class Decision(db.Model):
-
     __tablename__ = 'decision'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))
@@ -103,7 +103,6 @@ class Decision(db.Model):
 
 @dataclass
 class Data(db.Model):
-
     __tablename__ = 'data'
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column('user_id', db.String(36))

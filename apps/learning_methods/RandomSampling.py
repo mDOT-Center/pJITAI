@@ -27,13 +27,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-from apps.api.models import Decision
-from apps.learning_methods.LearningMethodBase import LearningMethodBase
-from apps.api.codes import StatusCode
-from apps.api.util import time_8601
 import random
+
 import pandas as pd
-from apps.api.sql_helper import get_data, get_decision_data, get_merged_data, save_decision
+
+from apps.api.codes import StatusCode
+from apps.api.models import Decision
+from apps.api.sql_helper import get_merged_data
+from apps.api.util import time_8601
+from apps.learning_methods.LearningMethodBase import LearningMethodBase
 
 
 class RandomSampling(LearningMethodBase):
@@ -49,7 +51,6 @@ class RandomSampling(LearningMethodBase):
 
         self.standalone_parameters = {
 
-
         }
         self.other_parameters = {
 
@@ -63,7 +64,7 @@ class RandomSampling(LearningMethodBase):
             "default_value": 86400  # TODO: Daily
         }
 
-    def decision(self,  user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
+    def decision(self, user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
         # Accessing tuned parameters
         # Parameters are access by column name and first row
@@ -107,7 +108,7 @@ class RandomSampling(LearningMethodBase):
         random_number = random.random()
         selection = 0
         for i, v in enumerate(cum_sum_list):
-            if random_number > cum_sum_list[i] and random_number <= cum_sum_list[i+1]:
+            if random_number > cum_sum_list[i] and random_number <= cum_sum_list[i + 1]:
                 selection = i
 
         decision = Decision(user_id=user_id,
@@ -117,13 +118,12 @@ class RandomSampling(LearningMethodBase):
                             status_code=StatusCode.SUCCESS.value,
                             status_message="Decision made successfully"
                             )
-        
+
         return decision
 
     def update(self) -> dict:
         data = get_merged_data(algo_id=self.uuid)
-        
-        
+
         columns = ['timestamp', 'user_id', 'alpha_mu', 'alpha_sigma']
         result = pd.DataFrame([], columns=columns)
 
@@ -132,7 +132,7 @@ class RandomSampling(LearningMethodBase):
             result_stdev = [None for i in self.features]
             for key, feature in self.features.items():
                 feature_name = feature['feature_name']
-                index = int(key)-1  # TODO: Why do I have to change the type on the index? and subtract 1
+                index = int(key) - 1  # TODO: Why do I have to change the type on the index? and subtract 1
                 temp_mean = data[data.user_id == u][feature_name].mean()
                 temp_stdev = data[data.user_id == u][feature_name].std()
 

@@ -33,7 +33,10 @@
                                         <div class="col-9">
                                             <p class="congratstextbox" style="margin-bottom: 30px;">
                                                 Based on the information you entered on the previous screens<br>
-                                                The probability of providing <span style="background-color: #eeece9; color:#f85e5e;"> Activity suggestion </span>  when the <span style="background-color: #eeece9; color:#f85e5e;">location</span> = <span style="background-color: #eeece9; color:#f85e5e;">0</span> is:
+                                                The probability of providing <span
+                                                    style="background-color: #eeece9; color:#f85e5e;"> Activity suggestion </span>
+                                                when the <span style="background-color: #eeece9; color:#f85e5e;">location</span>
+                                                = <span style="background-color: #eeece9; color:#f85e5e;">0</span> is:
                                             </p>
 
 
@@ -42,14 +45,29 @@
                                                     <div class="rightsidebluetextbox" style="margin-top:0px;">
                                                         <h1 class="text-center">[53%]</h1>
                                                         <h5>
-                                                            * This probability will change during the study but will never go
-                                                            below {{settings.get("intervention_probability_lower_bound")|float*100}}% or above {{settings.get("intervention_probability_upper_bound")|float*100}}% because of your configuration.
+                                                            * This probability will change during the study but will
+                                                            never go
+                                                            below
+                                                            {{settings.get("intervention_probability_lower_bound")|float*100}}%
+                                                            or above
+                                                            {{settings.get("intervention_probability_upper_bound")|float*100}}%
+                                                            because of your configuration.
                                                         </h5>
                                                     </div>
                                                     <p>
                                                     <ul>
-                                                        <li><b>Note 1</b>: This is a summary based on your configuration. Your inputs here do not change the actual configuration of your pJITAI.</li>
-                                                        <li><b>Note 2</b>: If the prior mean of the interaction coefficient of a tailoring variable is zero, then this probability will not change when you change the values of that tailoring variable. However, once data accrues and indicates that the interaction coefficient is nonzero, the probability of providing Intervention Option A will change according to the values of the tailoring variable.</li>
+                                                        <li><b>Note 1</b>: This is a summary based on your
+                                                            configuration. Your inputs here do not change the actual
+                                                            configuration of your pJITAI.
+                                                        </li>
+                                                        <li><b>Note 2</b>: If the prior mean of the interaction
+                                                            coefficient of a tailoring variable is zero, then this
+                                                            probability will not change when you change the values of
+                                                            that tailoring variable. However, once data accrues and
+                                                            indicates that the interaction coefficient is nonzero, the
+                                                            probability of providing Intervention Option A will change
+                                                            according to the values of the tailoring variable.
+                                                        </li>
                                                     </ul>
                                                     </p>
                                                 </div>
@@ -58,15 +76,21 @@
                                         </div>
                                         <div class="col-3">
                                             <div class="rightsidebluetextbox" style="margin-top:0px;">
-                                                <h5> <i class="fas fa-sliders-h"></i> Tailoring Variables Values </h5>
+                                                <h5><i class="fas fa-sliders-h"></i> Tailoring Variables Values </h5>
                                                 <hr>
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="personalization_method">Location <span data-toggle='tooltip' title='This value should satisfy your configuration of the value of the covariate'> <i class=" align-text-top questionmark far fa-question-circle"></i></span></label>
-                                                    <select id="personalization_method" name="personalization_method" class="form-control">
-                                                        <option value="Thompson Sampling - Two intervention option" selected>0</option>
+                                                    <label class="form-control-label" for="personalization_method">Location
+                                                        <span data-toggle='tooltip'
+                                                              title='This value should satisfy your configuration of the value of the covariate'> <i
+                                                                class=" align-text-top questionmark far fa-question-circle"></i></span></label>
+                                                    <select id="personalization_method" name="personalization_method"
+                                                            class="form-control">
+                                                        <option value="Thompson Sampling - Two intervention option"
+                                                                selected>0
+                                                        </option>
                                                     </select>
                                                 </div>
-                                                <p>0: Home/Work         1: Unknown location</p>
+                                                <p>0: Home/Work 1: Unknown location</p>
                                                 <hr>
                                             </div>
                                         </div>
@@ -75,9 +99,6 @@
 
                                 </div>
                             </div>
-
-
-
 
 
                             <div class="row">
@@ -95,9 +116,15 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p class="mb-0">In “Configuration Summary,” we show you the summary of your JITAI configuration.
-                                                Thompson Sampling adjusts the intervention probability based on the values of the tailoring variables. Please input a value for each tailoring variable.
-                                                From your configuration and inputs, we calculate the initial probability of delivering intervention option A. The individual-specific probability of delivering intervention option A will change (be personalized) as data accrues on the individual.
+                                            <p class="mb-0">In “Configuration Summary,” we show you the summary of your
+                                                JITAI configuration.
+                                                Thompson Sampling adjusts the intervention probability based on the
+                                                values of the tailoring variables. Please input a value for each
+                                                tailoring variable.
+                                                From your configuration and inputs, we calculate the initial probability
+                                                of delivering intervention option A. The individual-specific probability
+                                                of delivering intervention option A will change (be personalized) as
+                                                data accrues on the individual.
                                             </p>
                                         </div>
 
@@ -113,8 +140,10 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/model/settings/summary/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-                                                <a href="/configuration/final/{{project_uuid}}" class="btn btn-primary" role="button">Next</a>
+                                                <a href="/model/settings/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <a href="/configuration/final/{{project_uuid}}" class="btn btn-primary"
+                                                   role="button">Next</a>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

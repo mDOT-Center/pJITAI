@@ -28,9 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 from flask_login import UserMixin
-from datetime import datetime
-from apps import db, login_manager
 
+from apps import db, login_manager
 from apps.authentication.util import hash_pass
 
 

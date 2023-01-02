@@ -33,6 +33,7 @@ $(document).ready(function(){
     is_tailoring_variable();
 });
 
+
 </script>
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
@@ -46,7 +47,7 @@ $(document).ready(function(){
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card">
-                                        <div  class="card-header">
+                                        <div class="card-header">
                                             <h3 id="heading_div">Model Settings / Covariates / Name</h3>
                                         </div>
 
@@ -62,20 +63,30 @@ $(document).ready(function(){
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="form-group">
-                                                        <label class="form-control-label" for="covariate_name">Name of the covariate</label>
-                                                        <input onkeyup="copy_cov_name_to_span()" value="{{settings.covariate_name}}" type="text" id="covariate_name" name="covariate_name" class="form-control" placeholder="covariate name">
+                                                        <label class="form-control-label" for="covariate_name">Name of
+                                                            the covariate</label>
+                                                        <input onkeyup="copy_cov_name_to_span()"
+                                                               value="{{settings.covariate_name}}" type="text"
+                                                               id="covariate_name" name="covariate_name"
+                                                               class="form-control" placeholder="covariate name">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="form-control-label" for="tailoring_variable">Is this covariate a tailoring variable?</label><br>
+                                                        <label class="form-control-label" for="tailoring_variable">Is
+                                                            this covariate a tailoring variable?</label><br>
 
 
                                                         <div class="btn-group" data-toggle="buttons">
                                                             <fieldset id="tailoring_variable">
                                                                 <label class="btn btn-outline-success">
-                                                                    <input type="radio" name="tailoring_variable" value="yes" {{ "checked" if settings.tailoring_variable == "yes" }} required> Yes
+                                                                    <input type="radio" name="tailoring_variable"
+                                                                           value="yes" {{ "checked" if
+                                                                    settings.tailoring_variable == "yes" }} required>
+                                                                    Yes
                                                                 </label>
                                                                 <label class="btn btn-outline-primary">
-                                                                    <input type="radio" name="tailoring_variable" value="no" {{ "checked" if settings.tailoring_variable == "no" }} required> No
+                                                                    <input type="radio" name="tailoring_variable"
+                                                                           value="no" {{ "checked" if
+                                                                    settings.tailoring_variable == "no" }} required> No
                                                                 </label>
                                                             </fieldset>
                                                         </div>
@@ -129,14 +140,24 @@ $(document).ready(function(){
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p class="mb-0">Enter the name of the covariate that is likely to be correlated with (predictive of) the proximal outcome.  If the covariate is likely to interact with the intervention, then the covariate is potentially a tailoring variable.
+                                            <p class="mb-0">Enter the name of the covariate that is likely to be
+                                                correlated with (predictive of) the proximal outcome. If the covariate
+                                                is likely to interact with the intervention, then the covariate is
+                                                potentially a tailoring variable.
                                             </p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p>In HeartSteps, both the location of the individual and 30-minute step count just prior to an intervention were found to be correlated with the  proximal outcome of (log) Next 30 minute step count.</p>
+                                            <p>In HeartSteps, both the location of the individual and 30-minute step
+                                                count just prior to an intervention were found to be correlated with the
+                                                proximal outcome of (log) Next 30 minute step count.</p>
 
-                                            <p>In addition, the paper (we are using scenario 1) indicates that the effect of sending an activity suggestion was weaker if the individual was not at home/work (i.e., in an unknown location).  That is, location interacts with (moderates) the effect of “Activity suggestion” on “Next 30 minute step count.”  Thus, we include location (unknown location vs home/work) as a tailoring variable.</p>
+                                            <p>In addition, the paper (we are using scenario 1) indicates that the
+                                                effect of sending an activity suggestion was weaker if the individual
+                                                was not at home/work (i.e., in an unknown location). That is, location
+                                                interacts with (moderates) the effect of “Activity suggestion” on “Next
+                                                30 minute step count.” Thus, we include location (unknown location vs
+                                                home/work) as a tailoring variable.</p>
                                         </div>
 
                                     </div>
@@ -151,8 +172,12 @@ $(document).ready(function(){
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/covariates/settings/all/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-                                                <button id="covirate_next_form" type="submit" type="button" formaction="/covariates/settings/covariate_attributes/{{project_uuid}}/{{cov_id}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                <a href="/covariates/settings/all/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <button id="covirate_next_form" type="submit" type="button"
+                                                        formaction="/covariates/settings/covariate_attributes/{{project_uuid}}/{{cov_id}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

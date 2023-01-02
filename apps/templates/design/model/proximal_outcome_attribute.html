@@ -33,16 +33,26 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="min_proximal_outcome">The minimum value of the proximal outcome</label>
-                                                <input type="number" step="0.01" value="{{settings.min_proximal_outcome}}" id="min_proximal_outcome" name="min_proximal_outcome" class="form-control" placeholder="Option A">
+                                                <label class="form-control-label" for="min_proximal_outcome">The minimum
+                                                    value of the proximal outcome</label>
+                                                <input type="number" step="0.01"
+                                                       value="{{settings.min_proximal_outcome}}"
+                                                       id="min_proximal_outcome" name="min_proximal_outcome"
+                                                       class="form-control" placeholder="Option A">
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-control-label" for="max_proximal_outcome">The maximum value of the proximal outcome</label>
-                                                <input type="number" step="0.01" value="{{settings.max_proximal_outcome}}" id="max_proximal_outcome" name="max_proximal_outcome" class="form-control" placeholder="Option B">
+                                                <label class="form-control-label" for="max_proximal_outcome">The maximum
+                                                    value of the proximal outcome</label>
+                                                <input type="number" step="0.01"
+                                                       value="{{settings.max_proximal_outcome}}"
+                                                       id="max_proximal_outcome" name="max_proximal_outcome"
+                                                       class="form-control" placeholder="Option B">
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-control-label" for="max_proximal_outcome">Type of the proximal outcome</label>
-                                                <select id="proximal_outcome_type" name="proximal_outcome_type" class="form-control" aria-label="Default select example">
+                                                <label class="form-control-label" for="max_proximal_outcome">Type of the
+                                                    proximal outcome</label>
+                                                <select id="proximal_outcome_type" name="proximal_outcome_type"
+                                                        class="form-control" aria-label="Default select example">
                                                     <option selected>Continuous</option>
                                                 </select>
                                             </div>
@@ -72,15 +82,27 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p>We use the attributes of the proximal outcome to check if the API receives inappropriate values from your mobile app. Please read [tutorial] for more details.
+                                            <p>We use the attributes of the proximal outcome to check if the API
+                                                receives inappropriate values from your mobile app. Please read
+                                                [tutorial] for more details.
 
 
                                             </p>
-                                            <p>Please notice that if your proximal outcome needs to be transformed, the transformation needs to be implemented in the mobile application; the algorithm will not do the transformation.</p>
+                                            <p>Please notice that if your proximal outcome needs to be transformed, the
+                                                transformation needs to be implemented in the mobile application; the
+                                                algorithm will not do the transformation.</p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p>In HeartSteps, the proximal outcome of interest is the log-transformed 30-minute step count after each decision point. To avoid minus infinity (recall that log<sub>e</sub>(0) becomes minus infinity), we added 0.5 to the step count before the transformation, i.e., log<sub>e</sub>(next 30-minute step count+0.5). Our assumption was that people walk between 0 and 3000 steps in the next 30 minutes. Hence, the minimum value of the (log) 30-minute step count is log<sub>e</sub>(0+0.5)=-0.69. The maximum value of the (log) 30-minute step count is log<sub>e</sub>(3000+0.5)=8.0. These values are continuous.</p>
+                                            <p>In HeartSteps, the proximal outcome of interest is the log-transformed
+                                                30-minute step count after each decision point. To avoid minus infinity
+                                                (recall that log<sub>e</sub>(0) becomes minus infinity), we added 0.5 to
+                                                the step count before the transformation, i.e., log<sub>e</sub>(next
+                                                30-minute step count+0.5). Our assumption was that people walk between 0
+                                                and 3000 steps in the next 30 minutes. Hence, the minimum value of the
+                                                (log) 30-minute step count is log<sub>e</sub>(0+0.5)=-0.69. The maximum
+                                                value of the (log) 30-minute step count is log<sub>e</sub>(3000+0.5)=8.0.
+                                                These values are continuous.</p>
                                         </div>
 
                                     </div>
@@ -95,9 +117,13 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/intervention/settings/summary/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-<!--                                                <button type="submit" type="button" formaction="/intervention/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
-                                                <button type="submit" type="button" formaction="/model/settings/intercept/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                <a href="/intervention/settings/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/intervention/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/model/settings/intercept/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

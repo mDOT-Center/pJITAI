@@ -36,23 +36,29 @@
                                         <div class="card-header">
                                             <div class="row congratstextbox" style="margin-bottom: 30px;">
                                                 <div class="col-1">
-                                                    <img src="{{ config.ASSETS_ROOT }}/images/pjitai/celebration.png" class="img-responsive">
+                                                    <img src="{{ config.ASSETS_ROOT }}/images/pjitai/celebration.png"
+                                                         class="img-responsive">
                                                 </div>
                                                 <div class="col-11">
 
                                                     <p>
                                                         You have finished designing a personalizing JITAI!<br>
-                                                        You can choose left menu options to go back to any previous page.<br>
-                                                        If you want to generate an API, please click on “Finalize and Generate your API”.
+                                                        You can choose left menu options to go back to any previous
+                                                        page.<br>
+                                                        If you want to generate an API, please click on “Finalize and
+                                                        Generate your API”.
                                                     </p>
                                                 </div>
 
                                             </div>
 
                                             <div class="congratstextbox col-3 " align="center">
-                                                <img src="{{ config.ASSETS_ROOT }}/images/pjitai/api_brain.png" class="img-responsive center-block">
+                                                <img src="{{ config.ASSETS_ROOT }}/images/pjitai/api_brain.png"
+                                                     class="img-responsive center-block">
                                                 <p></p>
-                                                <a href="/configuration/summary/{{project_uuid}}" class="btn btn-outline-primary" role="button">Finalize and Generate your API</a>
+                                                <a href="/configuration/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Finalize and Generate
+                                                    your API</a>
                                             </div>
                                         </div>
 
@@ -61,14 +67,14 @@
                             </div>
 
 
-
                             <!-- [ Main Content ] end -->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/configuration/summary/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                <a href="/configuration/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

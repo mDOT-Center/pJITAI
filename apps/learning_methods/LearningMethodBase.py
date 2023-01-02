@@ -86,7 +86,7 @@ class LearningMethodBase(metaclass=ABCMeta):
         self.desciption = algorithm_specs.description
         self.finalized = algorithm_specs.finalized
         configs = algorithm_specs.configuration
-        #self.parameters = configs.get("",{})
+        # self.parameters = configs.get("",{})
         self.standalone_parameters = configs.get("standalone_parameters", {})
         self.other_parameters = configs.get("other_parameters", {})
         self.tuning_scheduler = configs.get("tuning_scheduler", {})
@@ -95,7 +95,7 @@ class LearningMethodBase(metaclass=ABCMeta):
         self.created_by = algorithm_specs.created_by
 
     @abstractmethod
-    def decision(self,  user_id: str, input_data=None) -> pd.DataFrame:
+    def decision(self, user_id: str, input_data=None) -> pd.DataFrame:
         pass
 
     @abstractmethod

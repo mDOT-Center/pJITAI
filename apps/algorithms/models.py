@@ -27,14 +27,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-
 from dataclasses import dataclass
-from flask_login import UserMixin
 from datetime import datetime
-from apps import db, login_manager
+
 from sqlalchemy.exc import SQLAlchemyError
 
+from apps import db
 from apps.authentication.util import hash_pass
+
 
 def save(obj) -> None:
     try:
@@ -47,6 +47,7 @@ def save(obj) -> None:
         error = str(e.__dict__['orig'])
         raise Exception(e)
 
+
 def delete_from_db(obj) -> None:
     try:
         db.session.delete(obj)
@@ -57,6 +58,7 @@ def delete_from_db(obj) -> None:
         error = str(e.__dict__['orig'])
         raise Exception(e)
     return
+
 
 @dataclass
 class Algorithms(db.Model):
@@ -100,6 +102,7 @@ class Algorithms(db.Model):
 
     def save(self):
         save(self)
+
     def delete(self):
         delete_from_db(self)
 
@@ -146,6 +149,7 @@ class Projects(db.Model):
 
     def save(self):
         save(self)
+
     def delete(self):
         delete_from_db(self)
 
@@ -186,5 +190,6 @@ class ProjectMenu(db.Model):
 
     def save(self):
         save(self)
+
     def delete(self):
         delete_from_db(self)

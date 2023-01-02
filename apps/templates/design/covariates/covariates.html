@@ -14,9 +14,11 @@ $(document).ready(function() {
     //console.log($(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href')));
   });
 });
+
 </script>
 
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header btn-danger">
@@ -27,7 +29,8 @@ $(document).ready(function() {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <a href="/covariates/settings/delete/{{project_uuid}}/{{cov_id}}" class="btn btn-danger btn-ok">Delete</a>
+                <a href="/covariates/settings/delete/{{project_uuid}}/{{cov_id}}"
+                   class="btn btn-danger btn-ok">Delete</a>
             </div>
         </div>
     </div>
@@ -77,7 +80,8 @@ $(document).ready(function() {
                                         <div class="accordion" id="accordionExample">
                                             {% if all_covariates|length==0%}
                                             <div class="alert alert-primary" role="alert">
-                                                There is no covariate variable. Please click on "Add another covariate" to add.
+                                                There is no covariate variable. Please click on "Add another covariate"
+                                                to add.
                                             </div>
 
                                             {%endif%}
@@ -88,75 +92,103 @@ $(document).ready(function() {
                                             <div class="card">
                                                 <div class="card-header" id="headingOne">
 
-                                                        <div class="row">
-                                                            <div class="col-5">
-                                                                <h5>
-                                                                    <a href="#!" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                                        {{all_covariates.get(acov).get("covariate_name")}}
-                                                                    </a>
-                                                                </h5>
-                                                            </div>
-                                                            <div class="col-2">
-                                                                {{all_covariates.get(acov).get("tailoring_variable")}}
-                                                            </div>
-                                                            <div class="col-2">
-                                                                <a href="/covariates/settings/covariate_name/{{project_uuid}}/{{acov}}" class="btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                                                            </div>
-                                                            <div class="col-2">
-                                                                <a href="/covariates/settings/delete/{{project_uuid}}/{{acov}}" class="btn-danger btn-sm" role="button" onclick="return confirm('Are you sure you want to delete {{all_covariates.get(acov).get('covariate_name')}} covariate?');"><i class="far fa-trash-alt"></i> Delete</a>
-                                                            </div>
-                                                            <div class="col-1">
-                                                                <a href="#!" class="btn-info btn-sm" data-toggle="collapse" data-target="#collapse_{{acov}}" aria-expanded="true" aria-controls="collapse_{{acov}}">
-                                                                    <i class="fas fa-book-open"></i> View
+                                                    <div class="row">
+                                                        <div class="col-5">
+                                                            <h5>
+                                                                <a href="#!" data-toggle="collapse"
+                                                                   data-target="#collapseOne" aria-expanded="true"
+                                                                   aria-controls="collapseOne">
+                                                                    {{all_covariates.get(acov).get("covariate_name")}}
                                                                 </a>
-
-                                                            </div>
+                                                            </h5>
                                                         </div>
+                                                        <div class="col-2">
+                                                            {{all_covariates.get(acov).get("tailoring_variable")}}
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <a href="/covariates/settings/covariate_name/{{project_uuid}}/{{acov}}"
+                                                               class="btn-primary btn-sm"><i class="fas fa-edit"></i>
+                                                                Edit</a>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <a href="/covariates/settings/delete/{{project_uuid}}/{{acov}}"
+                                                               class="btn-danger btn-sm" role="button"
+                                                               onclick="return confirm('Are you sure you want to delete {{all_covariates.get(acov).get('covariate_name')}} covariate?');"><i
+                                                                    class="far fa-trash-alt"></i> Delete</a>
+                                                        </div>
+                                                        <div class="col-1">
+                                                            <a href="#!" class="btn-info btn-sm" data-toggle="collapse"
+                                                               data-target="#collapse_{{acov}}" aria-expanded="true"
+                                                               aria-controls="collapse_{{acov}}">
+                                                                <i class="fas fa-book-open"></i> View
+                                                            </a>
+
+                                                        </div>
+                                                    </div>
 
 
                                                 </div>
-                                                <div id="collapse_{{acov}}" class=" card-body collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                                <div id="collapse_{{acov}}" class=" card-body collapse"
+                                                     aria-labelledby="headingOne" data-parent="#accordionExample">
                                                     <table class="table table-hover">
                                                         <tbody>
                                                         <tr>
                                                             <td>The minimum value of the covariate</td>
-                                                            <td>{{all_covariates.get(acov).get("covariate_min_val")}}</td>
+                                                            <td>{{all_covariates.get(acov).get("covariate_min_val")}}
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td>The maximum value of the covariate</td>
-                                                            <td>{{all_covariates.get(acov).get("covariate_max_val")}}</td>
+                                                            <td>{{all_covariates.get(acov).get("covariate_max_val")}}
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td>Type of the covariate</td>
                                                             <td>{{all_covariates.get(acov).get("covariate_type")}}</td>
                                                         </tr>
-                                                        {% if all_covariates.get(acov).get("covariate_type")=="Binary" %}
-                                                            <tr>
-                                                                <td>Meaning of “Covariate=0”</td>
-                                                                <td>{{all_covariates.get(acov).get("covariate_meaning_0")}}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Meaning of “Covariate=1”</td>
-                                                                <td>{{all_covariates.get(acov).get("covariate_meaning_1")}}</td>
-                                                            </tr>
+                                                        {% if all_covariates.get(acov).get("covariate_type")=="Binary"
+                                                        %}
+                                                        <tr>
+                                                            <td>Meaning of “Covariate=0”</td>
+                                                            <td>
+                                                                {{all_covariates.get(acov).get("covariate_meaning_0")}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Meaning of “Covariate=1”</td>
+                                                            <td>
+                                                                {{all_covariates.get(acov).get("covariate_meaning_1")}}
+                                                            </td>
+                                                        </tr>
                                                         {%endif%}
                                                         <tr>
                                                             <td>Prior mean of the main effect</td>
-                                                            <td>{{all_covariates.get(acov).get("main_effect_prior_mean")}}</td>
+                                                            <td>
+                                                                {{all_covariates.get(acov).get("main_effect_prior_mean")}}
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td>Prior standard deviation of the main effect</td>
-                                                            <td>{{all_covariates.get(acov).get("main_effect_prior_standard_deviation")}}</td>
+                                                            <td>
+                                                                {{all_covariates.get(acov).get("main_effect_prior_standard_deviation")}}
+                                                            </td>
                                                         </tr>
-                                                        {% if all_covariates.get(acov).get("tailoring_variable")=="yes" %}
-                                                            <tr>
-                                                                <td>Prior mean of the interaction coefficient</td>
-                                                                <td>{{all_covariates.get(acov).get("interaction_coefficient_prior_mean")}}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Prior standard deviation of the interaction coefficient</td>
-                                                                <td>{{all_covariates.get(acov).get("interaction_coefficient_prior_standard_deviation")}}</td>
-                                                            </tr>
+                                                        {% if all_covariates.get(acov).get("tailoring_variable")=="yes"
+                                                        %}
+                                                        <tr>
+                                                            <td>Prior mean of the interaction coefficient</td>
+                                                            <td>
+                                                                {{all_covariates.get(acov).get("interaction_coefficient_prior_mean")}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Prior standard deviation of the interaction
+                                                                coefficient
+                                                            </td>
+                                                            <td>
+                                                                {{all_covariates.get(acov).get("interaction_coefficient_prior_standard_deviation")}}
+                                                            </td>
+                                                        </tr>
                                                         {% endif %}
                                                         </tbody>
                                                     </table>
@@ -195,15 +227,23 @@ $(document).ready(function() {
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p>Please use “Add another covariate” to add a covariate that is likely to be correlated with (predictive of) the proximal outcome.</p>
+                                            <p>Please use “Add another covariate” to add a covariate that is likely to
+                                                be correlated with (predictive of) the proximal outcome.</p>
 
-                                            <p>Each covariate is associated with a set of parameters that are needed to configure a pJITAI, including whether a covariate is a tailoring variable (i.e., likely to interact with the intervention). Please click “Edit” to fill these parameters out. Once you fill them out, the summary of these parameters can be found by clicking the arrow next to the trashcan.</p>
+                                            <p>Each covariate is associated with a set of parameters that are needed to
+                                                configure a pJITAI, including whether a covariate is a tailoring
+                                                variable (i.e., likely to interact with the intervention). Please click
+                                                “Edit” to fill these parameters out. Once you fill them out, the summary
+                                                of these parameters can be found by clicking the arrow next to the
+                                                trashcan.</p>
 
                                             <p>If you want to remove a covariate, please click the trashcan.</p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p>In HeartSteps, both the location of the individual and 30-minute step count just prior to an intervention were found to be correlated with the  proximal outcome of (log) Next 30 minute step count.
+                                            <p>In HeartSteps, both the location of the individual and 30-minute step
+                                                count just prior to an intervention were found to be correlated with the
+                                                proximal outcome of (log) Next 30 minute step count.
                                             </p>
                                         </div>
 
@@ -219,7 +259,8 @@ $(document).ready(function() {
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/covariates/settings/main_treatment_effect/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
+                                                <a href="/covariates/settings/main_treatment_effect/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
                                                 <button type="submit" type="button"
                                                         formaction="/model/settings/summary/{{project_uuid}}"
                                                         formmethod="post" class="btn btn-primary">Next

@@ -19,44 +19,91 @@
 
 
                 <li class="nav-item pcoded-hasmenu {% if 'general' in segment %} active pcoded-trigger {% endif %}">
-                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-clipboard"></i></span><span class="pcoded-mtext">General Settings</span></a>
-                    <ul class="pcoded-submenu" {% if 'general' not in segment %} style="display: none;" {% endif %}>
-                        <li class="{% if 'general_settings' in segment %} active {% endif %}"><a href="/projects/settings/general/{{project_uuid}}" class="">General Info</a></li>
-                        <li class="{% if 'personalized_method' in segment %} active {% endif %}"><a {% if "/projects/settings/personalized_method/"+project_uuid in all_menus %} href="/projects/settings/personalized_method/{{project_uuid}}" {% endif %} class="">Personalization Method</a></li>
-                        <li class="{% if 'scenario' in segment %} active {% endif %}"><a {% if "/projects/settings/scenario/"+project_uuid in all_menus %} href="/projects/settings/scenario/{{project_uuid}}" {% endif %} class="">Scenario</a></li>
-                        <li class="{% if 'general_summary' in segment %} active {% endif %}"><a {% if "/projects/settings/summary/"+project_uuid in all_menus %} href="/projects/settings/summary/{{project_uuid}}" {% endif %} class="">Summary</a></li>
-                    </ul>
-                </li>
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                            class="feather icon-clipboard"></i></span><span class="pcoded-mtext">General Settings</span></a>
+                    <ul class="pcoded-submenu" {% if
+                    'general' not in segment %} style="display: none;" {% endif %}>
+                <li class="{% if 'general_settings' in segment %} active {% endif %}"><a
+                        href="/projects/settings/general/{{project_uuid}}" class="">General Info</a></li>
+                <li class="{% if 'personalized_method' in segment %} active {% endif %}"><a {% if
+                    "/projects/settings/personalized_method/"+project_uuid in all_menus %}
+                    href="/projects/settings/personalized_method/{{project_uuid}}" {% endif %} class="">Personalization
+                    Method</a></li>
+                <li class="{% if 'scenario' in segment %} active {% endif %}"><a {% if
+                    "/projects/settings/scenario/"+project_uuid in all_menus %}
+                    href="/projects/settings/scenario/{{project_uuid}}" {% endif %} class="">Scenario</a></li>
+                <li class="{% if 'general_summary' in segment %} active {% endif %}"><a {% if
+                    "/projects/settings/summary/"+project_uuid in all_menus %}
+                    href="/projects/settings/summary/{{project_uuid}}" {% endif %} class="">Summary</a></li>
+            </ul>
+            </li>
 
-                <li class="nav-item pcoded-hasmenu {% if 'intervention' in segment %} active pcoded-trigger {% endif %}">
-                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="fas fa-stopwatch"></i></span><span class="pcoded-mtext">Intervention Settings</span></a>
+            <li class="nav-item pcoded-hasmenu {% if 'intervention' in segment %} active pcoded-trigger {% endif %}">
+                <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                        class="fas fa-stopwatch"></i></span><span class="pcoded-mtext">Intervention Settings</span></a>
 
-                    <ul class="pcoded-submenu" {% if 'intervention' not in segment %} style="display: none;" {% endif %}>
-                        <li class="{% if 'intervention_option' in segment %} active {% endif %}"><a {% if "/intervention/settings/intervention_option/"+project_uuid in all_menus %} href="/intervention/settings/intervention_option/{{project_uuid}}" {% endif %} class="">Intervention Options</a></li>
-                        <li class="{% if 'intervention_decision_point' in segment %} active {% endif %}"><a {% if "/intervention/settings/decision_point/"+project_uuid in all_menus %} href="/intervention/settings/decision_point/{{project_uuid}}" {% endif %} class="">Decision Point</a></li>
-                        <li class="{% if 'intervention_ineligibility' in segment %} active {% endif %}"><a {% if "/intervention/settings/ineligibility/"+project_uuid in all_menus %} href="/intervention/settings/ineligibility/{{project_uuid}}" {% endif %} class="">Ineligibility</a></li>
-                        <li class="{% if 'intervention_probability' in segment %} active {% endif %}"><a {% if "/intervention/settings/intervention_probability/"+project_uuid in all_menus %} href="/intervention/settings/intervention_probability/{{project_uuid}}" {% endif %} class="">Intervention Probability</a></li>
-                        <li class="{% if 'intervention_update_point' in segment %} active {% endif %}"><a {% if "/intervention/settings/update_point/"+project_uuid in all_menus %} href="/intervention/settings/update_point/{{project_uuid}}" {% endif %} class="">Update Point</a></li>
-                        <li class="{% if 'intervention_summary' in segment %} active {% endif %}"><a {% if "/intervention/settings/summary/"+project_uuid in all_menus %} href="/intervention/settings/summary/{{project_uuid}}" {% endif %} class="">Summary</a></li>
-                    </ul>
-                </li>
+                <ul class="pcoded-submenu" {% if
+                'intervention' not in segment %} style="display: none;" {% endif %}>
+            <li class="{% if 'intervention_option' in segment %} active {% endif %}"><a {% if
+                "/intervention/settings/intervention_option/"+project_uuid in all_menus %}
+                href="/intervention/settings/intervention_option/{{project_uuid}}" {% endif %} class="">Intervention
+                Options</a></li>
+            <li class="{% if 'intervention_decision_point' in segment %} active {% endif %}"><a {% if
+                "/intervention/settings/decision_point/"+project_uuid in all_menus %}
+                href="/intervention/settings/decision_point/{{project_uuid}}" {% endif %} class="">Decision Point</a>
+            </li>
+            <li class="{% if 'intervention_ineligibility' in segment %} active {% endif %}"><a {% if
+                "/intervention/settings/ineligibility/"+project_uuid in all_menus %}
+                href="/intervention/settings/ineligibility/{{project_uuid}}" {% endif %} class="">Ineligibility</a></li>
+            <li class="{% if 'intervention_probability' in segment %} active {% endif %}"><a {% if
+                "/intervention/settings/intervention_probability/"+project_uuid in all_menus %}
+                href="/intervention/settings/intervention_probability/{{project_uuid}}" {% endif %}
+                class="">Intervention Probability</a></li>
+            <li class="{% if 'intervention_update_point' in segment %} active {% endif %}"><a {% if
+                "/intervention/settings/update_point/"+project_uuid in all_menus %}
+                href="/intervention/settings/update_point/{{project_uuid}}" {% endif %} class="">Update Point</a></li>
+            <li class="{% if 'intervention_summary' in segment %} active {% endif %}"><a {% if
+                "/intervention/settings/summary/"+project_uuid in all_menus %}
+                href="/intervention/settings/summary/{{project_uuid}}" {% endif %} class="">Summary</a></li>
+            </ul>
+            </li>
 
-                <li class="nav-item pcoded-hasmenu {% if 'model' in segment or 'covariates' in segment %} active pcoded-trigger {% endif %}">
-                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-sliders"></i></span><span class="pcoded-mtext">Model Settings</span></a>
-                    <ul class="pcoded-submenu" {% if 'model' not in segment  and not 'covariates' %} style="display: none;" {% endif %}>
-                        <li class="{% if 'model_proximal_outcome_attribute' in segment %} active {% endif %}"><a {% if "/model/settings/proximal_outcome_attribute/"+project_uuid in all_menus %} href="/model/settings/proximal_outcome_attribute/{{project_uuid}}" {% endif %} class="">Proximal Outcome Attributes</a></li>
-                        <li class="{% if 'model_intercept' in segment %} active {% endif %}"><a {% if "/model/settings/intercept/"+project_uuid in all_menus %} href="/model/settings/intercept/{{project_uuid}}" {% endif %} class="">Intercept</a></li>
-                        <li class="{% if 'model_main_treatment_effect' in segment %} active {% endif %}"><a {% if "/model/settings/main_treatment_effect/"+project_uuid in all_menus %} href="/model/settings/main_treatment_effect/{{project_uuid}}" {% endif %} class="">Main Treatment Effect</a></li>
-                        <li class="{% if 'covariates' in segment %} active {% endif %}"><a {% if "/covariates/settings/all/"+project_uuid in all_menus %} href="/covariates/settings/all/{{project_uuid}}" {% endif %} class="">Covariates</a></li>
-                        <li class="{% if 'model_summary' in segment %} active {% endif %}"><a {% if "/model/settings/summary/"+project_uuid in all_menus %} href="/model/settings/summary/{{project_uuid}}" {% endif %} class="">Summary</a></li>
-                    </ul>
-                </li>
+            <li class="nav-item pcoded-hasmenu {% if 'model' in segment or 'covariates' in segment %} active pcoded-trigger {% endif %}">
+                <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="feather icon-sliders"></i></span><span
+                        class="pcoded-mtext">Model Settings</span></a>
+                <ul class="pcoded-submenu" {% if
+                'model' not in segment and not 'covariates' %} style="display: none;" {% endif %}>
+            <li class="{% if 'model_proximal_outcome_attribute' in segment %} active {% endif %}"><a {% if
+                "/model/settings/proximal_outcome_attribute/"+project_uuid in all_menus %}
+                href="/model/settings/proximal_outcome_attribute/{{project_uuid}}" {% endif %} class="">Proximal Outcome
+                Attributes</a></li>
+            <li class="{% if 'model_intercept' in segment %} active {% endif %}"><a {% if
+                "/model/settings/intercept/"+project_uuid in all_menus %}
+                href="/model/settings/intercept/{{project_uuid}}" {% endif %} class="">Intercept</a></li>
+            <li class="{% if 'model_main_treatment_effect' in segment %} active {% endif %}"><a {% if
+                "/model/settings/main_treatment_effect/"+project_uuid in all_menus %}
+                href="/model/settings/main_treatment_effect/{{project_uuid}}" {% endif %} class="">Main Treatment
+                Effect</a></li>
+            <li class="{% if 'covariates' in segment %} active {% endif %}"><a {% if
+                "/covariates/settings/all/"+project_uuid in all_menus %}
+                href="/covariates/settings/all/{{project_uuid}}" {% endif %} class="">Covariates</a></li>
+            <li class="{% if 'model_summary' in segment %} active {% endif %}"><a {% if
+                "/model/settings/summary/"+project_uuid in all_menus %} href="/model/settings/summary/{{project_uuid}}"
+                {% endif %} class="">Summary</a></li>
+            </ul>
+            </li>
 
             <li class="nav-item pcoded-hasmenu {% if 'configuration' in segment %} active pcoded-trigger {% endif %}">
-                <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i class="fas fa-cogs"></i></span><span class="pcoded-mtext">Configuration Summary</span></a>
-                <ul class="pcoded-submenu" {% if 'configuration' not in segment %} style="display: none;" {% endif %}>
-            <li class="{% if 'configuration_summary' in segment %} active {% endif %}"><a {% if "/configuration/summary/"+project_uuid in all_menus %} href="/configuration/summary/{{project_uuid}}" {% endif %} class="">Summary</a></li>
-            <li class="{% if 'configuration_final' in segment %} active {% endif %}"><a {% if "/configuration/final/"+project_uuid in all_menus %} href="/configuration/final/{{project_uuid}}" {% endif %} class="">Finalize</a></li>
+                <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                        class="fas fa-cogs"></i></span><span class="pcoded-mtext">Configuration Summary</span></a>
+                <ul class="pcoded-submenu" {% if
+                'configuration' not in segment %} style="display: none;" {% endif %}>
+            <li class="{% if 'configuration_summary' in segment %} active {% endif %}"><a {% if
+                "/configuration/summary/"+project_uuid in all_menus %} href="/configuration/summary/{{project_uuid}}" {%
+                endif %} class="">Summary</a></li>
+            <li class="{% if 'configuration_final' in segment %} active {% endif %}"><a {% if
+                "/configuration/final/"+project_uuid in all_menus %} href="/configuration/final/{{project_uuid}}" {%
+                endif %} class="">Finalize</a></li>
 
             </ul>
             </li>

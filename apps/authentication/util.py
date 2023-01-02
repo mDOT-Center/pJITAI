@@ -27,10 +27,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-
-import os
 import hashlib
+import os
+
 import binascii
+
 
 # Inspiration -> https://www.vitoshacademy.com/hashing-passwords-in-python/
 

@@ -21,7 +21,11 @@
                                     <div class="card">
                                         <div class="card-header">
 
-                                            <h3>Intervention Components <span data-toggle='tooltip' data-bs-placement="right" title='Please click the intervention component to start editing it. If you want to duplicate or delete the project, you can click the three dots on the top right. You can only edit/delete in progress projects.'> <i class=" align-text-top questionmark far fa-question-circle"></i></span></h3>
+                                            <h3>Intervention Components <span data-toggle='tooltip'
+                                                                              data-bs-placement="right"
+                                                                              title='Please click the intervention component to start editing it. If you want to duplicate or delete the project, you can click the three dots on the top right. You can only edit/delete in progress projects.'> <i
+                                                    class=" align-text-top questionmark far fa-question-circle"></i></span>
+                                            </h3>
                                         </div>
 
                                     </div>
@@ -36,46 +40,63 @@
 
                                 {% endif %}
                                 <!-- START OF PROJECT DIV -->
-                                    {% for proj in data %}
-                                    <div class="col-lg-3 mb-3">
-                                        <div class="card" style="width: 18rem; border-radius:25px;">
+                                {% for proj in data %}
+                                <div class="col-lg-3 mb-3">
+                                    <div class="card" style="width: 18rem; border-radius:25px;">
 
-                                            <div class="card-body">
+                                        <div class="card-body">
 
-                                                <h3 class="card-title"> {{proj.get("study_name")}}
-                                                    {% if proj.get("project_status")==0 %}
-                                                    <ul class="navbar-nav ml-lg-auto float-right">
+                                            <h3 class="card-title"> {{proj.get("study_name")}}
+                                                {% if proj.get("project_status")==0 %}
+                                                <ul class="navbar-nav ml-lg-auto float-right">
 
-                                                        <li class="nav-item dropdown">
-                                                            <a class="nav-link nav-link-icon" href="#" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                                    <li class="nav-item dropdown">
+                                                        <a class="nav-link nav-link-icon" href="#"
+                                                           id="navbar-default_dropdown_1" role="button"
+                                                           data-toggle="dropdown" aria-haspopup="true"
+                                                           aria-expanded="false">
+                                                            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 
-                                                            </a>
-                                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
-                                                                <a class="dropdown-item" href="/projects/settings/general/{{proj.project_uuid}}"><i class="fas fa-edit"></i> Edit the project</a>
-                                                                <a class="dropdown-item" href="/projects/duplicate/{{proj.project_uuid}}" onclick="return confirm('Are you sure you want to duplicate the project - {{proj.get("study_name")}}?');"><i class="fa fa-clone" aria-hidden="true"></i> Duplicate the project</a>
-                                                                <div class="dropdown-divider"></div>
-                                                                <a class="dropdown-item" style="color:#f65959" href="/projects/delete/{{proj.project_uuid}}" onclick="return confirm('Are you sure you want to delete the project - {{proj.get("study_name")}}?');"><i class="fa fa-trash" aria-hidden="true"></i> Delete the project</a>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                    {% endif %}
-                                                </h3>
-
-                                                <p class="card-text">Intervention: {{proj.get("intervention_component_name")}}</p>
-                                                <a href="#" class="small">{{proj.get("study_description")[:70]}}</a>
-                                                {% if proj.get("project_status")==1 %}
-                                                <p><a href="" class="btn btn-info"><i class="fas fa-code-branch"></i> Get your API</a></p>
-
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right"
+                                                             aria-labelledby="navbar-default_dropdown_1">
+                                                            <a class="dropdown-item"
+                                                               href="/projects/settings/general/{{proj.project_uuid}}"><i
+                                                                    class="fas fa-edit"></i> Edit the project</a>
+                                                            <a class="dropdown-item"
+                                                               href="/projects/duplicate/{{proj.project_uuid}}"
+                                                               onclick="return confirm('Are you sure you want to duplicate the project - {{proj.get("
+                                                               study_name")}}?');"><i class="fa fa-clone"
+                                                                                      aria-hidden="true"></i> Duplicate
+                                                            the project</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" style="color:#f65959"
+                                                               href="/projects/delete/{{proj.project_uuid}}"
+                                                               onclick="return confirm('Are you sure you want to delete the project - {{proj.get("
+                                                               study_name")}}?');"><i class="fa fa-trash"
+                                                                                      aria-hidden="true"></i> Delete the
+                                                            project</a>
+                                                        </div>
+                                                    </li>
+                                                </ul>
                                                 {% endif %}
-                                            </div>
+                                            </h3>
+
+                                            <p class="card-text">Intervention:
+                                                {{proj.get("intervention_component_name")}}</p>
+                                            <a href="#" class="small">{{proj.get("study_description")[:70]}}</a>
+                                            {% if proj.get("project_status")==1 %}
+                                            <p><a href="" class="btn btn-info"><i class="fas fa-code-branch"></i> Get
+                                                your API</a></p>
+
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    {% endfor %}
+                                </div>
+                                {% endfor %}
                                 <!-- END OF PROJECT DIV -->
 
                             </div>
-
 
 
                             <div class="row">
@@ -93,10 +114,16 @@
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
                                             <p>
-                                                In this current version of pJITAI, we ask you to design one intervention component at a time. If you want to incorporate personalization in multiple intervention components in your study, you design a personalizing JITAI for each component.
+                                                In this current version of pJITAI, we ask you to design one intervention
+                                                component at a time. If you want to incorporate personalization in
+                                                multiple intervention components in your study, you design a
+                                                personalizing JITAI for each component.
                                             </p>
                                             <p>
-                                                For example, in the HeartSteps study, the intervention components are: 1) activity suggestion and 2) planning for the next day’s activities. Here, we demonstrate designing the “activity suggestion” JITAI component in the demo.
+                                                For example, in the HeartSteps study, the intervention components are:
+                                                1) activity suggestion and 2) planning for the next day’s activities.
+                                                Here, we demonstrate designing the “activity suggestion” JITAI component
+                                                in the demo.
                                             </p>
                                             <p>
                                                 Need more guidance on this page? <a href=""> Click here</a>.

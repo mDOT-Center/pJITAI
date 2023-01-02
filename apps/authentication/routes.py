@@ -38,7 +38,6 @@ from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import LoginForm, CreateAccountForm
 from apps.authentication.models import Users
-
 from apps.authentication.util import verify_pass
 
 
@@ -63,7 +62,6 @@ def login():
 
         # Check the password
         if user and verify_pass(password, user.password):
-
             login_user(user)
             return redirect(url_for('authentication_blueprint.route_default'))
 
@@ -75,7 +73,7 @@ def login():
     if not current_user.is_authenticated:
         return render_template('accounts/login.html',
                                form=login_form)
-    return redirect(url_for('home_blueprint.projects',project_type="in_progress"))
+    return redirect(url_for('home_blueprint.projects', project_type="in_progress"))
 
 
 @blueprint.route('/register', methods=['GET', 'POST'])

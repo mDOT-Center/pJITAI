@@ -33,31 +33,42 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="row">
-                                            <div class="col">
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="personalization_method">Personalization Method</label>
-                                                    <select id="personalization_method" name="personalization_method" class="form-control">
-                                                        <option value="Thompson Sampling - Two intervention option" selected>Thompson Sampling - Two intervention option</option>
-                                                    </select>
-                                                </div>
-
-
-                                            </div>
-
-                                            <div class="col">
-                                                <div class="rightsidebluetextbox">
-                                                    <p >This version of Thompson Sampling uses a Bayesian linear regression to model the relationship between the proximal outcome,  states, and intervention options.  This algorithm uses the data from each individual to learn and update that individual’s coefficients.  This method determines which intervention option to deliver based on the posterior probability that the intervention option is most effective in the current state.</p>
-
-                                                    <p>Key assumptions:</p>
-                                                    <ul class="text_white">
-                                                        <li>There are two intervention options.</li>
-                                                        <li>The proximal outcome is continuous.</li>
-                                                    </ul>
-                                                    <p>To learn more, please check here [link to the tutorial].</p>
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="personalization_method">Personalization
+                                                            Method</label>
+                                                        <select id="personalization_method"
+                                                                name="personalization_method" class="form-control">
+                                                            <option value="Thompson Sampling - Two intervention option"
+                                                                    selected>Thompson Sampling - Two intervention option
+                                                            </option>
+                                                        </select>
+                                                    </div>
 
 
                                                 </div>
-                                            </div>
+
+                                                <div class="col">
+                                                    <div class="rightsidebluetextbox">
+                                                        <p>This version of Thompson Sampling uses a Bayesian linear
+                                                            regression to model the relationship between the proximal
+                                                            outcome, states, and intervention options. This algorithm
+                                                            uses the data from each individual to learn and update that
+                                                            individual’s coefficients. This method determines which
+                                                            intervention option to deliver based on the posterior
+                                                            probability that the intervention option is most effective
+                                                            in the current state.</p>
+
+                                                        <p>Key assumptions:</p>
+                                                        <ul class="text_white">
+                                                            <li>There are two intervention options.</li>
+                                                            <li>The proximal outcome is continuous.</li>
+                                                        </ul>
+                                                        <p>To learn more, please check here [link to the tutorial].</p>
+
+
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -81,7 +92,9 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p>Personalization method refers to the statistical/computational method (i.e., algorithm) that enables the personalization in a ”Personalizing JITAI.”
+                                            <p>Personalization method refers to the statistical/computational method
+                                                (i.e., algorithm) that enables the personalization in a ”Personalizing
+                                                JITAI.”
                                             </p>
                                         </div>
 
@@ -98,9 +111,13 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/projects/settings/general/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-<!--                                                <button type="submit" type="button" formaction="/projects/settings/general/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
-                                                <button type="submit" type="button" formaction="/projects/settings/scenario/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                <a href="/projects/settings/general/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/projects/settings/general/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/projects/settings/scenario/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST

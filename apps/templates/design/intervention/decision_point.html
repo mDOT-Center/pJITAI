@@ -32,17 +32,25 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <label class="form-control-label" for="decision_point_frequency">Decision Point</label>
+                                            <label class="form-control-label" for="decision_point_frequency">Decision
+                                                Point</label>
                                             <div class="form-group">
 
-                                                <select id="decision_point_frequency" name="decision_point_frequency" class="form-select" aria-label="Default select example">
+                                                <select id="decision_point_frequency" name="decision_point_frequency"
+                                                        class="form-select" aria-label="Default select example">
                                                     {% for n in range(1,25) %}
-                                                        <option {% if settings.decision_point_frequency==n|string %} selected{% endif %} value="{{n}}">{{n}}</option>
+                                                    <option {% if settings.decision_point_frequency==n|string %}
+                                                            selected{% endif %} value="{{n}}">{{n}}
+                                                    </option>
                                                     {% endfor %}
                                                 </select> times per
-                                                <select id="decision_point_frequency_time" name="decision_point_frequency_time" class="form-select" aria-label="Default select example">
+                                                <select id="decision_point_frequency_time"
+                                                        name="decision_point_frequency_time" class="form-select"
+                                                        aria-label="Default select example">
                                                     {% for tm in decision_point_frequency_time %}
-                                                        <option {% if settings.decision_point_frequency_time==tm %} selected{% endif %} value="{{tm}}">{{tm}}</option>
+                                                    <option {% if settings.decision_point_frequency_time==tm %}
+                                                            selected{% endif %} value="{{tm}}">{{tm}}
+                                                    </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -72,12 +80,16 @@
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="home" role="tabpanel"
                                              aria-labelledby="home-tab">
-                                            <p>Decision points are times at which a JITAI chooses an intervention option. Please specify the frequency of decision points.
+                                            <p>Decision points are times at which a JITAI chooses an intervention
+                                                option. Please specify the frequency of decision points.
                                             </p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
-                                            <p>In HeartSteps V1, the five decision points correspond approximately to the individual’s morning commute, lunchtime, mid afternoon, the evening commute, and after dinner times. Thus, in this case, there are five decision points per day.</p>
+                                            <p>In HeartSteps V1, the five decision points correspond approximately to
+                                                the individual’s morning commute, lunchtime, mid afternoon, the evening
+                                                commute, and after dinner times. Thus, in this case, there are five
+                                                decision points per day.</p>
                                         </div>
 
                                     </div>
@@ -92,25 +104,29 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="form-group">
-                                                <a href="/intervention/settings/intervention_option/{{project_uuid}}" class="btn btn-outline-primary" role="button">Back</a>
-<!--                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_option/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
-                                                <button type="submit" type="button" formaction="/intervention/settings/ineligibility/{{project_uuid}}" formmethod="post" class="btn btn-primary">Next</button>
+                                                <a href="/intervention/settings/intervention_option/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/intervention/settings/intervention_option/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/intervention/settings/ineligibility/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
                                             </div>
                                         </div>
-                                        </div>
-
                                     </div>
+
                                 </div>
                             </div>
-                        </form>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 <!-- [ Main Content ] end -->
 
