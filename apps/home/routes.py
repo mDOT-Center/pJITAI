@@ -87,19 +87,35 @@ def delete_project(project_uuid):
 @login_required
 def duplicate_project(project_uuid):
     user_id = current_user.get_id()
-    proj = Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid == project_uuid).first()
+    if project_uuid=="demo-0001":
+        proj = Projects.query.filter(Projects.created_by == 1).filter(Projects.uuid == project_uuid).first()
+    else:
+        proj = Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid == project_uuid).first()
+
     if proj:
         Projects(created_by=user_id,
                  uuid=uuid4(),
                  general_settings=proj.general_settings,
                  intervention_settings=proj.intervention_settings,
                  model_settings=proj.model_settings,
+                 covariates=proj.covariates,
                  project_status=0,
                  algo_type="algorithm_type",
                  modified_on=datetime.now(),
                  created_on=datetime.now()).save()
     return redirect("/projects/in_progress")
 
+@blueprint.route('/projects/finalize/<project_uuid>', methods=['GET'])
+@login_required
+def mark_project_finalized(project_uuid):
+    user_id = current_user.get_id()
+    proj = Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid == project_uuid).first()
+
+    if proj:
+        proj.project_status = 1
+        db.session.commit()
+
+    return redirect("/projects/finalized")
 
 @blueprint.route('/projects/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
 @login_required
