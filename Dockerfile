@@ -43,4 +43,4 @@ RUN pip install -r requirements.txt
 
 # gunicorn
 # CMD ["systemctl", "start", "cron", ";","gunicorn", "--config", "gunicorn-cfg.py", "run:app"]
-CMD systemctl start cron ; gunicorn --config gunicorn-cfg.py run:appb
+CMD systemctl start cron ; gunicorn --config gunicorn-cfg.py run:app
