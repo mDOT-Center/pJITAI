@@ -97,8 +97,8 @@ class ThompsonSampling(LearningMethodBase):
                 "default_value": 3.16
             }
         }
-        # TODO: change name -> standalone_parameters
-        # For now you can change it to "model parameters"
+        
+        # TODO Change to "model parameters"?
         self.standalone_parameters = {
             # I may want to change the names of all of these
             "alpha_0_mu_bias": {
@@ -188,7 +188,7 @@ class ThompsonSampling(LearningMethodBase):
                 "default_value": 0.3
             }
         }
-        # TODO: move to base class??
+        
         self.tuning_scheduler = {
             "name": "update_interval",
             "description": "time interval between running algorithm and update policy. Time is in seconds/minutes???",
@@ -198,8 +198,16 @@ class ThompsonSampling(LearningMethodBase):
             "inclusive": [True, True],
             "default_value": 0.39
         }
+        
+        # TODO: This needs populated via the web interface when complete.
+        self.eligibility = {
+            "walking": False,
+            "driving": False,
+        }
 
-    def decision(self, user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
+
+    # TODO: Add a variable for elibibility based on a computation on self.eligibility in the calling method (TWH)
+    def decision(self,  user_id: str, timestamp: str, tuned_params=None, input_data=None) -> pd.DataFrame:
 
         # These need to be read from the web user interface
         # I added "value" to represent what each option means in the linear regression. It's super important.

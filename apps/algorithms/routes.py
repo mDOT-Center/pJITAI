@@ -128,6 +128,10 @@ def add_update_algo():
         configuration["standalone_parameters"] = standalone_parameter
         configuration["other_parameters"] = other_parameter
         configuration["tuning_scheduler"] = {}
+        configuration['eligibility'] = { # TODO: Fix this once it is placed in the WEB UI, here for testing while the UI is underdevelopment.
+            "walking": False,
+            "driving": False,
+        }
         if request.form.get("availability"):
             configuration["availability"] = {
                 "availability": request.form.get("availability")}
