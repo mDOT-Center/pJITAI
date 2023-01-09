@@ -1,0 +1,169 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Results {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Configuration Summary/ Configuration Summary</h3>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <p class="congratstextbox" style="margin-bottom: 30px;">
+                                                Based on the information you entered on the previous screens<br>
+                                                The probability of providing <span
+                                                    style="background-color: #eeece9; color:#f85e5e;"> Activity suggestion </span>
+                                                when the <span style="background-color: #eeece9; color:#f85e5e;">location</span>
+                                                = <span style="background-color: #eeece9; color:#f85e5e;">0</span> is:
+                                            </p>
+
+
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <div class="rightsidebluetextbox" style="margin-top:0px;">
+                                                        <h1 class="text-center">[53%]</h1>
+                                                        <div class="text-center" style="color:red;"><b>NOTE:</b><small> 53% is a demo value. This value be computed by an algorithm once backend algorithm is complete. </small></div>
+                                                        <h5>
+                                                            * This probability will change during the study but will
+                                                            never go
+                                                            below
+                                                            {{settings.get("intervention_probability_lower_bound")|float*100}}%
+                                                            or above
+                                                            {{settings.get("intervention_probability_upper_bound")|float*100}}%
+                                                            because of your configuration.
+                                                        </h5>
+                                                    </div>
+                                                    <p>
+                                                    <ul>
+                                                        <li><b>Note 1</b>: This is a summary based on your
+                                                            configuration. Your inputs here do not change the actual
+                                                            configuration of your pJITAI.
+                                                        </li>
+                                                        <li><b>Note 2</b>: If the prior mean of the interaction
+                                                            coefficient of a tailoring variable is zero, then this
+                                                            probability will not change when you change the values of
+                                                            that tailoring variable. However, once data accrues and
+                                                            indicates that the interaction coefficient is nonzero, the
+                                                            probability of providing Intervention Option A will change
+                                                            according to the values of the tailoring variable.
+                                                        </li>
+                                                    </ul>
+                                                    </p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="rightsidebluetextbox" style="margin-top:0px;">
+                                                <h5><i class="fas fa-sliders-h"></i> Tailoring Variables Values </h5>
+                                                <hr>
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="personalization_method">Location
+                                                        <span data-toggle='tooltip'
+                                                              title='This value should satisfy your configuration of the value of the covariate'> <i
+                                                                class=" align-text-top questionmark far fa-question-circle"></i></span></label>
+                                                    <select id="personalization_method" name="personalization_method"
+                                                            class="form-control">
+                                                        <option value="Thompson Sampling - Two intervention option"
+                                                                selected>0
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <p>0: Home/Work 1: Unknown location</p>
+                                                <hr>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p class="mb-0">In “Configuration Summary,” we show you the summary of your
+                                                JITAI configuration.
+                                                Thompson Sampling adjusts the intervention probability based on the
+                                                values of the tailoring variables. Please input a value for each
+                                                tailoring variable.
+                                                From your configuration and inputs, we calculate the initial probability
+                                                of delivering intervention option A. The individual-specific probability
+                                                of delivering intervention option A will change (be personalized) as
+                                                data accrues on the individual.
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <a href="/model/settings/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <a href="/configuration/final/{{project_uuid}}" class="btn btn-primary"
+                                                   role="button">Next</a>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

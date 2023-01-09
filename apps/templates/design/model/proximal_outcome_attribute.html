@@ -1,106 +1,148 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Model - Proximal Outcome Attribute {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-<script>
-
-</script>
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Model Settings / Proximal Outcome Attributes </i></h1>
-    <hr>
-    <div class="container col-sm-12">
-        <div class="row">
-
-                <div class="card col-sm-12">
-                    <div class="card-body">
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
                         <form>
                             <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="min_proximal_outcome">The minimum value of the proximal outcome</label>
-                                    <input type="text" id="min_proximal_outcome" class="form-control" placeholder="Option A">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="max_proximal_outcome">The maximum value of the proximal outcome</label>
-                                    <input type="text" id="max_proximal_outcome" class="form-control" placeholder="Option B">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="max_proximal_outcome">Type of the proximal outcome</label>
-                                    <select id="update_time" class="form-select" aria-label="Default select example">
-                                        <option selected>Continuous</option>
-                                    </select>
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Model Settings / Proximal Outcome Attributes</h3>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
 
-                                <div class="row">
-                                    <hr class="hr_style">
-                                    <footer class="">
-                                        <div class="nav-wrapper">
-                                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
-                                                </li>
 
-                                            </ul>
-                                        </div>
-                                        <div class="card shadow">
-                                            <div class="card-body">
-                                                <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
-
-                                                    </div>
-                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-                                                    </div>
-
-                                                </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="min_proximal_outcome">The minimum
+                                                    value of the proximal outcome</label>
+                                                <input type="number" step="0.01"
+                                                       value="{{settings.min_proximal_outcome}}"
+                                                       id="min_proximal_outcome" name="min_proximal_outcome"
+                                                       class="form-control" placeholder="Option A">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="max_proximal_outcome">The maximum
+                                                    value of the proximal outcome</label>
+                                                <input type="number" step="0.01"
+                                                       value="{{settings.max_proximal_outcome}}"
+                                                       id="max_proximal_outcome" name="max_proximal_outcome"
+                                                       class="form-control" placeholder="Option B">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="max_proximal_outcome">Type of the
+                                                    proximal outcome</label>
+                                                <select id="proximal_outcome_type" name="proximal_outcome_type"
+                                                        class="form-control" aria-label="Default select example">
+                                                    <option selected>Continuous</option>
+                                                </select>
                                             </div>
                                         </div>
-                                    </footer>
-                                    <div class="form-group float-right">
-                                        <button type="button" class="btn btn-primary">Back</button>
-                                        <button type="button" class="btn btn-primary">Next</button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p>We use the attributes of the proximal outcome to check if the API
+                                                receives inappropriate values from your mobile app. Please read
+                                                [tutorial] for more details.
+
+
+                                            </p>
+                                            <p>Please notice that if your proximal outcome needs to be transformed, the
+                                                transformation needs to be implemented in the mobile application; the
+                                                algorithm will not do the transformation.</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p>In HeartSteps, the proximal outcome of interest is the log-transformed
+                                                30-minute step count after each decision point. To avoid minus infinity
+                                                (recall that log<sub>e</sub>(0) becomes minus infinity), we added 0.5 to
+                                                the step count before the transformation, i.e., log<sub>e</sub>(next
+                                                30-minute step count+0.5). Our assumption was that people walk between 0
+                                                and 3000 steps in the next 30 minutes. Hence, the minimum value of the
+                                                (log) 30-minute step count is log<sub>e</sub>(0+0.5)=-0.69. The maximum
+                                                value of the (log) 30-minute step count is log<sub>e</sub>(3000+0.5)=8.0.
+                                                These values are continuous.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <a href="/intervention/settings/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/intervention/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/model/settings/intercept/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
-
-
-
-
+            </div>
         </div>
     </div>
-
 </div>
-
-{% include "includes/footer.html" %}
-
-</div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE -->
-{% block javascripts %}
-
-<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

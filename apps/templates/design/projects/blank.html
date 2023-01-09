@@ -1,0 +1,126 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Page Blank {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Hello card</h3>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Hello card</h3>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p class="mb-0">Raw denim you probably haven't heard of them jean shorts
+                                                Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse.
+                                                Mustache cliche tempor, williamsburg carles vegan helvetica.
+                                                Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater
+                                                eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia
+                                                cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
+                                                voluptate nisi qui.
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p class="mb-0">Food truck fixie locavore, accusamus mcsweeney's marfa nulla
+                                                single-origin coffee squid. Exercitation +1 labore velit, blog sartorial
+                                                PBR leggings next level wes anderson artisan four loko farm-to-table
+                                                craft beer twee. Qui photo booth letterpress, commodo enim craft beer
+                                                mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
+                                                organic, assumenda labore aesthetic magna delectus mollit. Keytar
+                                                helvetica VHS salvia yr, vero magna velit sapiente labore stumptown.
+                                                Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
+                                                beard ut DIY ethical culpa terry richardson biodiesel. Art party
+                                                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus
+                                                tattooed echo park.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <a href="/projects/settings/personalized_method/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" formmethod="post" formaction="/projects/settings/personalized_method/{{project_uuid}}" type="button" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" formmethod="post"
+                                                        formaction="/projects/settings/summary/{{project_uuid}}"
+                                                        type="button" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

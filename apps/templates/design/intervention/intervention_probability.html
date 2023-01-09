@@ -1,6 +1,6 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Intervention - Probability {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -9,94 +9,194 @@
 
 <script>
 
+
+$(document).ready(function(){
+    function calculate_on_load(){
+        dp_freq = $('#dp_freq').text()
+        result1 = ($('#interven_lower').text() * dp_freq).toFixed(1)
+        result2 = ($('#interven_upper').text() * dp_freq).toFixed(1)
+        $('#result_1').html(result1);
+        $('#result_2').html(result2);
+    }
+    calculate_on_load();
+
+
+    $("input[name=intervention_probability_lower_bound]").on('keyup', function () {
+        $('#interven_lower').html($(this).val());
+        dp_freq = $('#dp_freq').text()
+        result1 = ($('#interven_lower').text() * dp_freq).toFixed(1)
+        $('#result_1').html(result1);
+    });
+
+    $("input[name=intervention_probability_upper_bound]").on('keyup', function () {
+        $('#interven_upper').html($(this).val());
+        dp_freq = $('#dp_freq').text()
+        result2 = ($('#interven_upper').text() * dp_freq).toFixed(1)
+        $('#result_2').html(result2);
+    });
+});
+
+
 </script>
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Intervention Settings / Intervention Probability</h1>
-    <hr>
-    <div class="container col-sm-12">
-        <div class="row">
-
-                <div class="card col-sm-12">
-                    <div class="card-body">
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
                         <form>
                             <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label  class="form-control-label" for="intervention_probability_lower_bound">Intervention probability lower bound (when eligible)</label>
-                                    <input type="text" id="intervention_probability_lower_bound" class="form-control" placeholder="Option A"> : sss
-                                </div>
-                            </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="intervention_probability_lower_bound"></label>
-                                        : <span style="border: 1px dotted; padding: 5px;"> 0.1 x <span style="background: #efeeee;">5 times/day</span> = 0.5 <span style="background: #efeeee;">intervention option A</span> per day</span>
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Intervention Settings / Intervention Probability</h3>
+                                        </div>
+
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <hr class="hr_style">
-                                    <footer class="">
-                                        <div class="nav-wrapper">
-                                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
-                                                </li>
 
-                                            </ul>
-                                        </div>
-                                        <div class="card shadow">
-                                            <div class="card-body">
-                                                <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
-
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label"
+                                                           for="intervention_probability_lower_bound">Intervention
+                                                        probability lower bound (when eligible)</label>
+                                                    <div class="input-group mb-3">
+                                                        <input min="0" max="1" step="0.01"
+                                                               value="{{settings.intervention_probability_lower_bound}}"
+                                                               type="number" id="intervention_probability_lower_bound"
+                                                               name="intervention_probability_lower_bound"
+                                                               class="form-control" required>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text"
+                                                                  style="border: dotted;"> <span id="interven_lower"> {{settings.intervention_probability_lower_bound}} </span> &nbsp; x &nbsp;  <span
+                                                                    id="dp_freq"> {{settings.decision_point_frequency}}</span>  &nbsp;&nbsp;<span
+                                                                    style="background-color: #a8a2a2;border-radius: 5px;padding: 2px;"> decision points / {{settings.decision_point_frequency_time}} </span>&nbsp;&nbsp; = &nbsp;&nbsp; <span
+                                                                    id="result_1"></span> &nbsp;&nbsp; <span
+                                                                    style="background-color: #a8a2a2;border-radius: 5px;padding: 2px;">{{settings.intervention_option_a}} / {{settings.decision_point_frequency_time}}</span></span>
+                                                        </div>
                                                     </div>
-                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-control-label"
+                                                           for="intervention_probability_upper_bound">Intervention
+                                                        probability upper bound (when eligible)</label>
+                                                    <div class="input-group mb-3">
+                                                        <input min="0" max="1" step="0.01"
+                                                               value="{{settings.intervention_probability_upper_bound}}"
+                                                               type="number" id="intervention_probability_upper_bound"
+                                                               name="intervention_probability_upper_bound"
+                                                               class="form-control" required>
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text" style="border: dotted;"><span
+                                                                    id="interven_upper"> {{settings.intervention_probability_upper_bound}} </span> &nbsp; x &nbsp; {{settings.decision_point_frequency}} &nbsp;&nbsp;<span
+                                                                    style="background-color: #a8a2a2;border-radius: 5px;padding: 2px;"> decision points / {{settings.decision_point_frequency_time}} </span>&nbsp;&nbsp; = &nbsp;&nbsp; <span
+                                                                    id="result_2"></span> &nbsp;&nbsp; <span
+                                                                    style="background-color: #a8a2a2;border-radius: 5px;padding: 2px;">{{settings.intervention_option_a}} / {{settings.decision_point_frequency_time}}</span></span>
+                                                        </div>
                                                     </div>
 
                                                 </div>
                                             </div>
+
+
                                         </div>
-                                    </footer>
-                                    <div class="form-group float-right">
-                                        <button type="button" class="btn btn-primary">Back</button>
-                                        <button type="button" class="btn btn-primary">Next</button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p>
+                                            <p>As data accrues, the probability of sending Intervention Option A (when
+                                                Intervention Option A is eligible) will change but will never go below
+                                                the lower bound or above the upper bound.</p>
+
+                                            <p>To ensure a continual update of personalization, you cannot choose the
+                                                intervention probability lower/upper bound during personalization to be
+                                                0 or 1. If you are concerned about burden or habituation, we suggest
+                                                that you choose a smaller upper bound.</p>
+                                            </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p>Here, we choose the intervention probability during the personalization
+                                                period to be between 0.1 and 0.8. Notice that with 5 decision
+                                                points/day, an intervention probability of 0.8 corresponds to an average
+                                                of 5 x 0.8 = 4 activity suggestion messages per day. If you want to
+                                                avoid sending four activity suggestions a day, you can consider 1)
+                                                lowering the upper bound or 2) adding “receiving more than three
+                                                activity suggestions in the same day” as an ineligibility criterion.
+
+
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <a href="/intervention/settings/ineligibility/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/intervention/settings/ineligibility/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/intervention/settings/update_point/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
-
-
-
-
+            </div>
         </div>
     </div>
-
 </div>
-
-{% include "includes/footer.html" %}
-
-</div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE -->
-{% block javascripts %}
-
-<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

@@ -1,0 +1,202 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Covariate Attributes {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<script>
+$(document).ready(function(){
+
+    $('#covariate_type').change(function(){
+
+        if($(this).val() == 'Binary'){
+            $("#covariate_min_val").attr('min', 0);
+            $("#covariate_min_val").attr("max",0);
+            $("#covariate_min_val").attr("step",1);
+
+            $("#covariate_max_val").attr("min",1);
+            $("#covariate_max_val").attr("max",1);
+            $("#covariate_max_val").attr("step",1);
+        }else{
+
+            $("#covariate_min_val").removeAttr('min');
+            $("#covariate_min_val").removeAttr("max");
+            $("#covariate_max_val").removeAttr("min");
+            $("#covariate_max_val").removeAttr("max");
+        }
+    });
+});
+
+</script>
+
+
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Model Settings / Covariates / Attributes</h3>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_min_val">Minimum value
+                                                    of the covariate</label>
+                                                <input value="{{settings.covariate_min_val}}" type="number" {% if
+                                                       settings.covariate_type=="Binary" %} min="0" max="0" {% endif %}
+                                                       step="0.01" id="covariate_min_val" name="covariate_min_val"
+                                                       class="form-control" placeholder="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_max_val">Maximum value
+                                                    of the covariate</label>
+                                                <input value="{{settings.covariate_max_val}}" type="number" {% if
+                                                       settings.covariate_type=="Binary" %} min="1" max="1" {% endif %}
+                                                       step="0.01" id="covariate_max_val" name="covariate_max_val"
+                                                       class="form-control" placeholder="">
+                                            </div>
+                                            <script>
+                                                function remove_binary_div(){
+                                                    covariate_type = document.getElementById("covariate_type").value;
+                                                    if(covariate_type!="Binary"){
+                                                        $('#binary_covariates_div').hide();
+                                                    }else{
+                                                        $('#binary_covariates_div').show();
+                                                    }
+                                                }
+                                                $(document).ready(function(){
+                                                    remove_binary_div();
+                                                });
+
+                                            </script>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="covariate_type">Type of the
+                                                    covariate</label><br>
+                                                <select id="covariate_type" name="covariate_type" id="covariate_type"
+                                                        onchange="remove_binary_div()" class="form-control">
+                                                    {% for ct in covariates_types%}
+                                                    <option value="{{ct}}" {{
+                                                    "selected" if settings.covariate_type == ct }}>{{ct}}</option>
+                                                    {%endfor%}
+                                                </select>
+                                            </div>
+                                            <div id="binary_covariates_div">
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="covariate_meaning_0">Meaning
+                                                        of the "Covariate=0"</label><br>
+                                                    <input value="{{settings.covariate_meaning_0}}" type="text"
+                                                           name="covariate_meaning_0" class="form-control"
+                                                           placeholder="">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="covariate_meaning_1">Meaning
+                                                        of the "Covariate=1"</label><br>
+                                                    <input value="{{settings.covariate_meaning_1}}" type="text"
+                                                           name="covariate_meaning_1" class="form-control"
+                                                           placeholder="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p>We use the attributes of the covariates to check if the API receives
+                                                inappropriate/missing input from your mobile app. Please notice that if
+                                                your covariate is binary, we ask you to describe how the values of 0 and
+                                                1 translate to the states an individual is in.</p>
+
+                                            <p>Please notice that if your covariate needs to be transformed, the
+                                                transformation needs to be implemented in the mobile application; the
+                                                algorithm will not do the transformation.</p>
+
+                                            <p>Please read [tutorial] for more details.</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p class="mb-0">In HeartSteps, “Location” is coded as 1 when an individual
+                                                is in an unknown location (neither at home nor at work) and zero
+                                                otherwise.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <a href="/covariates/settings/covariate_name/{{project_uuid}}/{{cov_id}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <button type="submit" type="button"
+                                                        formaction="/covariates/settings/covariate_main_effect/{{project_uuid}}/{{cov_id}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

@@ -1,109 +1,160 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Project - General Settings {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-<script>
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>General Settings / General Info</h3>
+                                        </div>
 
-</script>
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-
-  <h1> <i class="fa fa-list-alt" aria-hidden="true"></i> General Settings / General Info <i class="ni ni-question" aria-hidden="true"></i></h1>
-  <hr>
-  <div class="container  col-sm-12">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card col-sm-12">
-          <div class="card-body">
-            <form method="post">
-             <div class="col-lg-12">
-                  <div class="form-group">
-                    <label class="form-control-label" for="study_name">Name of the study</label>
-                    <input type="text" name="study_name" required class="form-control" placeholder="Name of the study">
-                  </div>
-
-               <div class="form-group">
-                 <label class="form-control-label" for="study_description">Description of the study (optional)</label>
-                 <textarea name="study_description" required rows="4" class="form-control" placeholder="Description of the study ..."></textarea>
-               </div>
-
-               <div class="form-group">
-                 <label class="form-control-label" for="intervention_component_name">Name of the intervention component</label>
-                 <input type="text" name="intervention_component_name" required class="form-control" placeholder="Name of the intervention component">
-               </div>
-
-               <div class="form-group">
-                 <label class="form-control-label" for="proximal_outcome_name">Name of the proximal outcome</label>
-                 <input type="text" name="proximal_outcome_name" required class="form-control" placeholder="Name of the proximal outcome">
-               </div>
+                                    </div>
+                                </div>
+                            </div>
 
 
-              </div>
-              <hr class="hr_style">
-              <footer class="">
-                <div class="nav-wrapper">
-                  <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                    <li class="nav-item">
-                      <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
-                    </li>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="study_name">Name of the
+                                                        study</label>
+                                                    <input type="text" name="study_name" id="study_name"
+                                                           value="{{general_settings.get('study_name','')}}" required
+                                                           class="form-control" placeholder="Name of the study">
+                                                </div>
 
-                  </ul>
-                </div>
-                <div class="card shadow">
-                  <div class="card-body">
-                    <div class="tab-content" id="myTabContent">
-                      <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="study_description">Description
+                                                        of the study (optional)</label>
+                                                    <textarea name="study_description" id="study_description" required
+                                                              rows="4" class="form-control"
+                                                              placeholder="Description of the study ...">{{general_settings.get('study_description','')}}</textarea>
+                                                </div>
 
-                      </div>
-                      <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-                      </div>
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="intervention_component_name">Name
+                                                        of the intervention component</label>
+                                                    <input type="text" name="intervention_component_name"
+                                                           id="intervention_component_name"
+                                                           value="{{general_settings.get('intervention_component_name','')}}"
+                                                           required class="form-control"
+                                                           placeholder="Name of the intervention component">
+                                                </div>
 
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="proximal_outcome_name">Name
+                                                        of the proximal outcome</label>
+                                                    <input type="text" name="proximal_outcome_name"
+                                                           id="proximal_outcome_name"
+                                                           value="{{general_settings.get('proximal_outcome_name','')}}"
+                                                           required class="form-control"
+                                                           placeholder="Name of the proximal outcome">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p>Please tell us the intervention component you are designing. The proximal
+                                                outcome is a short term outcome that the intervention is intended to
+                                                impact.</p>
+
+                                            <p>Notice that if you are going through the HeartSteps demo created for you,
+                                                we have filled out all the inputs for you. You can find the explanations
+                                                for these inputs by clicking the “HeartSteps Example” tab.</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p>In the HeartSteps example, the intervention components are: 1) activity
+                                                suggestions and 2) planning for the next day’s activity. Here, we are
+                                                demonstrating designing the “activity suggestion” JITAI component.</p>
+
+                                            <p>In HeartSteps, the step count in a 30-minute window is observed following
+                                                each decision point. In addition, step counts are right skewed. Thus, we
+                                                log transformed them so that the normal approximation used in the linear
+                                                regression is more accurate. The proximal outcome is then “(log) Next 30
+                                                min step count” to denote the transformation.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <!--                                                <button type="submit" name="back" class="btn btn btn-outline-primary">-->
+                                                <!--                                                    Back-->
+                                                <!--                                                </button>-->
+                                                <button type="submit" formmethod="post"
+                                                        formaction="/projects/settings/personalized_method/{{project_uuid}}"
+                                                        class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                  </div>
                 </div>
-              </footer>
-              <div class="form-group">
-                <button type="submit" name="back" class="btn btn-primary">Back</button>
-                <button type="submit" name="next" class="btn btn-primary">Next</button>
-              </div>
-            </form>
-          </div>
+            </div>
         </div>
-
-
-
-
-      </div>
-
     </div>
-  </div>
-
 </div>
-
-      {% include "includes/footer.html" %}
-
-    </div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE --> 
-{% block javascripts %}
-
-  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

@@ -28,11 +28,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 import os
+
 from decouple import config
 
 
 class Config(object):
-
     basedir = os.path.abspath(os.path.dirname(__file__))
 
     # Set up the App SECRET_KEY
@@ -46,9 +46,13 @@ class Config(object):
         config('DB_PASS', default='pass'),
         config('DB_HOST', default='localhost'),
         config('DB_PORT', default=3306),
-        config('DB_NAME', default='pJITAI')
+        config('DB_NAME', default='pJITAI'),
+
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Assets Management
+    ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
 
 
 class ProductionConfig(Config):

@@ -28,11 +28,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
 import traceback
+
 import pandas as pd
 from sqlalchemy.exc import SQLAlchemyError
 
 from apps import db
 from apps.api.models import Data, AlgorithmTunedParams, Decision
+
 
 def save_decision(decision: Decision):
     try:
@@ -46,7 +48,8 @@ def save_decision(decision: Decision):
     except:
         print(traceback.format_exc())
 
-def get_decision_data(algo_id: str, user_id: str = None):    
+
+def get_decision_data(algo_id: str, user_id: str = None):
     '''
     Get data from data table, created pandas DF (parse all the dict and convert them into columns)
     :param algo_id:
@@ -54,13 +57,15 @@ def get_decision_data(algo_id: str, user_id: str = None):
     :return: pandas DF
     '''
     if user_id:
-        data = Decision.query.filter(Decision.algo_uuid == algo_id).filter(Decision.user_id == user_id).order_by(Decision.timestamp.desc())
+        data = Decision.query.filter(Decision.algo_uuid == algo_id).filter(Decision.user_id == user_id).order_by(
+            Decision.timestamp.desc())
     else:
         data = Decision.query.filter(Decision.algo_uuid == algo_id).order_by(Decision.timestamp.desc())
     if data:
         df_from_records = pd.read_sql(data.statement, db.session().bind)
         return df_from_records
     return pd.DataFrame()
+
 
 def get_merged_data(algo_id: str, user_id: str = None):
     '''
@@ -70,23 +75,25 @@ def get_merged_data(algo_id: str, user_id: str = None):
     :return: pandas DF
     '''
     if user_id:
-        data = Data.query.outerjoin(Decision, Decision.decision_id == Data.decision_id).add_entity(Decision).filter(Data.user_id == user_id).order_by(Data.timestamp.desc())
+        data = Data.query.outerjoin(Decision, Decision.decision_id == Data.decision_id).add_entity(Decision).filter(
+            Data.user_id == user_id).order_by(Data.timestamp.desc())
     else:
-        data = Data.query.outerjoin(Decision, Decision.decision_id == Data.decision_id).add_entity(Decision).order_by(Data.timestamp.desc())
+        data = Data.query.outerjoin(Decision, Decision.decision_id == Data.decision_id).add_entity(Decision).order_by(
+            Data.timestamp.desc())
     if data:
         df_from_records = pd.read_sql(data.statement, db.session().bind)
-    
+
         result = pd.concat([df_from_records, df_from_records['values'].apply(json_to_series)], axis=1)
         result.drop('values', axis=1, inplace=True)
         result.drop('id_1', axis=1, inplace=True)
         result.drop('user_id_1', axis=1, inplace=True)
         result.drop('algo_uuid_1', axis=1, inplace=True)
         result.drop('decision_id_1', axis=1, inplace=True)
-        result.rename(columns={"timestamp_1": "decision__timestamp", 
-                               "decision": "decision__decision", 
-                               "decision_options": "decision__decision_options", 
-                               "status_code": "decision__status_code", 
-                               "status_message": "decision__status_message"},inplace=True)
+        result.rename(columns={"timestamp_1": "decision__timestamp",
+                               "decision": "decision__decision",
+                               "decision_options": "decision__decision_options",
+                               "status_code": "decision__status_code",
+                               "status_message": "decision__status_message"}, inplace=True)
         return result
     return pd.DataFrame()
 
@@ -99,7 +106,8 @@ def get_data(algo_id: str, user_id: str = None):
     :return: pandas DF
     '''
     if user_id:
-        data = Data.query.filter(Data.algo_uuid == algo_id).filter(Data.user_id == user_id).order_by(Data.timestamp.desc())
+        data = Data.query.filter(Data.algo_uuid == algo_id).filter(Data.user_id == user_id).order_by(
+            Data.timestamp.desc())
     else:
         data = Data.query.filter(Data.algo_uuid == algo_id).order_by(Data.timestamp.desc())
     if data:

@@ -1,0 +1,304 @@
+<!-- [ navigation menu ] start -->
+<script>
+    $(document).ready(function(){
+
+    $('#donotshowagain').change(function (e) {
+        if ($(this).prop('checked')) {
+            Cookies.set('donotshowagain', 'true');
+        }else{
+            Cookies.set('donotshowagain', 'false');
+        }
+    });
+
+    $('#myCarousel').css({
+        'display': 'flex',
+        'justify-content': 'center',
+        'align-items': 'center'
+    }).carousel({interval: false,wrap: false});
+    if(Cookies.get('donotshowagain')=='false' || Cookies.get('donotshowagain')==null){
+        $("#instructionModel").modal('show');
+    }
+
+var myCarousel   = $('#myCarousel');
+var itemFirst    = myCarousel.find('.carousel-inner > .carousel-item:first-child');
+var itemLast     = myCarousel.find('.carousel-inner > .carousel-item:last-child');
+var controlLeft  = $(".introduction_next_prev").find('button.left.carousel-control');
+var controlRight = $(".introduction_next_prev").find('button.right.carousel-control');
+
+hideControl();
+
+myCarousel.on('slid.bs.carousel', function() {
+  hideControl();
+});
+myCarousel.on('slide.bs.carousel', function() {
+  showControl();
+});
+
+function hideControl() {
+  if ( itemFirst.hasClass('active') ) {
+    controlLeft.prop("disabled",true);
+  }
+  if ( itemLast.hasClass('active') ) {
+    //controlRight.prop("disabled",true);
+    $("#right_btn").text('Finish');
+    $('#right_btn').attr('data-dismiss', 'modal');
+    myCarousel.carousel('pause');  // stop from cycling through items
+  }else{
+    $("#right_btn").text('Next');
+    $('#right_btn').removeAttr('data-dismiss', 'modal');
+  }
+}
+
+function showControl() {
+  if ( itemFirst.hasClass('active') ) {
+    controlLeft.prop("disabled",false);
+  }
+  if ( itemLast.hasClass('active') ) {
+    controlRight.prop("disabled",false);
+
+  }
+}
+
+
+
+    });
+
+ function showModalByLink(){
+    if(Cookies.get('donotshowagain')!='false' || Cookies.get('donotshowagain')!=null){
+
+    }
+    if (document.cookie.indexOf('donotshowagain') > -1 && Cookies.get('donotshowagain')=="true") {
+      $('#donotshowagain').prop('checked', true);
+    }
+    $('#instructionModel').modal('show');
+}
+
+</script>
+<style>
+.carousel-inner img {
+  height: auto;
+  width: 100%;
+}
+.carousel-indicators .active {
+    background-color: #f00;
+}
+#instructionModel {
+   display: 'flex';
+	justify-content: 'center';
+	align-items: 'center';
+}
+.carousel-indicators {
+        bottom: -6.4375rem;
+    }
+
+.carousel-indicators li {
+    box-sizing: content-box;
+
+    flex: 0 1 auto;
+    width: 30px;
+    height: 3px;
+    margin-right: 3px;
+    margin-left: 3px;
+    text-indent: -999px;
+    cursor: pointer;
+    background-color: #5e72e4;
+    background-clip: padding-box;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    opacity: .5;
+    transition: opacity 0.6s ease;
+}
+
+</style>
+
+<div class="modal fade" id="instructionModel" tabindex="-1" role="dialog" aria-labelledby="instructionModel"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators indicator">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel" data-slide-to="1"></li>
+                        <li data-target="#myCarousel" data-slide-to="2"></li>
+                        <li data-target="#myCarousel" data-slide-to="3"></li>
+                        <li data-target="#myCarousel" data-slide-to="4"></li>
+                        <li data-target="#myCarousel" data-slide-to="5"></li>
+                    </ol>
+                    <div class="carousel-inner" role="listbox">
+                        <div class="carousel-item active">
+                            <h3>Why use the pJITAI toolbox?</h3>
+                            <div class="row">
+                                <div class="col-9">
+                                    <p class="pull-left">This toolbox helps you design a personalizing Just-in-Time
+                                        Adaptive Intervention (<a
+                                                href="http://people.seas.harvard.edu/~samurphy/JITAI_MRT/jitai.html"
+                                                target="_blank">pJITAI</a>) component, i.e., the toolbox helps you
+                                        configure an algorithm that personalizes the intervention delivery of this JITAI
+                                        component.
+                                    </p>
+                                </div>
+                                <div class="col-3">
+                                    <img src="{{ config.ASSETS_ROOT }}/images/pjitai/social-care_1.png"
+                                         class="pull-right img-responsive">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="carousel-item">
+                            <h3>What is Personalization?</h3>
+                            <div class="row">
+                                <div class="col-9">
+                                    <p>Data accruing from an individual may indicate that intervention option A is more
+                                        effective than intervention option B when the individual is in certain states. A
+                                        personalizing JITAI will increase the probability of sending intervention option
+                                        A in these states.</p>
+                                    <p>For example, if an individual is more responsive to intervention option A during
+                                        weekends, the JITAI will send intervention option A more frequently than
+                                        intervention option B during weekends.</p>
+                                </div>
+                                <div class="col-3">
+                                    <img src="{{ config.ASSETS_ROOT }}/images/pjitai/ui_1.png"
+                                         class="pull-right img-responsive">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="carousel-item">
+                            <h3>When can you use the pJITAI toolbox?</h3>
+                            <ul>
+                                <li><b>Scenario 1</b>: When you have access to published results from a micro-randomized
+                                    trial (<a href="http://people.seas.harvard.edu/~samurphy/JITAI_MRT/mrts4.html"
+                                              target="_blank">MRT</a>), the toolbox helps you find the information
+                                    needed to configure a personalizing JITAI.
+                                </li>
+                                <li><b>Scenario 2</b>: When you have access to the data from an MRT of an intervention
+                                    component you want to personalize, the toolbox guides you to run analyses to
+                                    configure a personalizing JITAI.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="carousel-item">
+                            <h3>Interested in practicing?</h3>
+                            <p>You can practice using this tool with HeartSteps, an mHealth intervention for physical
+                                activity.</p>
+                            <p>Some details about HeartSteps:</p>
+                            <ul>
+                                <li><b>Goal</b>: Provide an actionable message to help a person take a short walk in the
+                                    near future.
+                                </li>
+                                <li><b>Intervention options</b>: (A) Send an activity suggestion; (B) Do not send an
+                                    activity suggestion
+                                </li>
+                                <li><b>Proximal outcome</b>: The 30-minute step count after each decision point</li>
+                            </ul>
+
+                        </div>
+                        <div class="carousel-item">
+                            <h3>How to use the pJITAI toolbox?</h3>
+                            <p>We suggest that if you are not familiar with our toolbox, you start by going through our
+                                HeartSteps demo.</p>
+                            <p>When you’re ready to use this tool to develop personalizing JITAIs for your study, you’ll
+                                configure a personalization algorithm for each intervention component separately.</p>
+                            <p>For example, in the HeartSteps study, researchers were interested in personalizing a
+                                number of intervention components including “activity suggestion” and “planning.” In the
+                                demo, we show you how to design a personalization algorithm for the activity
+                                suggestion.</p>
+
+                        </div>
+                        <div class="carousel-item">
+                            <h3>Once you finish designing your personalizing JITAI... </h3>
+                            <div class="row">
+                                <div class="col-9">
+                                    <p>The toolbox will generate a URL for accessing the algorithm you just configured
+                                        via an API so it can be integrated into the code for your JITAI. The algorithm
+                                        can then begin to personalize sending of interventions.</p>
+
+                                    <h4>Have more questions?</h4>
+                                    <ul>
+                                        <li>Please check our <a href="">FAQs</a></li>
+                                        <li>Please check our <a href=""> tutorial</a></li>
+
+                                    </ul>
+                                    <h4>Want to see these instruction cards again?</h4>
+                                    <p>Click "Instruction cards" on the left menu.</p>
+                                </div>
+                                <div class="col-3">
+                                    <img src="{{ config.ASSETS_ROOT }}/images/pjitai/mobile.png"
+                                         class="pull-right img-responsive">
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer introduction_next_prev">
+
+                <button href="#myCarousel" role="button" data-slide="prev" type="button"
+                        class="btn btn-primary left carousel-control mr-auto">Back
+                </button>
+                <button href="#myCarousel" role="button" data-slide="next" id="right_btn" type="button"
+                        class="btn btn-primary right carousel-control">Next
+                </button>
+            </div>
+            <div class="modal-footer">
+                <input class="" id="donotshowagain" name="donotshowagain" type="checkbox"> Do not show me again
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="pcoded-navbar">
+    <div class="navbar-wrapper">
+        <div class="navbar-brand header-logo">
+            <a href="/" class="b-brand">
+                <div class="b-bg">
+                    <i class="feather icon-anchor"></i>
+                </div>
+                <span class="b-title">pJITAI</span>
+            </a>
+            <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
+        </div>
+        <div class="navbar-content scroll-div">
+
+            <ul class="nav pcoded-inner-navbar">
+                <li class="nav-item pcoded-hasmenu {% if 'general' in segment %} active pcoded-trigger {% endif %}">
+                    <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                            class="fas fa-plus"></i></span><span class="pcoded-mtext">Add New Project</span></a>
+                    <ul class="pcoded-submenu" {% if
+                    'general' not in segment %} style="display: none;" {% endif %}>
+                <li class="{% if 'general_settings' in segment %} active {% endif %}"><a
+                        href="/projects/settings/general/{{project_uuid}}" class=""><i class="fas fa-plus-circle"></i>
+                    Add a new intervention component</a></li>
+                <li class="{% if 'personalized_method' in segment %} active {% endif %}"><a
+                        href="/projects/duplicate/demo-0001" class=""><i
+                        class="fas fa-clone"></i> Add another HeartSteps Demo</a></li>
+            </ul>
+            </li>
+            <li class="nav-item {% if 'in_progress' in segment %} active{% endif %}">
+                <a href="/projects/in_progress" class="nav-link "><span class="pcoded-micon"><i
+                        class="fas fa-history"></i></span><span class="pcoded-mtext">In Progress </span></a>
+            </li>
+            <li class="nav-item {% if 'finalized' in segment %} active pcoded-trigger {% endif %}">
+                <a href="/projects/finalized" class="nav-link "><span class="pcoded-micon"><i
+                        class="fas fa-clipboard-check"></i></span><span class="pcoded-mtext">Finalized</span></a>
+            </li>
+
+
+            <li class="nav-item {% if 'intervention' in segment %} active pcoded-trigger {% endif %}">
+                <a href="#instructionModel" onclick="showModalByLink();" class="nav-link "><span class="pcoded-micon"><i
+                        class="fas fa-chalkboard-teacher"></i></span><span class="pcoded-mtext">Instruction Cards</span></a>
+            </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- [ navigation menu ] end -->

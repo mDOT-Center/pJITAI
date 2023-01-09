@@ -1,102 +1,150 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Intervention - Option {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-<script>
-
-</script>
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> Intervention Settings / Intervention Options <i
-            class="ni ni-question" aria-hidden="true"></i></h1>
-    <hr>
-    <div class="container col-sm-12">
-        <div class="row">
-
-                <div class="card col-sm-12">
-                    <div class="card-body">
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
                         <form>
                             <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="intervention_option_a">Intervention Option A</label>
-                                    <input type="text" id="intervention_option_a" class="form-control" placeholder="Option A">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Intervention Settings / Intervention Options</h3>
+                                        </div>
+
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-control-label" for="intervention_option_b">Intervention Option B</label>
-                                    <input type="text" id="intervention_option_b" class="form-control" placeholder="Option B">
-                                </div>
-<p style="color:red;">Option A and Option B cannot be interchanged. Please read the explanation to make sure that you define them correctly.</p>
                             </div>
 
-                                <div class="row">
-                                    <hr class="hr_style">
-                                    <footer class="">
-                                        <div class="nav-wrapper">
-                                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">General Explanation</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#tabs-icons-text-2" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">HeartSteps Example</a>
-                                                </li>
 
-                                            </ul>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="intervention_option_a">Intervention
+                                                    Option A</label>
+                                                <input value="{{settings.get('intervention_option_a','')}}" type="text"
+                                                       id="intervention_option_a" name="intervention_option_a"
+                                                       class="form-control" placeholder="Option A" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="intervention_option_b">Intervention
+                                                    Option B</label>
+                                                <input value="{{settings.get('intervention_option_b','')}}" type="text"
+                                                       id="intervention_option_b" name="intervention_option_b"
+                                                       class="form-control" placeholder="Option B" required>
+                                            </div>
+                                            <p style="color:#f65959;">Option A and Option B cannot be interchanged.
+                                                Please read the explanation to make sure that you define them
+                                                correctly.</p>
                                         </div>
-                                        <div class="card shadow">
-                                            <div class="card-body">
-                                                <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
 
-                                                    </div>
-                                                    <div class="tab-pane fade" id="tabs-icons-text-2" role="tabpanel" aria-labelledby="tabs-icons-text-2-tab">
-                                                        <p class="description">Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
-                                                    </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                                </div>
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p>In the current method (Thompson sampling -- two options), there are two
+                                                intervention options. Intervention options usually correspond to
+                                                different buckets of messages or no message.</p>
+
+                                            <p>Here's how we distinguish Intervention Option A from Intervention Option
+                                                B:</p>
+                                            <ol>
+                                                <li>The “main treatment effect” is defined as the change in the proximal
+                                                    outcome when Intervention option A is provided versus Intervention
+                                                    option B. In the Bayesian linear regression (see Eq.(3.1) in the
+                                                    tutorial), “Intervention=1” if Intervention option A is provided,
+                                                    and “Intervention=0” if Intervention option B is provided.
+                                                </li>
+                                                <li>In some predefined states (which you’ll define two pages from now),
+                                                    one may not wish to provide Intervention Option A. In those states,
+                                                    Intervention Option B will be provided. In other words, Intervention
+                                                    Option B is often less burdensome. In fact, it is often the “do
+                                                    nothing” option.
+                                                </li>
+                                            </ol>
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p>
+                                                In HeartSteps V1, the goal of the JITAI is to encourage a person to walk
+                                                more by sending activity suggestions. The options are to send an
+                                                activity suggestion or not to send a suggestion. The treatment effect is
+                                                the change in (log) next 30-minute step count when a suggestion is sent
+                                                versus not sent.
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <a href="/projects/settings/summary/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/projects/settings/summary/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/intervention/settings/decision_point/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
                                             </div>
                                         </div>
-                                    </footer>
-                                    <div class="form-group float-right">
-                                        <button type="button" class="btn btn-primary">Back</button>
-                                        <button type="button" class="btn btn-primary">Next</button>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
-
-
-
-
+            </div>
         </div>
     </div>
-
 </div>
-
-{% include "includes/footer.html" %}
-
-</div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE -->
-{% block javascripts %}
-
-<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

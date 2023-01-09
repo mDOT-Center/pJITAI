@@ -1,103 +1,142 @@
-{% extends 'layouts/base.html' %}
+{% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock title %}
+{% block title %} Project - Personalized Method {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-<script>
-
-</script>
-<style>
-
-</style>
-
-
-<div class="container-fluid">
-
-    <h1><i class="fa fa-list-alt" aria-hidden="true"></i> General Settings / Personalization Method <i
-            class="ni ni-question" aria-hidden="true"></i></h1>
-    <hr>
-    <div class="container col-sm-12">
-        <div class="row">
-
-                <div class="card col-sm-12">
-                    <div class="card-body">
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
                         <form>
                             <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-control-label" for="personalization_method">Personalization Method</label>
-                                    <select id="personalization_method" class="form-select" aria-label="Default select example">
-                                        <option selected>Thompson Sampling - Two intervention option</option>
-                                    </select>
-                                </div>
-
-
-                            </div>
-
-                            <div class="col">
-                                <p style="
-                                    background-color: #deeaff;
-                                    color: black;
-                                    padding: 10px;
-                                    border-radius: 10px;
-                                ">
-                                    This version of Thompson sampling....</p>
-                            </div>
-
-                                <div class="row">
-                                    <hr class="hr_style">
-                                    <footer class="">
-                                        <div class="nav-wrapper">
-                                            <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="tabs-icons-text" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link mb-sm-3 mb-md-0 active" id="tabs-icons-text-1-tab" data-toggle="tab" href="#tabs-icons-text-1" role="tab" aria-controls="tabs-icons-text-1" aria-selected="true">Explanation</a>
-                                                </li>
-
-                                            </ul>
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>General Settings / Personalization Method</h3>
                                         </div>
-                                        <div class="card shadow">
-                                            <div class="card-body">
-                                                <div class="tab-content" id="myTabContent">
-                                                    <div class="tab-pane fade show active" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
-                                                        <p class="description">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth.</p>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="personalization_method">Personalization
+                                                            Method</label>
+                                                        <select id="personalization_method"
+                                                                name="personalization_method" class="form-control">
+                                                            <option value="Thompson Sampling - Two intervention option"
+                                                                    selected>Thompson Sampling - Two intervention option
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="col">
+                                                    <div class="rightsidebluetextbox">
+                                                        <p>This version of Thompson Sampling uses a Bayesian linear
+                                                            regression to model the relationship between the proximal
+                                                            outcome, states, and intervention options. This algorithm
+                                                            uses the data from each individual to learn and update that
+                                                            individual’s coefficients. This method determines which
+                                                            intervention option to deliver based on the posterior
+                                                            probability that the intervention option is most effective
+                                                            in the current state.</p>
+
+                                                        <p>Key assumptions:</p>
+                                                        <ul class="text_white">
+                                                            <li>There are two intervention options.</li>
+                                                            <li>The proximal outcome is continuous.</li>
+                                                        </ul>
+                                                        <p>To learn more, please check here [link to the tutorial].</p>
+
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </footer>
-                                    <div class="form-group float-right">
-                                        <button type="button" class="btn btn-primary">Back</button>
-                                        <button type="button" class="btn btn-primary">Next</button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+                                            <p>Personalization method refers to the statistical/computational method
+                                                (i.e., algorithm) that enables the personalization in a ”Personalizing
+                                                JITAI.”
+                                            </p>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <a href="/projects/settings/general/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <!--                                                <button type="submit" type="button" formaction="/projects/settings/general/{{project_uuid}}" formmethod="post" class="btn btn-outline-primary">Back</button>-->
+                                                <button type="submit" type="button"
+                                                        formaction="/projects/settings/scenario/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
-
-
-
-
+            </div>
         </div>
     </div>
-
 </div>
-
-{% include "includes/footer.html" %}
-
-</div>
+<!-- [ Main Content ] end -->
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE -->
-{% block javascripts %}
-
-<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
