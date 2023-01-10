@@ -35,32 +35,17 @@ import pandas as pd
 class LearningMethodBase(metaclass=ABCMeta):
 
     def __init__(self, algorithm_specs=None):
-        # self.uuid = algorithm_specs.uuid
-        # self.name = algorithm_specs.name
-        # self.description = algorithm_specs.description
-        # self.finalized = algorithm_specs.finalized
-        # configs = algorithm_specs.configuration
-        # #self.parameters = configs.get("",{})
-        # self.standalone_parameters = configs.get("standalone_parameters",{})
-        # self.other_parameters = configs.get("other_parameters",{})
-        # self.tuning_scheduler = configs.get("tuning_scheduler",{})
-        # self.features=configs.get("features",{})
-        # self.created_on = algorithm_specs.created_on
-        # self.created_by = algorithm_specs.created_by
 
         self.uuid = None
-        self.name = None
-        self.desciption = None
-        self.finalized = 0
-        self.parameters = {}
-        self.standalone_parameters = {}
-        self.other_parameters = {}
-        self.tuning_scheduler = {}
-        self.eligibility = {}
-        self.features = []
-        self.created_on = None
+        self.general_settings = {}
+        self.intervention_settings = {}
+        self.model_settings = {}
+        self.covariates = {}
+        self.project_status = None
         self.created_by = None
-        availability = {}
+        self.modified_on = None
+        self.created_on = None
+
         super().__init__()
 
     def get_parameters(self) -> dict[str, str]:
@@ -83,17 +68,14 @@ class LearningMethodBase(metaclass=ABCMeta):
         """
 
         self.uuid = algorithm_specs.uuid
-        self.name = algorithm_specs.name
-        self.desciption = algorithm_specs.description
-        self.finalized = algorithm_specs.finalized
-        configs = algorithm_specs.configuration
-        # self.parameters = configs.get("",{})
-        self.standalone_parameters = configs.get("standalone_parameters", {})
-        self.other_parameters = configs.get("other_parameters", {})
-        self.tuning_scheduler = configs.get("tuning_scheduler", {})
-        self.features = configs.get("features", {})
-        self.created_on = algorithm_specs.created_on
+        self.general_settings = algorithm_specs.general_settings
+        self.intervention_settings = algorithm_specs.intervention_settings
+        self.model_settings = algorithm_specs.model_settings
+        self.covariates = algorithm_specs.covariates
+        self.project_status = algorithm_specs.project_status
         self.created_by = algorithm_specs.created_by
+        self.modified_on = algorithm_specs.modified_on
+        self.created_on = algorithm_specs.created_on
 
     @abstractmethod
     def decision(self, user_id: str, input_data=None) -> pd.DataFrame:
