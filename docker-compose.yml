@@ -30,7 +30,7 @@ services:
   pjitai-app:
     container_name: pjitai_app
     restart: always
-    env_file: .env
+    env_file: .env_docker
     build: .
     networks:
       - db_network

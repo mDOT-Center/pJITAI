@@ -10,6 +10,16 @@
 <script>
 $(document).ready(function(){
 
+    if($("#covariate_type").val() == 'Binary'){
+            $("#covariate_min_val").attr('min', 0);
+            $("#covariate_min_val").attr("max",0);
+            $("#covariate_min_val").attr("step",1);
+
+            $("#covariate_max_val").attr("min",1);
+            $("#covariate_max_val").attr("max",1);
+            $("#covariate_max_val").attr("step",1);
+        }
+
     $('#covariate_type').change(function(){
 
         if($(this).val() == 'Binary'){
