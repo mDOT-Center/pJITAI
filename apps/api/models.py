@@ -81,6 +81,9 @@ class Decision(db.Model):
     status_code = db.Column('status_code', db.String(250))
     status_message = db.Column('status_message', db.String(250))
 
+    # TODO: Add eligible variable (TWH)
+    # TODO: Add eligibility vector which comes from the user API call (TWH)
+
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
             setattr(self, property, value)
