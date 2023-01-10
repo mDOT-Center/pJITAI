@@ -35,7 +35,7 @@ from flask_login import login_required
 from sqlalchemy.exc import SQLAlchemyError
 
 from apps import db
-from apps.algorithms.models import Algorithms
+from apps.algorithms.models import Projects
 from apps.api import blueprint
 from apps.api.codes import StatusCode
 from apps.api.sql_helper import get_tuned_params, json_to_series, save_decision, store_tuned_params
@@ -77,10 +77,11 @@ def _save_each_data_row(user_id: str,
 
 
 def _do_update(algo_uuid):
-    algorithm = Algorithms.query.filter(Algorithms.uuid == algo_uuid).first()
-    cls = get_class_object(f"apps.learning_methods.{algorithm.type}.{algorithm.type}")
+    proj = Projects.query.filter(Projects.uuid == algo_uuid).first()
+    proj_type = proj.general_settings.get("personalization_method")
+    cls = get_class_object(f"apps.learning_methods.{proj_type}.{proj_type}")
     obj = cls()
-    obj.as_object(algorithm)
+    obj.as_object(proj)
     result = obj.update()
 
     for index, row in result.iterrows():
@@ -93,10 +94,10 @@ def _do_update(algo_uuid):
 @blueprint.route('<uuid>', methods=['POST'])
 @pJITAI_token_required
 def model(uuid: str) -> dict:
-    algo = Algorithms.query.filter(Algorithms.uuid.like(uuid)).first()
+    proj = db.session.query(Projects).filter(Projects.uuid == uuid).filter(Projects.project_status == 1).first()
     result = {"status": "ERROR: Algorithm not found"}
-    if algo:
-        result = algo.as_dict()
+    if proj:
+        result = proj.as_dict()
     return result
 
 
@@ -115,10 +116,11 @@ def decision(uuid: str) -> dict:
         user_id = input_data['user_id'],
         input_data = validated_data_df
 
-        algorithm = Algorithms.query.filter(Algorithms.uuid == uuid).first()
-        cls = get_class_object(f"apps.learning_methods.{algorithm.type}.{algorithm.type}")
+        proj = Projects.query.filter(Projects.uuid == uuid).first()
+        proj_type = proj.general_settings.get("personalization_method")
+        cls = get_class_object(f"apps.learning_methods.{proj_type}.{proj_type}")
         obj = cls()
-        obj.as_object(algorithm)  # TODO: What does this do?
+        obj.as_object(proj)  # TODO: What does this do?
 
         tuned_params = get_tuned_params(user_id=user_id)
         tuned_params_df = None
@@ -275,21 +277,25 @@ def run_algo(algo_type):
 def search(query):
     results = []
     search_query = "%{}%".format(query)
-    algorithm = Algorithms.query.filter(Algorithms.name.like(search_query) | Algorithms.type.like(search_query)).all()
-    if not algorithm:
+    proj = Projects.query.filter(Projects.general_settings.like(search_query)).all()
+    if not proj:
         return {"status": "error", "message": "No result found."}, 400
     else:
-        for al in algorithm:
+        for al in proj:
             results.append(al.as_dict())
         return jsonify(results)
 
 
-@blueprint.route('/algorithms/<id>', methods=['GET'])  # or UUID
+@blueprint.route('/projects/<uuid>', methods=['GET'])  # or UUID
 @login_required
-def algorithms(id):
-    algo = db.session.query(Algorithms).filter(Algorithms.id == id).filter(Algorithms.finalized == 1).first()
-    if not algo:
+def proj(uuid):
+    proj = db.session.query(Projects).filter(Projects.uuid == uuid).filter(Projects.project_status == 1).first()
+    if not proj:
         return {"status": "error",
                 "message": "Algorithm ID does not exist or algorithm has not been finalized yet."}, 400
     else:
-        return algo.as_dict()
+        return proj.as_dict()
+
+def get_algo_name(uuid):
+    proj = db.session.query(Projects).filter(Projects.uuid == uuid).filter(Projects.project_status == 1).first()
+    return proj.general_settings.get("personalization_method")

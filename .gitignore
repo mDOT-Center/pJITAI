@@ -7,3 +7,4 @@ __pycache__
 .venv/
 *.csv
 .DS_Store
+.env
