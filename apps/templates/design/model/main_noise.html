@@ -1,0 +1,173 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Model - Noise {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3>Model Settings / Noise</h3>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label" for="treatment_prior_mean">Prior
+                                                            mean of the main treatment effect <span
+                                                                    data-toggle='tooltip' data-bs-placement="right"
+                                                                    title='???????????????????'> <i
+                                                                    class=" align-text-top questionmark far fa-question-circle"></i></span></label>
+                                                        <input type="number" step="0.01"
+                                                               value="{{settings.treatment_prior_mean}}"
+                                                               id="treatment_prior_mean" name="treatment_prior_mean"
+                                                               class="form-control" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="form-control-label"
+                                                               for="treatment_prior_standard_deviation">Prior standard
+                                                            deviation of the main treatment effect <span
+                                                                    data-toggle='tooltip' data-bs-placement="right"
+                                                                    title='???????????????????'> <i
+                                                                    class=" align-text-top questionmark far fa-question-circle"></i></span></label>
+                                                        <input type="number" step="0.01" min="0"
+                                                               value="{{settings.treatment_prior_standard_deviation}}"
+                                                               id="treatment_prior_standard_deviation"
+                                                               name="treatment_prior_standard_deviation"
+                                                               class="form-control" required>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col">
+                                                    <p class="rightsidebluetextbox">
+
+                                                        (log) <span style="background:#888; font-size:14px;">{{settings.proximal_outcome_name}}</span>
+                                                        ~ <br>
+                                                        α<sub>0</sub>+ <br>
+                                                        + β<sub>0</sub>* <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span><br>
+                                                        + ϵ <br>
+                                                        α<sub>0</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>0</sub></sub>, σ<sub>α<sub>0</sub></sub></span><sup>2</sup>)
+                                                        <br>
+                                                        <span style="color:#f65959;"> We're asking for the red values.</span>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!-- [ tabs ] start -->
+                                <div class="col-sm-12">
+
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab" data-toggle="tab"
+                                               href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                                Explanation</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="profile-tab" data-toggle="tab"
+                                               href="#profile" role="tab" aria-controls="profile" aria-selected="false">HeartSteps
+                                                Example</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel"
+                                             aria-labelledby="home-tab">
+
+                                            <p>The prior mean of the main treatment effect is a rough guess at the mean
+                                                change in the proximal outcome when an intervention option A is provided
+                                                versus intervention option B.</p>
+
+                                            <p> If you don’t have good information about the prior mean and prior
+                                                standard deviation then we suggest you set the prior mean to be 0 and
+                                                the prior standard deviation to be 10. Please read [tutorial] for more
+                                                details.</p>
+
+                                        </div>
+                                        <div class="tab-pane fade" id="profile" role="tabpanel"
+                                             aria-labelledby="profile-tab">
+                                            <p>In the primary analysis paper of HeartSteps V1, the authors found that
+                                                providing a suggestion versus providing no suggestion increased step
+                                                count by 14% (eb = 1.14, p = .06, 95% CI = 0.99 to 1.31), or an
+                                                additional 35 steps, on average.</p>
+
+                                            <p> In this case, the prior mean of the interaction coefficient is
+                                                approximately log<sub>e</sub>(1.14)=0.13. The prior standard deviation
+                                                is approximately (log<sub>e</sub>(1.31)-log<sub>e</sub>(0.99))/4=0.07.
+                                                (Note that all these values were log-transformed because the proximal
+                                                outcome is log-transformed.)</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <!-- [ tabs ] end -->
+                            </div>
+                            <!-- [ Main Content ] end -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="form-group">
+                                                <!--                                                <button type="submit" type="button"-->
+                                                <!--                                                        formaction="/model/settings/intercept/{{project_uuid}}"-->
+                                                <!--                                                        formmethod="post" class="btn btn-outline-primary">Back-->
+                                                <!--                                                </button>-->
+                                                <a href="/model/settings/intercept/{{project_uuid}}"
+                                                   class="btn btn-outline-primary" role="button">Back</a>
+                                                <button type="submit" type="button"
+                                                        formaction="/covariates/settings/all/{{project_uuid}}"
+                                                        formmethod="post" class="btn btn-primary">Next
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                Last save time: {{modified_on.strftime('%b %d %Y %I:%M %p')}} CST
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

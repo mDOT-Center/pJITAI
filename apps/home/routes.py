@@ -40,6 +40,7 @@ from apps.algorithms.models import Projects
 from apps.home import blueprint
 from apps.home.helper import get_project_details, update_general_settings, update_intervention_settings, \
     update_model_settings, update_covariates_settings, add_menu, get_project_menu_pages
+from apps.home.summary_page_probability import compute_probability
 
 
 @blueprint.route('/projects/<project_type>')
@@ -267,7 +268,7 @@ def model_settings(setting_type, project_uuid):
         add_menu(user_id, project_uuid, request.path)
         update_model_settings(request.form.to_dict(), project_details_obj)
 
-    all_menus = get_project_menu_pages(user_id, project_uuid)
+    all_menus = get_project_menu_pages(user_id, project_uuid)#@Anand - add new menu here
 
     if setting_type == "proximal_outcome_attribute":
         return render_template("design/model/proximal_outcome_attribute.html",
@@ -281,6 +282,11 @@ def model_settings(setting_type, project_uuid):
     elif setting_type == "main_treatment_effect":
         return render_template("design/model/main_treatment_effect.html", segment="model_main_treatment_effect",
                                all_menus=all_menus, menu_number=13, project_name=project_name, modified_on=modified_on,
+                               settings=model_settings, project_uuid=project_uuid)
+    elif setting_type == "main_noise":#@Anand - noise page
+        '''@Anand - check this menu_number = 14'''
+        return render_template("design/model/main_noise.html", segment="model_main_noise",
+                               all_menus=all_menus, menu_number=13 , project_name=project_name, modified_on=modified_on,
                                settings=model_settings, project_uuid=project_uuid)
     elif setting_type == "summary":
         return render_template("design/model/summary.html", segment="model_summary", all_menus=all_menus,
@@ -410,12 +416,15 @@ def configuration_summary(config_type, project_uuid):
 
     if project_details.get("covariates"):
         modified_on = project_details.get("modified_on", "")
-
+    # Call Hsin-Yu method here @Anand. Add a new paramenter in render summary
     if not modified_on:
         modified_on = datetime.now()
     if config_type == "summary":
+        prob = compute_probability(project_details, other_loc=0)
+        print(f'PPPPPPP {prob}')
+        prob_str = str(prob) + '%'
         return render_template("design/config_summary/summary.html", segment="configuration_summary", settings=settings,
-                               all_menus=all_menus, menu_number=16, modified_on=modified_on, project_uuid=project_uuid)
+                               all_menus=all_menus, menu_number=16, modified_on=modified_on, project_uuid=project_uuid, probability=prob_str)
     elif config_type == "final":
         return render_template("design/config_summary/final.html", segment="configuration_final", settings=settings,
                                all_menus=all_menus, menu_number=17, modified_on=modified_on, project_uuid=project_uuid)
