@@ -140,10 +140,10 @@ class Projects(db.Model):
                 value = hash_pass(value)  # we need bytes here (not plain str)
 
             setattr(self, property, value)
-
+    '''
     def __repr__(self):
         return str(self.name)
-
+    '''
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
@@ -181,10 +181,10 @@ class ProjectMenu(db.Model):
                 value = hash_pass(value)  # we need bytes here (not plain str)
 
             setattr(self, property, value)
-
+    '''
     def __repr__(self):
         return str(self.name)
-
+    '''
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 

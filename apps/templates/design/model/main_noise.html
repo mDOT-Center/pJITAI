@@ -35,8 +35,7 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="form-group">
-                                                        <label class="form-control-label" for="treatment_prior_mean">Prior
-                                                            mean of the main treatment effect <span
+                                                        <label class="form-control-label" for="treatment_prior_mean">Scale (0_0) <span
                                                                     data-toggle='tooltip' data-bs-placement="right"
                                                                     title='???????????????????'> <i
                                                                     class=" align-text-top questionmark far fa-question-circle"></i></span></label>
@@ -47,8 +46,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="form-control-label"
-                                                               for="treatment_prior_standard_deviation">Prior standard
-                                                            deviation of the main treatment effect <span
+                                                               for="treatment_prior_standard_deviation">Degree of freedom (v) <span
                                                                     data-toggle='tooltip' data-bs-placement="right"
                                                                     title='???????????????????'> <i
                                                                     class=" align-text-top questionmark far fa-question-circle"></i></span></label>
@@ -143,10 +141,10 @@
                                                 <!--                                                        formaction="/model/settings/intercept/{{project_uuid}}"-->
                                                 <!--                                                        formmethod="post" class="btn btn-outline-primary">Back-->
                                                 <!--                                                </button>-->
-                                                <a href="/model/settings/intercept/{{project_uuid}}"
+                                                <a href="/model/settings/main_treatment_effect/{{project_uuid}}"
                                                    class="btn btn-outline-primary" role="button">Back</a>
                                                 <button type="submit" type="button"
-                                                        formaction="/covariates/settings/all/{{project_uuid}}"
+                                                        formaction="/model/settings/summary/{{project_uuid}}"
                                                         formmethod="post" class="btn btn-primary">Next
                                                 </button>
                                             </div>

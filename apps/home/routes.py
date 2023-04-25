@@ -286,7 +286,7 @@ def model_settings(setting_type, project_uuid):
     elif setting_type == "main_noise":#@Anand - noise page
         '''@Anand - check this menu_number = 14'''
         return render_template("design/model/main_noise.html", segment="model_main_noise",
-                               all_menus=all_menus, menu_number=13 , project_name=project_name, modified_on=modified_on,
+                               all_menus=all_menus, menu_number=14 , project_name=project_name, modified_on=modified_on,
                                settings=model_settings, project_uuid=project_uuid)
     elif setting_type == "summary":
         return render_template("design/model/summary.html", segment="model_summary", all_menus=all_menus,
@@ -421,7 +421,6 @@ def configuration_summary(config_type, project_uuid):
         modified_on = datetime.now()
     if config_type == "summary":
         prob = compute_probability(project_details, other_loc=0)
-        print(f'PPPPPPP {prob}')
         prob_str = str(prob) + '%'
         return render_template("design/config_summary/summary.html", segment="configuration_summary", settings=settings,
                                all_menus=all_menus, menu_number=16, modified_on=modified_on, project_uuid=project_uuid, probability=prob_str)

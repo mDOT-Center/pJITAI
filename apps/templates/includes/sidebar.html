@@ -77,6 +77,9 @@
                 "/model/settings/proximal_outcome_attribute/"+project_uuid in all_menus %}
                 href="/model/settings/proximal_outcome_attribute/{{project_uuid}}" {% endif %} class="">Proximal Outcome
                 Attributes</a></li>
+            <li class="{% if 'covariates' in segment %} active {% endif %}"><a {% if
+                "/covariates/settings/all/"+project_uuid in all_menus %}
+                href="/covariates/settings/all/{{project_uuid}}" {% endif %} class="">Covariates</a></li>
             <li class="{% if 'model_intercept' in segment %} active {% endif %}"><a {% if
                 "/model/settings/intercept/"+project_uuid in all_menus %}
                 href="/model/settings/intercept/{{project_uuid}}" {% endif %} class="">Intercept</a></li>
@@ -84,9 +87,9 @@
                 "/model/settings/main_treatment_effect/"+project_uuid in all_menus %}
                 href="/model/settings/main_treatment_effect/{{project_uuid}}" {% endif %} class="">Main Treatment
                 Effect</a></li>
-            <li class="{% if 'covariates' in segment %} active {% endif %}"><a {% if
-                "/covariates/settings/all/"+project_uuid in all_menus %}
-                href="/covariates/settings/all/{{project_uuid}}" {% endif %} class="">Covariates</a></li>
+            <li class="{% if 'main_noise' in segment %} active {% endif %}"><a {% if
+                "/model/settings/main_noise/"+project_uuid in all_menus %}
+                href="/model/settings/main_noise/{{project_uuid}}" {% endif %} class="">Noise</a></li>
             <li class="{% if 'model_summary' in segment %} active {% endif %}"><a {% if
                 "/model/settings/summary/"+project_uuid in all_menus %} href="/model/settings/summary/{{project_uuid}}"
                 {% endif %} class="">Summary</a></li>
