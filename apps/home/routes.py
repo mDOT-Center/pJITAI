@@ -260,6 +260,8 @@ def model_settings(setting_type, project_uuid):
             "proximal_outcome_name")
         model_settings["intervention_component_name"] = project_details.get("general_settings", {}).get(
             "intervention_component_name")
+        model_settings['noise_scale'] = 1.00
+        model_settings['noise_degree_of_freedom'] = 5
 
     if not modified_on:
         modified_on = datetime.now()
