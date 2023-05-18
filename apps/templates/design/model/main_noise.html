@@ -35,7 +35,7 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="form-group">
-                                                        <label class="form-control-label" for="noise_scale">Scale (σ_0) <span
+                                                        <label class="form-control-label" for="noise_scale">Scale (&sigma;<sub>0</sub>) <span
                                                                     data-toggle='tooltip' data-bs-placement="right"
                                                                     title='???????????????????'> <i
                                                                     class=" align-text-top questionmark far fa-question-circle"></i></span></label>
@@ -46,7 +46,7 @@
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="form-control-label"
-                                                               for="noise_degree_of_freedom">Degree of freedom (v) <span
+                                                               for="noise_degree_of_freedom">Degree of freedom (&nu;) <span
                                                                     data-toggle='tooltip' data-bs-placement="right"
                                                                     title='???????????????????'> <i
                                                                     class=" align-text-top questionmark far fa-question-circle"></i></span></label>
@@ -64,13 +64,18 @@
 
                                                         <span style="background:#888; font-size:14px;">{{settings.proximal_outcome_name}}</span>
                                                         ~ <br>
-                                                        α<sub>0</sub> + α<sub>1</sub>* <span style="background:#888; font-size:14px;">Location</span>+ α<sub>2</sub>*<span style="background:#888; font-size:14px;">{{settings.proximal_outcome_name}}</span><br>
-                                                        + β<sub>0</sub>* <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span><br>
-                                                        + β<sub>1</sub>* <span style="background:#888; font-size:14px;"> Location * {{settings.intervention_component_name}} </span><br>
+                                                        α<sub>0</sub> + <br>
+                                                        {% for i in range(all_covariates_count) %}
+                                                        α<sub>{{i+1}}</sub> * <span style="background:#888; font-size:14px;"> {{all_covariates[i]['covariate_name']}} </span> + <br>
+                                                        {% endfor %}
+                                                        β<sub>0</sub> * <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span> + <br>
+                                                        {% for i in range(tailoring_covariates_count) %}
+                                                        β<sub>{{i+1}}</sub> * <span style="background:#888; font-size:14px;"> {{tailoring_covariates[i]['covariate_name']}} </span> * <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span> + <br>
+                                                        {% endfor %}
                                                         + ϵ <br>
-                                                        ϵ~N(0, σ<sup>2</sup>)<br>
-                                                        σ<sup>2</sup>~<Inv-Chi2>Inv-Chi2</Inv-Chi2>(<span style="color:#f65959;">v, σ<sub>0</sub></span>)
-                                                        <br>
+                                                        &epsilon;~N(0, σ<sup>2</sup>)<br>
+                                                        σ<sup>2</sup>~<Inv-Chi2>Inv-Chi2</Inv-Chi2>(<span style="color:#f65959;">&nu;, &sigma;<sub>0</sub></span>)
+                                                        <br >
                                                         <span style="color:#f65959;"> We're asking for the red values.</span>
 
                                                     </p>

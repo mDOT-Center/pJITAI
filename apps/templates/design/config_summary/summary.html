@@ -7,6 +7,35 @@
 
 {% block content %}
 
+<script type="text/javascript">
+function get_prob(abc){
+            console.log('blah')
+            console.log(abc)
+        }
+    $(document).ready(function() {
+        
+
+        //LOAD DEVICES
+        $('#add_sensor').click(function() {
+            var devices = "";
+            $.ajax({
+                type:"GET",
+                url : "/get_probability",
+                async: false,
+                success : function(response) {
+                    devices = response;
+                    return response;
+                },
+                error: function() {
+                    alert('Error occured');
+                }
+            });
+           console.log(devices);
+    
+        });
+    });
+        </script>
+
 <!-- [ Main Content ] start -->
 <div class="pcoded-main-container">
     <div class="pcoded-wrapper">
@@ -84,15 +113,37 @@
                                                         <span data-toggle='tooltip'
                                                               title='This value should satisfy your configuration of the value of the covariate'> <i
                                                                 class=" align-text-top questionmark far fa-question-circle"></i></span></label>
-                                                    <select id="personalization_method" name="personalization_method"
+                                                    <select onchange="get_prob(this)" id="personalization_method" name="personalization_method"
                                                             class="form-control">
                                                         <option value="Thompson Sampling - Two intervention option"
                                                                 selected>0
+                                                        </option>
+                                                        <option value="Thompson Sampling - Two "
+                                                                selected>1
                                                         </option>
                                                     </select>
                                                 </div>
                                                 <p>0: Home/Work 1: Unknown location</p>
                                                 <hr>
+
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="personalization_method1">Location
+                                                        <span data-toggle='tooltip'
+                                                              title='This value should satisfy your configuration of the value of the covariate 111111'> <i
+                                                                class=" align-text-top questionmark far fa-question-circle"></i></span></label>
+                                                    <select onchange="get_prob(this)" id="personalization_method1" name="personalization_method1"
+                                                            class="form-control">
+                                                        <option value="Thompson Sampling - Two intervention option11"
+                                                                selected>0
+                                                        </option>
+                                                        <option value="Thompson Sampling - Two22 "
+                                                                selected>1
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <p>0: Home/Work 1: Unknown location</p>
+                                                <hr>
+
                                             </div>
                                         </div>
                                     </div>
@@ -136,6 +187,7 @@
                                 <!-- [ tabs ] end -->
                             </div>
                             <!-- [ Main Content ] end -->
+                            <!-- <div id="add_sensor">callingAjax</div> -->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card">

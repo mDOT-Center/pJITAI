@@ -62,15 +62,21 @@
                                                 </div>
 
                                                 <div class="col">
-                                                    <p class="rightsidebluetextbox">
+                                                   <p class="rightsidebluetextbox">
 
-                                                        (log) <span style="background:#888; font-size:14px;">{{settings.proximal_outcome_name}}</span>
+                                                        <span style="background:#888; font-size:14px;">{{settings.proximal_outcome_name}}</span>
                                                         ~ <br>
-                                                        α<sub>0</sub>+ <br>
-                                                        + β<sub>0</sub>* <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span><br>
+                                                        α<sub>0</sub> + <br>
+                                                        {% for i in range(all_covariates_count) %}
+                                                        α<sub>{{i+1}}</sub> * <span style="background:#888; font-size:14px;"> {{all_covariates[i]['covariate_name']}} </span> + <br>
+                                                        {% endfor %}
+                                                        β<sub>0</sub> * <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span> + <br>
+                                                        {% for i in range(tailoring_covariates_count) %}
+                                                        β<sub>{{i+1}}</sub> * <span style="background:#888; font-size:14px;"> {{tailoring_covariates[i]['covariate_name']}} </span> * <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span> + <br>
+                                                        {% endfor %}
                                                         + ϵ <br>
                                                         α<sub>0</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>0</sub></sub>, σ<sub>α<sub>0</sub></sub></span><sup>2</sup>)
-                                                        <br>
+                                                        <br >
                                                         <span style="color:#f65959;"> We're asking for the red values.</span>
 
                                                     </p>

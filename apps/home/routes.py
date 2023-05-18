@@ -244,9 +244,12 @@ def model_settings(setting_type, project_uuid):
     model_settings = {}
     all_covariates = {}
     modified_on = ""
+    all_covs = []
+    tailoring_covariates = []
 
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
     project_name = project_details.get("general_settings", {}).get("study_name", "")
+    #print(f'XXXXXXXXXX {project_details}')
 
     # proximal_outcome_name (general settings)
     # intervention_component_name (general settings)
@@ -262,6 +265,11 @@ def model_settings(setting_type, project_uuid):
             "intervention_component_name")
         model_settings['noise_scale'] = 1.00
         model_settings['noise_degree_of_freedom'] = 5
+        for c in all_covariates:
+            print(all_covariates[c])
+            all_covs.append(all_covariates[c])
+            if all_covariates[c]['tailoring_variable'] == 'yes':
+                tailoring_covariates.append(all_covariates[c])
 
     if not modified_on:
         modified_on = datetime.now()
@@ -276,24 +284,40 @@ def model_settings(setting_type, project_uuid):
         return render_template("design/model/proximal_outcome_attribute.html",
                                segment="model_proximal_outcome_attribute", all_menus=all_menus, menu_number=11,
                                project_name=project_name, modified_on=modified_on, settings=model_settings,
-                               project_uuid=project_uuid)
+                               project_uuid=project_uuid,
+                               all_covariates=all_covs, 
+                               tailoring_covariates=tailoring_covariates, all_covariates_count=len(all_covariates), 
+                               tailoring_covariates_count=len(tailoring_covariates))
     elif setting_type == "intercept":
         return render_template("design/model/intercept.html", segment="model_intercept", all_menus=all_menus,
                                menu_number=12, project_name=project_name, modified_on=modified_on,
-                               settings=model_settings, project_uuid=project_uuid)
+                               settings=model_settings, project_uuid=project_uuid, 
+                               all_covariates=all_covs, 
+                               tailoring_covariates=tailoring_covariates, all_covariates_count=len(all_covariates), 
+                               tailoring_covariates_count=len(tailoring_covariates))
     elif setting_type == "main_treatment_effect":
         return render_template("design/model/main_treatment_effect.html", segment="model_main_treatment_effect",
                                all_menus=all_menus, menu_number=13, project_name=project_name, modified_on=modified_on,
-                               settings=model_settings, project_uuid=project_uuid)
+                               settings=model_settings, project_uuid=project_uuid,
+                               all_covariates=all_covs, 
+                               tailoring_covariates=tailoring_covariates, all_covariates_count=len(all_covariates), 
+                               tailoring_covariates_count=len(tailoring_covariates))
     elif setting_type == "main_noise":#@Anand - noise page
         '''@Anand - check this menu_number = 14'''
         return render_template("design/model/main_noise.html", segment="model_main_noise",
                                all_menus=all_menus, menu_number=14 , project_name=project_name, modified_on=modified_on,
-                               settings=model_settings, project_uuid=project_uuid)
+                               settings=model_settings, project_uuid=project_uuid,
+                               all_covariates=all_covs, 
+                               tailoring_covariates=tailoring_covariates, all_covariates_count=len(all_covariates), 
+                               tailoring_covariates_count=len(tailoring_covariates))
     elif setting_type == "summary":
         return render_template("design/model/summary.html", segment="model_summary", all_menus=all_menus,
                                menu_number=16, project_name=project_name, modified_on=modified_on,
-                               all_covariates=all_covariates, settings=model_settings, project_uuid=project_uuid)
+                               all_covariates=all_covariates, settings=model_settings, project_uuid=project_uuid,
+                               all_covs=all_covs, 
+                               tailoring_covariates=tailoring_covariates, all_covariates_count=len(all_covariates), 
+                               tailoring_covariates_count=len(tailoring_covariates))
+
 
 
 @blueprint.route('/covariates/settings/<setting_type>/<project_uuid>', methods=['GET', 'POST'])
@@ -402,6 +426,12 @@ def delete_covariate(project_uuid, cov_id=None):
     return redirect("/covariates/settings/all/" + project_uuid)
 
 
+@blueprint.route('/get_probability', methods=['GET'])
+#@login_required
+def get_probability():
+    # call Hsin-Yu method and get the response
+    return '.5'
+
 @blueprint.route('/configuration/<config_type>/<project_uuid>', methods=['GET'])
 @login_required
 def configuration_summary(config_type, project_uuid):
@@ -422,7 +452,7 @@ def configuration_summary(config_type, project_uuid):
     if not modified_on:
         modified_on = datetime.now()
     if config_type == "summary":
-        prob = compute_probability(project_details, other_loc=0)
+        prob = compute_probability(project_details, other_loc=0, test2=0.2) 
         prob_str = str(prob) + '%'
         return render_template("design/config_summary/summary.html", segment="configuration_summary", settings=settings,
                                all_menus=all_menus, menu_number=16, modified_on=modified_on, project_uuid=project_uuid, probability=prob_str)
