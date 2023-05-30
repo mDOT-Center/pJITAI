@@ -9,8 +9,24 @@
 
 <script type="text/javascript">
 function get_prob(abc){
+            let prob_field = document.getElementById("probability_field");
             console.log('blah')
             console.log(abc)
+            var devices = "";
+            $.ajax({
+                async: true,
+                type:"GET",
+                url : "/get_probability/{{project_uuid}}",
+                data: {"location": 0},
+                success : function(response) {
+                    devices = response;
+                    prob_field.textContent = "hohoho";
+                },
+                error: function() {
+                    alert('Error occured');
+                }
+            });
+           console.log(devices);
         }
     $(document).ready(function() {
         
@@ -63,7 +79,7 @@ function get_prob(abc){
                                             <p class="congratstextbox" style="margin-bottom: 30px;">
                                                 Based on the information you entered on the previous screens<br>
                                                 The probability of providing <span
-                                                    style="background-color: #eeece9; color:#f85e5e;"> Activity suggestion </span>
+                                                    style="background-color: #eeece9; color:#f85e5e;"> {{proximal_outcome_name}}</span>
                                                 when the <span style="background-color: #eeece9; color:#f85e5e;">location</span>
                                                 = <span style="background-color: #eeece9; color:#f85e5e;">0</span> is:
                                             </p>
@@ -72,7 +88,7 @@ function get_prob(abc){
                                             <div class="card">
                                                 <div class="card-header">
                                                     <div class="rightsidebluetextbox" style="margin-top:0px;">
-                                                        <h1 class="text-center">[{{probability}}]</h1>
+                                                        <h1 class="text-center">[<span id="probability_field">{{probability}}</span>]</h1>
                                                         <!-- <div class="text-center" style="color:red;"><b>NOTE:</b><small> 53% is a demo value. This value be computed by an algorithm once backend algorithm is complete. </small></div> -->
                                                         <h5>
                                                             * This probability will change during the study but will
@@ -113,15 +129,10 @@ function get_prob(abc){
                                                         <span data-toggle='tooltip'
                                                               title='This value should satisfy your configuration of the value of the covariate'> <i
                                                                 class=" align-text-top questionmark far fa-question-circle"></i></span></label>
-                                                    <select onchange="get_prob(this)" id="personalization_method" name="personalization_method"
-                                                            class="form-control">
-                                                        <option value="Thompson Sampling - Two intervention option"
-                                                                selected>0
-                                                        </option>
-                                                        <option value="Thompson Sampling - Two "
-                                                                selected>1
-                                                        </option>
-                                                    </select>
+                                                    <input type="number" onchange="get_prob(this)"
+                                                               value="{{project_details.location_location}}"
+                                                               id="personalization_method" name="personalization_method"
+                                                               class="form-control" required>
                                                 </div>
                                                 <p>0: Home/Work 1: Unknown location</p>
                                                 <hr>

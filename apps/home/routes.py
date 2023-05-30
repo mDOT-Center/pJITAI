@@ -266,7 +266,7 @@ def model_settings(setting_type, project_uuid):
         model_settings['noise_scale'] = 1.00
         model_settings['noise_degree_of_freedom'] = 5
         for c in all_covariates:
-            print(all_covariates[c])
+            print(f'model settings {all_covariates[c]}')
             all_covs.append(all_covariates[c])
             if all_covariates[c]['tailoring_variable'] == 'yes':
                 tailoring_covariates.append(all_covariates[c])
@@ -311,10 +311,13 @@ def model_settings(setting_type, project_uuid):
                                tailoring_covariates=tailoring_covariates, all_covariates_count=len(all_covariates), 
                                tailoring_covariates_count=len(tailoring_covariates))
     elif setting_type == "summary":
+        print(f'XXXXX Summary {model_settings}')
+        print(f'XXXXX Summaryyyyy {model_settings["proximal_outcome_name"]}')
         return render_template("design/model/summary.html", segment="model_summary", all_menus=all_menus,
                                menu_number=16, project_name=project_name, modified_on=modified_on,
                                all_covariates=all_covariates, settings=model_settings, project_uuid=project_uuid,
                                all_covs=all_covs, 
+                               proximal_outcome_name = model_settings['proximal_outcome_name'],
                                tailoring_covariates=tailoring_covariates, all_covariates_count=len(all_covariates), 
                                tailoring_covariates_count=len(tailoring_covariates))
 
@@ -426,13 +429,18 @@ def delete_covariate(project_uuid, cov_id=None):
     return redirect("/covariates/settings/all/" + project_uuid)
 
 
-@blueprint.route('/get_probability', methods=['GET'])
+@blueprint.route('/get_probability/<project_uuid>', methods=['GET'])
 #@login_required
-def get_probability():
+def get_probability(project_uuid):
+    user_id = current_user.get_id()
+    project_details, project_details_obj = get_project_details(project_uuid, user_id)
+    req_data = request.values
+    print(f'get_probability called {project_uuid} {req_data}')
     # call Hsin-Yu method and get the response
     return '.5'
 
-@blueprint.route('/configuration/<config_type>/<project_uuid>', methods=['GET'])
+
+@blueprint.route('/configuration/<config_type>/<project_uuid>', methods=['GET', 'POST'])
 @login_required
 def configuration_summary(config_type, project_uuid):
     user_id = current_user.get_id()
@@ -446,6 +454,11 @@ def configuration_summary(config_type, project_uuid):
         "intervention_probability_upper_bound")
     all_menus = get_project_menu_pages(user_id, project_uuid)
 
+
+    #test
+    project_details['location_location'] = 0
+    # end test
+
     if project_details.get("covariates"):
         modified_on = project_details.get("modified_on", "")
     # Call Hsin-Yu method here @Anand. Add a new paramenter in render summary
@@ -454,7 +467,12 @@ def configuration_summary(config_type, project_uuid):
     if config_type == "summary":
         prob = compute_probability(project_details, other_loc=0, test2=0.2) 
         prob_str = str(prob) + '%'
+        proximal_outcome_name = project_details.get("general_settings", {}).get(
+            "proximal_outcome_name")
+        print(f'CONFIGURATION SUMMARY {project_details}')
         return render_template("design/config_summary/summary.html", segment="configuration_summary", settings=settings,
+                               project_details=project_details,
+                               proximal_outcome_name=proximal_outcome_name,
                                all_menus=all_menus, menu_number=16, modified_on=modified_on, project_uuid=project_uuid, probability=prob_str)
     elif config_type == "final":
         return render_template("design/config_summary/final.html", segment="configuration_final", settings=settings,
