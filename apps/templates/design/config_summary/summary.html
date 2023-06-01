@@ -10,14 +10,23 @@
 <script type="text/javascript">
 function get_prob(abc){
             let prob_field = document.getElementById("probability_field");
-            console.log('blah')
             console.log(abc)
+            const num_covariates = parseInt("{{tailoring_covs_num}}") ;
+            data_obj = {}
+            cov_field_names = {{ tailoring_covs_names|safe }} ;
+            console.log(cov_field_names)
+            for (let i = 0; i < num_covariates; i++) {
+                cov_field = document.getElementById("personalization_method".concat(String(i)));
+                cov_field_name = cov_field_names[i];
+                data_obj[cov_field_name] = cov_field.value;
+                } 
+            console.log(data_obj);
             var devices = "";
             $.ajax({
                 async: true,
                 type:"GET",
                 url : "/get_probability/{{project_uuid}}",
-                data: {"location": 0},
+                data: data_obj,
                 success : function(response) {
                     devices = response;
                     prob_field.textContent = "hohoho";
@@ -124,36 +133,21 @@ function get_prob(abc){
                                             <div class="rightsidebluetextbox" style="margin-top:0px;">
                                                 <h5><i class="fas fa-sliders-h"></i> Tailoring Variables Values </h5>
                                                 <hr>
+                                                {% for i in range(tailoring_covs_num) %}
                                                 <div class="form-group">
-                                                    <label class="form-control-label" for="personalization_method">Location
+                                                    <label class="form-control-label" for="personalization_method{{i}}">{{ tailoring_covs_names[i] }}
                                                         <span data-toggle='tooltip'
                                                               title='This value should satisfy your configuration of the value of the covariate'> <i
                                                                 class=" align-text-top questionmark far fa-question-circle"></i></span></label>
-                                                    <input type="number" onchange="get_prob(this)"
+                                                    <input type="text" onchange="get_prob(this)" 
                                                                value="{{project_details.location_location}}"
-                                                               id="personalization_method" name="personalization_method"
+                                                               id="personalization_method{{i}}" name="personalization_method"
                                                                class="form-control" required>
                                                 </div>
-                                                <p>0: Home/Work 1: Unknown location</p>
+                                                <p>{{ tailoring_covs_description[i] }}</p>
                                                 <hr>
+                                                {% endfor %}
 
-                                                <div class="form-group">
-                                                    <label class="form-control-label" for="personalization_method1">Location
-                                                        <span data-toggle='tooltip'
-                                                              title='This value should satisfy your configuration of the value of the covariate 111111'> <i
-                                                                class=" align-text-top questionmark far fa-question-circle"></i></span></label>
-                                                    <select onchange="get_prob(this)" id="personalization_method1" name="personalization_method1"
-                                                            class="form-control">
-                                                        <option value="Thompson Sampling - Two intervention option11"
-                                                                selected>0
-                                                        </option>
-                                                        <option value="Thompson Sampling - Two22 "
-                                                                selected>1
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <p>0: Home/Work 1: Unknown location</p>
-                                                <hr>
 
                                             </div>
                                         </div>

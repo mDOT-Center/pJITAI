@@ -15,7 +15,8 @@ _default_sigma0_2 =1.0
 _default_L = 5
 _default_beta_sigma0_2 = 1.0 
 
-def compute_probability(data, **kwargs):
+# The dictionary will have the covariate name as the key and the value from the UI as the value
+def compute_probability(data, action_state_dict):
     # do something with the parameters_json
     num_states=len(data['covariates'])
     action_center_ind=np.zeros((num_states,1))
@@ -29,6 +30,8 @@ def compute_probability(data, **kwargs):
     beta_std_Sigma=[]
     default_alpha_ind=[] 
     default_beta_ind=[] 
+    
+    action_state_name=[]
 
     # Set up parameters in the covariates
     count=0
@@ -47,6 +50,7 @@ def compute_probability(data, **kwargs):
 
         if(data['covariates'][i]['tailoring_variable']=='yes'):
             action_center_ind[count]=1
+            action_state_name.append(data['covariates'][i]['covariate_name'])
             beta_mu.append( float(data['covariates'][i]['interaction_coefficient_prior_mean']) )
             beta_std_Sigma.append( float(data['covariates'][i]['interaction_coefficient_prior_standard_deviation']) )
 
@@ -62,10 +66,9 @@ def compute_probability(data, **kwargs):
 
     ### TO-DO's
 
-    L=_default_L
+    L=float(data['model_settings']['noise_degree_of_freedom'])
     # Need to check if var_noise is the default. If yes, then set it to zero.
-    var_noise=0
-    #var_noise=_default_sigma0_2**2
+    var_noise=float(data['model_settings']['noise_scale'])
     
 
     ###
@@ -125,19 +128,23 @@ def compute_probability(data, **kwargs):
     beta_state_med=state_med[idx_beta.flatten(),:]
     beta_state_half_range=state_half_range[idx_beta.flatten(),:]
 
-    count=0
-    for k,v in kwargs.items():
-        #here you have variable name as k and value of the variable as v
+#     count=0
+#     for k,v in kwargs.items():
+#         #here you have variable name as k and value of the variable as v
 
-        curr_stand_action_state= (v-beta_state_med[count])/(beta_state_half_range[count])
-        stand_action_state.append(curr_stand_action_state)
-        # if k=="Some_var_name":
-        #     print("If code", k,v)
+#         curr_stand_action_state= (v-beta_state_med[count])/(beta_state_half_range[count])
+#         stand_action_state.append(curr_stand_action_state)
+#         # if k=="Some_var_name":
+#         #     print("If code", k,v)
     
-    #stand_action_state=np.expand_dims(stand_action_state,axis=1)
+    for k in len(beta_state_med):
+        v=action_state_dict[action_state_name[k]]
+        curr_stand_action_state= (v-beta_state_med[k])/(beta_state_half_range[k])
+        stand_action_state.append(curr_stand_action_state)
+    
     pi = decision(stand_action_state, stand_beta_mu, stand_beta_Sigma, L, stand_noise, lower_clip, upper_clip)
 
-    return pi
+    return pi*100
 
 # The following is my helper function
 

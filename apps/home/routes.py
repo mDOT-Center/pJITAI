@@ -436,6 +436,13 @@ def get_probability(project_uuid):
     project_details, project_details_obj = get_project_details(project_uuid, user_id)
     req_data = request.values
     print(f'get_probability called {project_uuid} {req_data}')
+    tailoring_cov_data = {}
+    for x in req_data:
+        tailoring_cov_data[x] = req_data[x]
+    print(f'computing probability for {tailoring_cov_data}')
+    prob = compute_probability(project_details, tailoring_cov_data) 
+    prob = round(prob, 2)
+    print(f'returning NEW probability {prob}')
     # call Hsin-Yu method and get the response
     return '.5'
 
@@ -465,14 +472,40 @@ def configuration_summary(config_type, project_uuid):
     if not modified_on:
         modified_on = datetime.now()
     if config_type == "summary":
-        prob = compute_probability(project_details, other_loc=0, test2=0.2) 
-        prob_str = str(prob) + '%'
         proximal_outcome_name = project_details.get("general_settings", {}).get(
             "proximal_outcome_name")
         print(f'CONFIGURATION SUMMARY {project_details}')
+        covs = project_details.get('covariates') 
+        tailoring_covs_names = []
+        tailoring_covs_description = []
+
+        for cov in covs:
+            print(f"COVARIATE {covs.get(cov).get('covariate_name')} {covs.get(cov).get('tailoring_variable')}")  
+            if covs.get(cov).get('tailoring_variable') == 'yes':
+                cov_name = covs.get(cov).get('covariate_name')
+                cov_desc = 'XXX'
+                if covs.get(cov).get('covariate_type') == 'Binary':
+                    cov_desc = f"Type: {covs.get(cov).get('covariate_type')} 0: {covs.get(cov).get('covariate_meaning_0')} 1: {covs.get(cov).get('covariate_meaning_1')}" 
+                else:
+                    cov_desc = f"Type: {covs.get(cov).get('covariate_type')} Min: {covs.get(cov).get('covariate_min_val')} Max: {covs.get(cov).get('covariate_max_val')}"
+                tailoring_covs_names.append(cov_name)
+                tailoring_covs_description.append(cov_desc)
+        
+        data_for_prob = {}
+        for x in tailoring_covs_names:
+            data_for_prob[x] = 0
+        
+        print(f'SUMMARY data for computing probability = {data_for_prob}')
+        prob = compute_probability(project_details, data_for_prob) 
+        prob_str = str(prob) + '%'
+
+
         return render_template("design/config_summary/summary.html", segment="configuration_summary", settings=settings,
                                project_details=project_details,
                                proximal_outcome_name=proximal_outcome_name,
+                               tailoring_covs_num = len(tailoring_covs_names),
+                               tailoring_covs_names = tailoring_covs_names,
+                               tailoring_covs_description = tailoring_covs_description,
                                all_menus=all_menus, menu_number=16, modified_on=modified_on, project_uuid=project_uuid, probability=prob_str)
     elif config_type == "final":
         return render_template("design/config_summary/final.html", segment="configuration_final", settings=settings,
