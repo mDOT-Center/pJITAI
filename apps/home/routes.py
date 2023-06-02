@@ -444,7 +444,7 @@ def get_probability(project_uuid):
     prob = round(prob, 2)
     print(f'returning NEW probability {prob}')
     # call Hsin-Yu method and get the response
-    return '.5'
+    return f'{prob}%'
 
 
 @blueprint.route('/configuration/<config_type>/<project_uuid>', methods=['GET', 'POST'])
