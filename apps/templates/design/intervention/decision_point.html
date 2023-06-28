@@ -38,7 +38,7 @@
 
                                                 <select id="decision_point_frequency" name="decision_point_frequency"
                                                         class="form-select" aria-label="Default select example">
-                                                    {% for n in range(1,25) %}
+                                                    {% for n in range(1,61) %}
                                                     <option {% if settings.decision_point_frequency==n|string %}
                                                             selected{% endif %} value="{{n}}">{{n}}
                                                     </option>

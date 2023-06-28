@@ -84,7 +84,8 @@
 
                                             <p class="card-text">Intervention:
                                                 {{proj.get("intervention_component_name")}}</p>
-                                            <a href="#" class="small">{{proj.get("study_description")[:70]}}</a>
+                                            <!--a href="#" class="small">{{proj.get("study_description")[:70]}}</a-->
+                                            <a class="small">{{proj.get("study_description")[:70]}}</a>
                                             {% if proj.get("project_status")==1 %}
                                             <p><a target="_blank" href="/api/projects/{{proj.get('project_uuid')}}" class="btn btn-info"><i class="fas fa-code-branch"></i> Get
                                                 your API</a></p>
@@ -125,9 +126,9 @@
                                                 Here, we demonstrate designing the “activity suggestion” JITAI component
                                                 in the demo.
                                             </p>
-                                            <p>
+                                            <!--p>
                                                 Need more guidance on this page? <a href=""> Click here</a>.
-                                            </p>
+                                            </p-->
                                         </div>
 
 

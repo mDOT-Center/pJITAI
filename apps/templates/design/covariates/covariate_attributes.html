@@ -168,6 +168,13 @@ $(document).ready(function(){
                                             <p class="mb-0">In HeartSteps, “Location” is coded as 1 when an individual
                                                 is in an unknown location (neither at home nor at work) and zero
                                                 otherwise.</p>
+                                            </br>
+                                            <p>We log-transformed the prior 30-minute step count. To avoid minus infinity, we added 0.5 to the step
+                                                count before the transformation, i.e, log_e(prior 30-minute step count + 0.5). Here, the minimum value
+                                                of the (log) 30-minute step count is log_e(0+0.5) = 0.69. The maximum value of the (log) 30-minute step
+                                                count is log_e(3000+0.5) = 8.0. These values are continous.
+                                            
+                                            </p>
                                         </div>
 
                                     </div>

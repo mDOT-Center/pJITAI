@@ -90,8 +90,13 @@ def duplicate_project(project_uuid):
     user_id = current_user.get_id()
     if project_uuid=="demo-0001":
         proj = Projects.query.filter(Projects.created_by == 1).filter(Projects.uuid == project_uuid).first()
+        projs = Projects.query.filter(Projects.created_by == 1)
+        for p in projs:
+            print(p)
+        print(f'DUPLICATES {proj} user_id = {user_id}')
     else:
         proj = Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid == project_uuid).first()
+        print(f'DUPLICATES {proj} user_id = {user_id}')
 
     if proj:
         Projects(created_by=user_id,
@@ -590,7 +595,7 @@ def generate_formula(project_uuid, is_summary_page, add_red_note):
 
     if add_red_note == "yes":
         htmll = htmll.replace("RED_NOTE",
-                              'α<sub>1</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub><sup>2</sup></sub></span>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
+                              'α<sub>1</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
     else:
         htmll = htmll.replace("RED_NOTE", "")
     return htmll
