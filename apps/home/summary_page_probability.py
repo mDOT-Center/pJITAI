@@ -137,8 +137,8 @@ def compute_probability(data, action_state_dict):
 #         # if k=="Some_var_name":
 #         #     print("If code", k,v)
     
-    for k in range(len(beta_state_med)):
-        v=float(action_state_dict[action_state_name[k]])
+    for k in len(beta_state_med):
+        v=action_state_dict[action_state_name[k]]
         curr_stand_action_state= (v-beta_state_med[k])/(beta_state_half_range[k])
         stand_action_state.append(curr_stand_action_state)
     
