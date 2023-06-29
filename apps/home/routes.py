@@ -345,7 +345,7 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
     if project_details.get("covariates"):
         modified_on = project_details.get("modified_on", "")
         all_covariates = project_details.get("covariates")
-        formula = generate_formula(project_uuid=project_uuid, is_summary_page="no", add_red_note="yes")
+        formula = generate_formula(project_uuid=project_uuid, is_summary_page="no", add_red_note="yes", cov_id=cov_id)
 
         if project_details.get("covariates").get(cov_id):
             settings = project_details.get("covariates").get(cov_id)
@@ -401,7 +401,6 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
                                covariates_types=covariates_types, settings=settings, project_uuid=project_uuid,
                                cov_id=cov_id)
     elif setting_type == "covariate_main_effect":
-
         is_tailoring = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
         return render_template("design/covariates/covariate_main_effect.html", segment="covariates", formula=formula,
                                all_menus=all_menus, menu_number=14, project_name=project_name, modified_on=modified_on,
@@ -532,7 +531,7 @@ def static_pages(page_type):
 
 @blueprint.route('/generate_formula/<project_uuid>/<page_type>/<add_red_note>', methods=['GET', 'POST'])
 @login_required
-def generate_formula(project_uuid, is_summary_page, add_red_note):
+def generate_formula(project_uuid, is_summary_page, add_red_note, cov_id=None):
     user_id = current_user.get_id()
     alphas = ""
     betas = ""
@@ -594,8 +593,15 @@ def generate_formula(project_uuid, is_summary_page, add_red_note):
         htmll = htmll.replace("BETA_VARS", "")
 
     if add_red_note == "yes":
+        cov_alpha = 1
+        for acov in reversed(covariates):
+            if cov_id == acov:
+                break
+            cov_alpha += 1
+
+
         htmll = htmll.replace("RED_NOTE",
-                              'α<sub>1</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
+                              f'α<sub>{cov_alpha}</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
     else:
         htmll = htmll.replace("RED_NOTE", "")
     return htmll
