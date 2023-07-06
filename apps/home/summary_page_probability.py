@@ -68,8 +68,11 @@ def compute_probability(data, action_state_dict):
 
     L=float(data['model_settings']['noise_degree_of_freedom'])
     # Need to check if var_noise is the default. If yes, then set it to zero.
-    var_noise=float(data['model_settings']['noise_scale'])
-    
+    std_var_noise=float(data['model_settings']['noise_scale'])
+    if(std_var_noise==3.16):
+        var_noise=0
+    else:
+        var_noise=std_var_noise**2
 
     ###
 
