@@ -56,8 +56,19 @@
                                                                value="{{settings.treatment_prior_standard_deviation}}"
                                                                id="treatment_prior_standard_deviation"
                                                                name="treatment_prior_standard_deviation"
+                                                               oninput="check(this)"
                                                                class="form-control" required>
                                                     </div>
+                                                    <script>
+                                                        function check(input) {
+                                                          if (input.value == 0) {
+                                                            input.setCustomValidity('The number must not be zero.');
+                                                          } else {
+                                                            // input is fine -- reset the error message
+                                                            input.setCustomValidity('');
+                                                          }
+                                                        }
+                                                    </script>
 
                                                 </div>
 
@@ -75,7 +86,7 @@
                                                         β<sub>{{i+1}}</sub> * <span style="background:#888; font-size:14px;"> {{tailoring_covariates[i]['covariate_name']}} </span> * <span style="background:#888; font-size:14px;"> {{settings.intervention_component_name}} </span> + <br>
                                                         {% endfor %}
                                                         + ϵ <br>
-                                                        β<sub>0</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>0</sub></sub>, σ<sub>α<sub>0</sub></sub></span><sup>2</sup>)
+                                                        β<sub>0</sub>~N(<span style="color:#f65959;">μ<sub>β<sub>0</sub></sub>, σ<sub>β<sub>0</sub></sub></span><sup>2</sup>)
                                                         <br>
                                                         <span style="color:#f65959;"> We're asking for the red values.</span>
 

@@ -56,9 +56,20 @@
                                                         <input value="{{settings.interaction_coefficient_prior_standard_deviation}}"
                                                                type="number" min="0" step="0.01"
                                                                name="interaction_coefficient_prior_standard_deviation"
+                                                               oninput="check(this)"
                                                                class="form-control" placeholder="">
 
                                                     </div>
+                                                    <script>
+                                                        function check(input) {
+                                                          if (input.value == 0) {
+                                                            input.setCustomValidity('The number must not be zero.');
+                                                          } else {
+                                                            // input is fine -- reset the error message
+                                                            input.setCustomValidity('');
+                                                          }
+                                                        }
+                                                    </script>
 
                                                 </div>
 
@@ -76,7 +87,7 @@
                                                         + β<sub>0</sub>* <span style="background:#f2f2f2; font-size:14px;"> {{settings.intervention_component_name}} </span><br>
                                                         <span id="beta_1">+ β<sub>1</sub>* <span id="cov_name_span2" style="background:#f2f2f2; font-size:14px;">{{settings.covariate_name}}</span> * <span style="background:#f2f2f2; font-size:14px;"> {{settings.intervention_component_name}} </span> <br></span>
                                                         + ϵ <br>
-                                                        α<sub>1</sub>~N(<span style="color:red;">μ<sub>{α<sub>1</sub>}</sub>, σ<sub>{α<sub>1</sub>}<sup>2</sup></sub></span>) <br>
+                                                        β<sub>1</sub>~N(<span style="color:red;">μ<sub>{β<sub>1</sub>}</sub>, σ<sub>{β<sub>1</sub>}<sup>2</sup></sub></span>) <br>
                                                         <span style="color:red;"> We're asking for the red values.</span>
                                                     </p>-->
 
