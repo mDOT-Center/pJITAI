@@ -56,9 +56,19 @@
                                                                value="{{settings.intercept_prior_standard_deviation}}"
                                                                id="intercept_prior_standard_deviation"
                                                                name="intercept_prior_standard_deviation"
+                                                               oninput="check(this)"
                                                                class="form-control" required>
                                                     </div>
-
+                                                    <script>
+                                                        function check(input) {
+                                                          if (input.value == 0) {
+                                                            input.setCustomValidity('The number must not be zero.');
+                                                          } else {
+                                                            // input is fine -- reset the error message
+                                                            input.setCustomValidity('');
+                                                          }
+                                                        }
+                                                    </script>
                                                 </div>
 
                                                 <div class="col">

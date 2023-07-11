@@ -56,9 +56,20 @@
                                                         <input value="{{settings.interaction_coefficient_prior_standard_deviation}}"
                                                                type="number" min="0" step="0.01"
                                                                name="interaction_coefficient_prior_standard_deviation"
+                                                               oninput="check(this)"
                                                                class="form-control" placeholder="">
 
                                                     </div>
+                                                    <script>
+                                                        function check(input) {
+                                                          if (input.value == 0) {
+                                                            input.setCustomValidity('The number must not be zero.');
+                                                          } else {
+                                                            // input is fine -- reset the error message
+                                                            input.setCustomValidity('');
+                                                          }
+                                                        }
+                                                    </script>
 
                                                 </div>
 
