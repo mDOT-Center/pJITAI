@@ -35,7 +35,7 @@
 
                                 {% if data|length ==0%}
                                 <div class="alert alert-primary" role="alert">
-                                    There is no project. Please click on "Add a New Project" to create a new project.
+                                {{empty_msg}}
                                 </div>
 
                                 {% endif %}

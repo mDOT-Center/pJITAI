@@ -70,9 +70,13 @@ def projects(project_type):
         aproj.general_settings["created_on"] = aproj.created_on
 
         data.append(aproj.general_settings)
+    
+    empty_msg = 'There is no project. Please click on "Add a New Project" to create a new project.'
+    if segment.find('finalized') > 0:
+        empty_msg = 'There is no Finalized Project. Please finalize a project.' 
 
     return render_template("design/projects/projects.html", project_uuid=uuid4(), data=data, segment=segment,
-                           modified_on=modified_on)
+                           modified_on=modified_on, empty_msg = empty_msg)
 
 
 @blueprint.route('/projects/delete/<project_uuid>', methods=['GET'])
@@ -406,6 +410,8 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
                                all_menus=all_menus, menu_number=14, project_name=project_name, modified_on=modified_on,
                                is_tailoring=is_tailoring, settings=settings, project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type == "covariate_tailored_effect":
+        formula = generate_formula(project_uuid=project_uuid, is_summary_page="no", add_red_note="yes", cov_id=cov_id, covariate_tailored_effect=True)
+
         return render_template("design/covariates/covariate_tailored_effect.html", segment="covariates",
                                formula=formula, all_menus=all_menus, menu_number=14, project_name=project_name,
                                modified_on=modified_on, settings=settings, project_uuid=project_uuid, cov_id=cov_id)
@@ -531,7 +537,7 @@ def static_pages(page_type):
 
 @blueprint.route('/generate_formula/<project_uuid>/<page_type>/<add_red_note>', methods=['GET', 'POST'])
 @login_required
-def generate_formula(project_uuid, is_summary_page, add_red_note, cov_id=None):
+def generate_formula(project_uuid, is_summary_page, add_red_note, cov_id=None, covariate_tailored_effect=False):
     user_id = current_user.get_id()
     alphas = ""
     betas = ""
@@ -594,14 +600,24 @@ def generate_formula(project_uuid, is_summary_page, add_red_note, cov_id=None):
 
     if add_red_note == "yes":
         cov_alpha = 1
+        cov_beta = 1
+        cov_vars = covariates.get(acov, {})
+        name = covariates.get(acov, {}).get("covariate_name")
+        is_tailoring = cov_vars.get("tailoring_variable")
         for acov in reversed(covariates):
             if cov_id == acov:
                 break
             cov_alpha += 1
+            if is_tailoring == "yes":
+                cov_beta +=1
 
+        if not covariate_tailored_effect: 
+            htmll = htmll.replace("RED_NOTE",
+                              f'α<sub>{cov_alpha}</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>{cov_alpha}</sub></sub>, σ<sub>α<sub>{cov_alpha}</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
+        else:
+            htmll = htmll.replace("RED_NOTE",
+                              f'''β<sub>{cov_alpha}</sub>~N(<span style="color:#f65959;">μ<sub>β<sub>{cov_beta}</sub></sub>, σ<sub>β<sub>{cov_beta}</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>''')
 
-        htmll = htmll.replace("RED_NOTE",
-                              f'α<sub>{cov_alpha}</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>1</sub></sub>, σ<sub>α<sub>1</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
     else:
         htmll = htmll.replace("RED_NOTE", "")
     return htmll
