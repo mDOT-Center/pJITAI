@@ -416,11 +416,16 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
                                formula=formula, all_menus=all_menus, menu_number=14, project_name=project_name,
                                modified_on=modified_on, settings=settings, project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type == "covariate_summary":
+        tal_val = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
+        is_tailoring = True
+        if tal_val == 'no':
+            is_tailoring = False
+        print(f'TTTTTTTTT {is_tailoring}')
         formula = generate_formula(project_uuid=project_uuid, is_summary_page="yes", add_red_note="no")
         return render_template("design/covariates/covariate_summary.html", segment="covariates", formula=formula,
                                all_menus=all_menus, menu_number=14, project_name=project_name, modified_on=modified_on,
                                all_covariates=all_covariates, covariates_types=covariates_types, settings=settings,
-                               project_uuid=project_uuid, cov_id=cov_id)
+                               project_uuid=project_uuid, cov_id=cov_id, is_tailoring=is_tailoring)
 
 
 @blueprint.route('/covariates/settings/delete/<project_uuid>/<cov_id>', methods=['GET'])
