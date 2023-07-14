@@ -45,6 +45,7 @@ python-decouple==3.8
 pytz==2022.7.1
 requests==2.28.2
 requests-file==1.5.1
+scipy==1.11.1
 six==1.16.0
 SQLAlchemy==2.0.18
 subprocess32==3.5.4
