@@ -83,7 +83,7 @@ def projects(project_type):
 @login_required
 def delete_project(project_uuid):
     user_id = current_user.get_id()
-    Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid == project_uuid).delete()
+    projects.query.filter(projects.created_by == user_id).filter(projects.uuid == project_uuid).delete()
     db.session.commit()
     return redirect("/projects/in_progress")
 
@@ -601,10 +601,10 @@ def generate_formula(project_uuid, is_summary_page, add_red_note, cov_id=None, c
     if add_red_note == "yes":
         cov_alpha = 1
         cov_beta = 1
-        cov_vars = covariates.get(acov, {})
-        name = covariates.get(acov, {}).get("covariate_name")
-        is_tailoring = cov_vars.get("tailoring_variable")
         for acov in reversed(covariates):
+            cov_vars = covariates.get(acov, {})
+            name = covariates.get(acov, {}).get("covariate_name")
+            is_tailoring = cov_vars.get("tailoring_variable")
             if cov_id == acov:
                 break
             cov_alpha += 1
@@ -616,7 +616,7 @@ def generate_formula(project_uuid, is_summary_page, add_red_note, cov_id=None, c
                               f'α<sub>{cov_alpha}</sub>~N(<span style="color:#f65959;">μ<sub>α<sub>{cov_alpha}</sub></sub>, σ<sub>α<sub>{cov_alpha}</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>')
         else:
             htmll = htmll.replace("RED_NOTE",
-                              f'''β<sub>{cov_alpha}</sub>~N(<span style="color:#f65959;">μ<sub>β<sub>{cov_beta}</sub></sub>, σ<sub>β<sub>{cov_beta}</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>''')
+                              f'''β<sub>{cov_beta}</sub>~N(<span style="color:#f65959;">μ<sub>β<sub>{cov_beta}</sub></sub>, σ<sub>β<sub>{cov_beta}</sub></sub></span><sup>2</sup>) <br> <span style="color:#f65959;"> We are asking for the red values.</span>''')
 
     else:
         htmll = htmll.replace("RED_NOTE", "")
