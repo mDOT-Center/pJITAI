@@ -487,15 +487,17 @@ def configuration_summary(config_type, project_uuid):
     if not modified_on:
         modified_on = datetime.now()
     if config_type == "summary":
-        proximal_outcome_name = project_details.get("general_settings", {}).get(
-            "proximal_outcome_name")
-        print(f'CONFIGURATION SUMMARY {project_details}')
+        #print(f'CONFIGURATION SUMMARY {project_details}')
+        prox_name = project_details.get('intervention_settings').get('intervention_option_a')
+        print(f'INTERVENTION_OPTION_A {prox_name}')
+
+        proximal_outcome_name = prox_name
         covs = project_details.get('covariates') 
         tailoring_covs_names = []
         tailoring_covs_description = []
 
         for cov in covs:
-            print(f"COVARIATE {covs.get(cov).get('covariate_name')} {covs.get(cov).get('tailoring_variable')}")  
+            #print(f"COVARIATE {covs.get(cov).get('covariate_name')} {covs.get(cov).get('tailoring_variable')}")  
             if covs.get(cov).get('tailoring_variable') == 'yes':
                 cov_name = covs.get(cov).get('covariate_name')
                 cov_desc = 'XXX'
