@@ -12,6 +12,7 @@ DateTime==5.0
 filelock==3.9.0
 Flask==2.3.2
 Flask-Cors==3.0.10
+Flask-Login==0.6.2
 Flask-Migrate==4.0.4
 Flask-Session==0.4.0
 Flask-SQLAlchemy==3.0.5
