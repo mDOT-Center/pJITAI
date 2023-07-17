@@ -83,7 +83,7 @@ def projects(project_type):
 @login_required
 def delete_project(project_uuid):
     user_id = current_user.get_id()
-    projects.query.filter(projects.created_by == user_id).filter(projects.uuid == project_uuid).delete()
+    Projects.query.filter(Projects.created_by == user_id).filter(Projects.uuid == project_uuid).delete()
     db.session.commit()
     return redirect("/projects/in_progress")
 
