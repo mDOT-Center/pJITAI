@@ -10,8 +10,9 @@ from scipy.stats import t
 # Setup default parameters
 # The default values won't be changed by the user. Only the algorithm designer (e.g., Susan's students) may want to change them.
 _default_mu = 0.0
-_default_sigma_2 = 1.0
-_default_sigma0_2 =1.0
+_default_sigma = 3.16
+_default_sigma_2 = 9.9856
+_default_sigma0_2 =9.9856
 _default_L = 5
 _default_beta_sigma0_2 = 1.0 
 
@@ -29,7 +30,9 @@ def compute_probability(data, action_state_dict):
     beta_mu=[]
     beta_std_Sigma=[]
     default_alpha_ind=[] 
-    default_beta_ind=[] 
+    default_beta_ind=[]
+    default_alpha_std_ind=[] 
+    default_beta_std_ind=[] 
     
     action_state_name=[]
 
@@ -43,10 +46,14 @@ def compute_probability(data, action_state_dict):
         alpha0_std_Sigma.append( float(data['covariates'][i]['main_effect_prior_standard_deviation']) )
 
         # Check if the mean and the std are default values
-        if(alpha0_mu[-1]==_default_mu and alpha0_std_Sigma[-1]**2==_default_sigma_2):
+        if(alpha0_mu[-1]==_default_mu):
             default_alpha_ind.append(1)
         else:
             default_alpha_ind.append(0)
+        if(alpha0_std_Sigma[-1]==_default_sigma):
+            default_alpha_std_ind.append(1)
+        else:
+            default_alpha_std_ind.append(0)
 
         if(data['covariates'][i]['tailoring_variable']=='yes'):
             action_center_ind[count]=1
@@ -55,10 +62,14 @@ def compute_probability(data, action_state_dict):
             beta_std_Sigma.append( float(data['covariates'][i]['interaction_coefficient_prior_standard_deviation']) )
 
             # Check if the mean and the std are default values
-            if(beta_mu[-1]==_default_mu and beta_std_Sigma[-1]**2==_default_sigma_2):
+            if(beta_mu[-1]==_default_mu):
                 default_beta_ind.append(1)
             else:
-                default_beta_ind.append(0)            
+                default_beta_ind.append(0)  
+            if(beta_std_Sigma[-1]==_default_sigma):
+                default_beta_std_ind.append(1)
+            else:
+                default_beta_std_ind.append(0)            
 
         count=count+1
 
@@ -82,24 +93,34 @@ def compute_probability(data, action_state_dict):
     alpha0_mu.append( float(data['model_settings']['intercept_prior_mean']) )
     alpha0_std_Sigma.append( float(data['model_settings']['intercept_prior_standard_deviation']) )
 
-    if(alpha0_mu[-1]==_default_mu and alpha0_std_Sigma[-1]**2==_default_sigma_2):
+    if(alpha0_mu[-1]==_default_mu):
         default_alpha_ind.append(1)
     else:
         default_alpha_ind.append(0)
+    if(alpha0_std_Sigma[-1]**2==_default_sigma_2):
+        default_alpha_std_ind.append(1)
+    else:
+        default_alpha_std_ind.append(0)
 
     beta_mu.append( float(data['model_settings']['treatment_prior_mean']) )
     beta_std_Sigma.append( float(data['model_settings']['treatment_prior_standard_deviation']) )
 
-    if(beta_mu[-1]==_default_mu and beta_std_Sigma[-1]**2==_default_sigma_2):
+    if(beta_mu[-1]==_default_mu):
         default_beta_ind.append(1)
     else:
         default_beta_ind.append(0) 
+    if(beta_std_Sigma[-1]**2==_default_sigma_2):
+        default_beta_std_ind.append(1)
+    else:
+        default_beta_std_ind.append(0) 
 
     # Then modify the dimensionality of the mu's and ind's
     alpha0_mu=np.expand_dims(alpha0_mu,axis=1)
     beta_mu=np.expand_dims(beta_mu,axis=1)
     default_alpha_ind=np.expand_dims(default_alpha_ind,axis=1)
     default_beta_ind=np.expand_dims(default_beta_ind,axis=1)
+    default_alpha_std_ind=np.expand_dims(default_alpha_std_ind,axis=1)
+    default_beta_std_ind=np.expand_dims(default_beta_std_ind,axis=1)
     alpha0_std_Sigma=np.array(alpha0_std_Sigma)
     beta_std_Sigma=np.array(beta_std_Sigma)
 
@@ -118,7 +139,7 @@ def compute_probability(data, action_state_dict):
     reward_half_range = 0.5* (reward_upper - reward_lower)
 
     stand_beta_mu, stand_beta_Sigma, L, stand_noise = init_theta(default_alpha_ind, alpha0_mu, alpha0_std_Sigma, default_beta_ind, beta_mu, beta_std_Sigma, L, var_noise, \
-               state_med, state_half_range, reward_med, reward_half_range, action_center_ind)
+               state_med, state_half_range, reward_med, reward_half_range, action_center_ind, default_alpha_std_ind, default_beta_std_ind)
 
 
     # kwargs will the key-value paramters, you can itereate over it and get the values
@@ -153,7 +174,7 @@ def compute_probability(data, action_state_dict):
 
 
 def init_theta(default_alpha_ind, alpha0_mu, alpha0_std_Sigma, default_beta_ind, beta_mu, beta_std_Sigma, L, var_noise, \
-               state_med, state_half_range, reward_med, reward_half_range, action_center_ind):
+               state_med, state_half_range, reward_med, reward_half_range, action_center_ind, default_alpha_std_ind, default_beta_std_ind):
     # First setup L and the noise
     if(L < 3):
         L = _default_L
@@ -164,7 +185,7 @@ def init_theta(default_alpha_ind, alpha0_mu, alpha0_std_Sigma, default_beta_ind,
         stand_noise = var_noise / (reward_half_range**2)
           
     default_beta_ind_no_intercept = np.copy(default_beta_ind)
-        
+    default_beta_std_ind_no_intercept = np.copy(default_beta_std_ind)
         
     # First, transform the standard deviation of alpha0 and beta to a scale of the noise variance (Eq. A.7)
     beta_sigma_2 = (beta_std_Sigma**2)/var_noise*(L-2)/L
@@ -174,25 +195,36 @@ def init_theta(default_alpha_ind, alpha0_mu, alpha0_std_Sigma, default_beta_ind,
     idx_beta=(action_center_ind==1)
     beta_state_half_range=state_half_range[idx_beta.flatten(),:]
     idx=(default_beta_ind_no_intercept==1)
+
+    default_beta_std_ind_no_intercept[-1] = 0
+    std_idx=(default_beta_std_ind_no_intercept==1)
         
     if(idx.sum()>0):
         idx_no_intercept=idx[:-1,:]
         beta_mu[idx.flatten(),:] = _default_mu*\
             reward_half_range*np.ones((idx.sum(),1))/beta_state_half_range[idx_no_intercept.flatten(),:]
-        beta_sigma_2[idx.flatten()] = _default_sigma_2*\
-            np.ones((idx.sum()))/(beta_state_half_range[idx_no_intercept.flatten(),0]**2)
+    if(std_idx.sum()>0):
+        std_idx_no_intercept=std_idx[:-1,:]
+        beta_sigma_2[std_idx.flatten()] = _default_sigma_2*\
+            np.ones((std_idx.sum()))/(beta_state_half_range[std_idx_no_intercept.flatten(),0]**2)
                 
     # Setup the unstandardized beta priors for the intercept
     if(default_beta_ind[-1]==1):
         idx_beta=(action_center_ind==1)
         beta_state_med=state_med[idx_beta.flatten(),:]
         beta_mu[-1,:] = _default_mu*reward_half_range-sum(beta_mu[:-1,:]*beta_state_med)
+        
+    if(default_beta_std_ind[-1]==1):
+        idx_beta=(action_center_ind==1)
+        beta_state_med=state_med[idx_beta.flatten(),:]
+        
         tmp_sigma_2 = beta_sigma_2[:-1]*(beta_state_med[:,0]**2)
         tmp = _default_sigma_2-tmp_sigma_2.sum()
         if(tmp<0):
             beta_sigma_2[-1]=_default_beta_sigma0_2
         else:
             beta_sigma_2[-1]=tmp
+    
             
 
         

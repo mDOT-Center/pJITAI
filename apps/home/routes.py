@@ -226,7 +226,7 @@ def intervention_settings(setting_type, project_uuid):
                                settings=intervention_settings, project_uuid=project_uuid)
     elif setting_type == "ineligibility":
 
-        return render_template("design/intervention/ineligibility.html", segment="intervention_decision_point",
+        return render_template("design/intervention/ineligibility.html", segment="intervention_ineligibility",
                                all_menus=all_menus, menu_number=7, project_name=project_name, modified_on=modified_on,
                                conditions=conditions, settings=intervention_settings, project_uuid=project_uuid)
     elif setting_type == "intervention_probability":
@@ -272,7 +272,7 @@ def model_settings(setting_type, project_uuid):
             "proximal_outcome_name")
         model_settings["intervention_component_name"] = project_details.get("general_settings", {}).get(
             "intervention_component_name")
-        model_settings['noise_scale'] = 1.00
+        model_settings['noise_scale'] = 3.16
         model_settings['noise_degree_of_freedom'] = 5
         for c in all_covariates:
             print(f'model settings {all_covariates[c]}')
