@@ -48,4 +48,11 @@ Once this is running, you can leave the container running and start/stop docker 
 
 Once this is complete, go to the `Run and Debug` tab and select the `Python: Run Server` from the menu.  This configuration has been preconfigured and will run the server.  It will respond to normal debugging procudures such as breakpoints.
 
-
+## Import the HeartSteps example on the pJITAI web page
+Run the docker and the Python server first, open a new terminal and then type this line in the new terminal
+```
+docker-compose exec mysql mysql -u root -ppass
+use pJITAI;
+```
+Then go to the files, under the sql_data folder, find heartstep.sql document.
+Copy the third line of the heartstep.sql document and paste the third line in the new terminal. 
