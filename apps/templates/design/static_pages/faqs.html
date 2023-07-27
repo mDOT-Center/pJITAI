@@ -4,7 +4,20 @@
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
-
+<style>
+    #content {
+        display: none;
+    }
+    label {
+        cursor: pointer;
+    }
+    #toggle {
+        display: none;
+    }
+    #toggle:checked ~ #content {
+        display: block;
+    }
+</style>
 {% block content %}
 
 <!-- [ Main Content ] start -->
@@ -34,15 +47,16 @@
                                         <div class="card-header">
                                             How is a pJITAI different from a JITAI?
                                         </div>
-                                        <div class="card-content" v-show="isExpand">
-                                            <div v-show="isExpand">
+                                        <div>
+                                            <p id="card-content">
                                                 An implicit rationale underlying a
                                                 JITAI is that the decision rules, once constructed, are fixed and need not
                                                 be altered. That is, the way in which the tailoring variables are used by
                                                 the decision rule need not be altered to ensure the optimal effectiveness
                                                 of the intervention component for new users. 
-                                            </div>
-                                        
+                                            </p>
+                                            <label for="toggle">expand/fold</label>
+                                            <input type="checkbox" id="toggle">
                                         </div>
                                         <div class="bottom-exp" @click="expand">
                                             <div v-if="isExpand">fold</div>
@@ -65,19 +79,3 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}{% endblock javascripts %}
-
-<script>
-    export default {
-        name:"extend",
-        data() {
-            return {
-                isExpand: true,
-            };
-        },
-        methods: {
-            expand() {
-                this.isExpand = !this.isExpand;
-            }, 
-        },
-    };
-</script>
