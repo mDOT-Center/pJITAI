@@ -32,9 +32,22 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            ???????
+                                            How is a pJITAI different from a JITAI?
                                         </div>
-
+                                        <div class="card-content" v-show="isExpand">
+                                            <div v-show="isExpand">
+                                                An implicit rationale underlying a
+                                                JITAI is that the decision rules, once constructed, are fixed and need not
+                                                be altered. That is, the way in which the tailoring variables are used by
+                                                the decision rule need not be altered to ensure the optimal effectiveness
+                                                of the intervention component for new users. 
+                                            </div>
+                                        
+                                        </div>
+                                        <div class="bottom-exp" @click="expand">
+                                            <div v-if="isExpand">fold</div>
+                                            <div v-else>expand</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -52,3 +65,19 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}{% endblock javascripts %}
+
+<script>
+    export default {
+        name:"extend",
+        data() {
+            return {
+                isExpand: true,
+            };
+        },
+        methods: {
+            expand() {
+                this.isExpand = !this.isExpand;
+            }, 
+        },
+    };
+</script>
