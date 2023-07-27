@@ -3,21 +3,17 @@
 {% block title %} FAQs {% endblock %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
 <style>
-    #content {
-        display: none;
-    }
-    label {
-        cursor: pointer;
-    }
-    #toggle {
-        display: none;
-    }
-    #toggle:checked ~ #content {
-        display: block;
+    .card-content {
+        padding-left: 2%;
+        padding-bottom: 2%;
+        padding-top: 2%;
+        background: white;
+        margin-right: 10%;
     }
 </style>
+{% endblock stylesheets %}
 {% block content %}
 
 <!-- [ Main Content ] start -->
@@ -45,23 +41,16 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            How is a pJITAI different from a JITAI?
+                                            <h5>How is a pJITAI different from a JITAI?</h5>
                                         </div>
-                                        <div>
-                                            <p id="card-content">
-                                                An implicit rationale underlying a
-                                                JITAI is that the decision rules, once constructed, are fixed and need not
-                                                be altered. That is, the way in which the tailoring variables are used by
-                                                the decision rule need not be altered to ensure the optimal effectiveness
-                                                of the intervention component for new users. 
-                                            </p>
-                                            <label for="toggle">expand/fold</label>
-                                            <input type="checkbox" id="toggle">
+                                        <div class="card-content">
+                                            An implicit rationale underlying a
+                                            JITAI is that the decision rules, once constructed, are fixed and need not
+                                            be altered. That is, the way in which the tailoring variables are used by
+                                            the decision rule need not be altered to ensure the optimal effectiveness
+                                            of the intervention component for new users. 
                                         </div>
-                                        <div class="bottom-exp" @click="expand">
-                                            <div v-if="isExpand">fold</div>
-                                            <div v-else>expand</div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -78,4 +67,20 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+    export default {
+        name: "extend",
+        data() {
+            return {
+                isExpand: true,
+            };
+        },
+        methods: {
+            expand() {
+                this.isExpand = !this.isExpand;
+            },
+        },
+    };
+</script>
+{% endblock javascripts %}
