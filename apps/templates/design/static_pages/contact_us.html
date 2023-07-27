@@ -3,7 +3,20 @@
 {% block title %} Contact Us {% endblock %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+    .card-content {
+        padding-left: 2%;
+        padding-bottom: 2%;
+        padding-top: 2%;
+        background: white;
+        margin-right: 10%;
+    }
+    .emphasize {
+        color:darkslateblue;
+    }
+</style>
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -32,19 +45,22 @@
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            Email us
-                                        </div>
-                                        <div>
-                                            Please email Hsin-Yu Lai hsin-yu@harvard.edu
-                                        </div class="card-content">
-
-                                        <div class="card-header">
-                                            Visit us
+                                            <h5>Email us</h5>
                                         </div>
                                         <div class="card-content">
-                                            Visit our office at XX Boston. 
+                                            Please email Hsin-Yu Lai using <strong class="emphasize">hsinyul@g.harvard.edu</strong>
                                         </div>
                                     </div>
+
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Visit us</h5>
+                                        </div>
+                                        <div class="card-content">
+                                            Visit our office at Byerly Hall, 8 Garden Street, Cambridge
+                                        </div>
+                                    </div>
+                                </div>
                                 </div>
                             </div>
 
