@@ -3,7 +3,18 @@
 {% block title %} About Us {% endblock %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+    .card-content {
+        padding-left: 2%;
+        padding-bottom: 2%;
+        padding-top: 2%;
+        background: white;
+        margin-right: 10%;
+    }
+</style>
+
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -30,12 +41,27 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            ??????????
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Our Goal</h5>
+                                            </div>
+                                            <div class="card-content">
+                                                The pJTIAI toolbox is developed as a part of the mDOT TR&D2 projects
+                                                where the goal is to design RL algorithms to personalize interventions better
+                                                and reduce intervention burden effects that can lead to disengagement.
+                                            </div>
                                         </div>
 
-                                    </div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>More information</h5>
+                                            </div>
+                                            <div class="card-content">
+                                                More information about the mDOT center: More information about the
+                                                TR&D2 projects:
+                                                pJITAI Tutorial: (TBD) Citation:
+                                            </div>
+                                        </div>
                                 </div>
                             </div>
 
