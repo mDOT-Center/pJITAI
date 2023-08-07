@@ -64,24 +64,39 @@
 
                             <button type="button" class="card-collapsible">How is a pJITAI different from a JITAI?</button>
                                 <div class="card-content">
-                                    <p> An implicit rationale underlying a JITAI is that the decision rules, once constructed, are fixed and need not be altered. That is, the way in which the tailoring variables are used by the decision rule need not be altered to ensure the optimal effectiveness of the intervention component for new users. For example, suppose the tailoring variable concerning the level of prior self-monitoring has a strong effect relative to the other tailoring variables in the decision rule. Then the implicit JITAI assumption is that this effect will continue to be strong also for a new group of similar individuals. Hence, there is no further need to update these decision rules. As another example, let’s consider that decision rules to increase physical exercise have been learned for a sedentary adult using data collected prior to the COVID-19 epidemic. A JITAI assumes that these decision rules continue to be valid and effective for sedentary adults also post-COVID-19 epidemic. If one suspects that the decision rules need updating, then new studies on different types of individuals (different age or obesity profiles or post-COVID or from a different part of the U.S.) are required.
-                                        In contrast, a pJITAI does not make this restrictive assumption on the decision rules and assumes that the decision rules might vary between users, even after accounting for the tailoring variables. This rationale makes sense if, for example, the HeartSteps JITAI decision rules are informed by data from sedentary individuals in the US Midwest, but they are subsequently used in another study that involves individuals in the Northwest who are newly diagnosed with stage 1 hypertension. In this case, there may be a myriad of reasons why the effectiveness of the decision rules might change (e.g., access to places to walk and weather). </p>
+                                    <p> An implicit rationale underlying a JITAI is that the decision rules, once constructed, are fixed and need not be altered. 
+                                        That is, the way in which the tailoring variables are used by the decision rule need not be altered to ensure the optimal 
+                                        effectiveness of the intervention component for new users. For example, suppose the tailoring variable concerning the level 
+                                        of prior self-monitoring has a strong effect relative to the other tailoring variables in the decision rule. Then the implicit 
+                                        JITAI assumption is that this effect will continue to be strong also for a new group of similar individuals. Hence, there is no 
+                                        further need to update these decision rules. <br />
+                                        
+                                        As another example, let’s consider that decision rules to increase physical exercise have been learned for a sedentary adult 
+                                        using data collected prior to the COVID-19 epidemic. A JITAI assumes that these decision rules continue to be valid and 
+                                        effective for sedentary adults also post-COVID-19 epidemic. If one suspects that the decision rules need updating, then new 
+                                        studies on different types of individuals (different age or obesity profiles or post-COVID or from a different part of the U.S.) 
+                                        are required.<br />
+
+                                        In contrast, a pJITAI does not make this restrictive assumption on the decision rules and assumes that the decision rules might 
+                                        vary between users, even after accounting for the tailoring variables. This rationale makes sense if, for example, the HeartSteps 
+                                        JITAI decision rules are informed by data from sedentary individuals in the US Midwest, but they are subsequently used in another 
+                                        study that involves individuals in the Northwest who are newly diagnosed with stage 1 hypertension. In this case, there may be a 
+                                        myriad of reasons why the effectiveness of the decision rules might change (e.g., access to places to walk and weather). </p>
                                 </div>
 
                             <button type="button" class="card-collapsible">How much control does a behavioral scientist have in designing their pJITAI?</button>
                                 <div class="card-content">
-                                    <p> Given an algorithm (in this beta version of the pJITAI, the algorithm is the Thompson-Sampling Algorithm), the behavioral scientist has complete flex- ibility in specifying the algorithm’s parameters. </p>
+                                    <p> Given an algorithm (in this beta version of the pJITAI, the algorithm is the Thompson-Sampling Algorithm), the behavioral scientist has complete flexibility in specifying the algorithm’s parameters. </p>
                                 </div>
 
                             <button type="button" class="card-collapsible">How does the API of the pJITAI toolbox work?</button>
                                 <div class="card-content">
-                                    <p> After designing your pJITAI using the toolbox, your implemented pJITAI and the phone where it will run need to communicate so that the interven- tion component notifications can be sent on the phone. For this, an API is created by the toolbox which is an interface that allows app developers to enable this communication.
-                                        More precisely, ... there will be two times when the communication be- tween .. and .. happens. At each decision point, the mobile app provides state information to your designed pJITAI, and your pJITAI returns a de- cision about which intervention option to choose. In addition, you decide on an update time when the mobile app provides the information necessary for your pJITAI to update its decision rule for better personalization. </p>
+                                    <p> (TBD) </p>
                                 </div>
 
                             <button type="button" class="card-collapsible">How will personalization affect the after-study analysis?</button>
                                 <div class="card-content">
-                                    <p> In order to run/update your designed pJITAI, the state variables, the in- tervention options, and the proximal outcomes observed at each decision point have to be provided. Depending on the sensitivity of these variables, you have two choices.</p>
+                                    <p> The after-study analysis can still be performed if a pJITAI is implemented. We provide associated citations for the after-study analysis of each algorithm.</p>
                                 </div>
                             
                             <button type="button" class="card-collapsible">How easy is it for a software engineer to use the generated API to implement a behavioral scientist’s design?</button>
@@ -90,10 +105,7 @@
                                         generated API with little difficulty.</p>
                                 </div>
                             
-                            <button type="button" class="card-collapsible">How easy is it for a software engineer to use the generated API to implement a behavioral scientist’s design?</button>
-                                <div class="card-content">
-                                    <p> The after-study analysis can still be performed if a pJITAI is implemented. We provide associated citations for the after-study analysis of each algorithm.</p>
-                                </div>
+                            
                         </form>
                     </div>
                 </div>
