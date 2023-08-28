@@ -44,6 +44,11 @@ from apps.learning_methods.LearningMethodBase import LearningMethodBase
 
 class ThompsonSampling(LearningMethodBase):
 
+    ## This code is missing standardization in several places
+    ## First, when a decision needs to be made or when the posterior parameters need to be updated,
+    ## the state variables need to be standardized.
+    ## In addition, to initialize the prior parameters, the hyperparameters from the UI need to be transformed accordingly.
+
     def __init__(self):
         super().__init__()
         self.type = "ThompsonSampling"  # this should be same as class name
@@ -274,7 +279,8 @@ class ThompsonSampling(LearningMethodBase):
             Sigma_t = scale * np.matmul(Sigma_t, self.action_center(state))
 
             # f(S)*beta is a multivariate t distribution with mean mu_t, variance Sigma_t, and degree of freedom L
-            pi = 1 - t.cdf(0, degree, loc=mu_t, scale=Sigma_t)
+            scale_t=np.sqrt(Sigma_t[0,0])
+            pi = 1 - t.cdf(0, degree, loc=mu_t[0,0], scale=scale_t)
             pi = max(self._lower_clip, pi)
             pi = min(self._upper_clip, pi)
 
@@ -396,7 +402,7 @@ class ThompsonSampling(LearningMethodBase):
             # If all the states are "valid"
             if (len(state) == self._state_dim):
                 state = np.array([state]).T
-                # Check how to grab the d    ecision and how the decision is coded in numerical values
+                # Check how to grab the decision and how the decision is coded in numerical values
 
                 action = getattr(row, 'decision__decision')  # index of the action chosen
                 # we will need to grab the intervention probability as well
