@@ -259,12 +259,12 @@ class ThompsonSampling(LearningMethodBase):
 
         # Check whether all the covariates are valid => If not, what should we do?
         elif (len(state) != self._state_dim):
-            pi = 0
+            pi = self._lower_clip
 
-        # Check whether it's fixed randomization period
-        elif (False):
-            # There is a missing parameter from the web interface as well
-            print("To-Do")
+        # # Check whether it's fixed randomization period
+        # elif (False):
+        #     # There is a missing parameter from the web interface as well
+        #     print("To-Do")
 
         # Personalization (Thompson Sampling)
         else:
