@@ -85,20 +85,30 @@
                                             <p>We use the attributes of the proximal outcome to check if the API
                                                 receives inappropriate values from your mobile app. Please read
                                                 [tutorial] for more details.
-
-
                                             </p>
                                             <p>Please notice that if your proximal outcome needs to be transformed, the
                                                 transformation needs to be implemented in the mobile application; the
-                                                algorithm will not do the transformation.</p>
+                                                algorithm will not do the transformation. Hence, if your proximal outcome
+                                                need not be transformed, we are asking for the minimum
+                                                and maximum values of the proximal outcome. If there is transformation, we are asking 
+                                                for the minimum and maximum values after the transformation.
+                                            </p>
+                                            <p>In this version of pJITAI, we assume the proximal outcome is continuous. In the future,
+                                                categorical proximal outcomes will be incorporated.
+                                            </p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
                                             <p>In HeartSteps, the proximal outcome of interest is the log-transformed
-                                                30-minute step count after each decision point. To avoid minus infinity
+                                                30-minute step count after each decision point step counts. As mentioned
+                                                in General Settings/General info/HeartSteps Example, we explained that 
+                                                step counts are right skewed. Thus, in HeartSteps,
+                                                they are log transformed so that the normal approximation used in the linear
+                                                regression is more accurate. To avoid minus infinity
                                                 (recall that log<sub>e</sub>(0) becomes minus infinity), we added 0.5 to
                                                 the step count before the transformation, i.e., log<sub>e</sub>(next
-                                                30-minute step count+0.5). Our assumption was that people walk between 0
+                                                30-minute step count+0.5).</p>
+                                            <p> Our assumption was that people walk between 0
                                                 and 3000 steps in the next 30 minutes. Hence, the minimum value of the
                                                 (log) 30-minute step count is log<sub>e</sub>(0+0.5)=-0.69. The maximum
                                                 value of the (log) 30-minute step count is log<sub>e</sub>(3000+0.5)=8.0.
