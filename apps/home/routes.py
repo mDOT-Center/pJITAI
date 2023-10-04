@@ -502,9 +502,9 @@ def configuration_summary(config_type, project_uuid):
                 cov_name = covs.get(cov).get('covariate_name')
                 cov_desc = 'XXX'
                 if covs.get(cov).get('covariate_type') == 'Binary':
-                    cov_desc = f"Type: {covs.get(cov).get('covariate_type')} 0: {covs.get(cov).get('covariate_meaning_0')} 1: {covs.get(cov).get('covariate_meaning_1')}" 
+                    cov_desc = f"Type: {covs.get(cov).get('covariate_type')}, 0: {covs.get(cov).get('covariate_meaning_0')}, 1: {covs.get(cov).get('covariate_meaning_1')}" 
                 else:
-                    cov_desc = f"Type: {covs.get(cov).get('covariate_type')} Min: {covs.get(cov).get('covariate_min_val')} Max: {covs.get(cov).get('covariate_max_val')}"
+                    cov_desc = f"Type: {covs.get(cov).get('covariate_type')}, Min: {covs.get(cov).get('covariate_min_val')}, Max: {covs.get(cov).get('covariate_max_val')}"
                 tailoring_covs_names.append(cov_name)
                 tailoring_covs_description.append(cov_desc)
         
