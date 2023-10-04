@@ -491,7 +491,7 @@ def configuration_summary(config_type, project_uuid):
         prox_name = project_details.get('intervention_settings').get('intervention_option_a')
         print(f'INTERVENTION_OPTION_A {prox_name}')
 
-        proximal_outcome_name = prox_name
+        intervention_option_a = prox_name
         covs = project_details.get('covariates') 
         tailoring_covs_names = []
         tailoring_covs_description = []
@@ -519,7 +519,7 @@ def configuration_summary(config_type, project_uuid):
 
         return render_template("design/config_summary/summary.html", segment="configuration_summary", settings=settings,
                                project_details=project_details,
-                               proximal_outcome_name=proximal_outcome_name,
+                               intervention_option_a=intervention_option_a,
                                tailoring_covs_num = len(tailoring_covs_names),
                                tailoring_covs_names = tailoring_covs_names,
                                tailoring_covs_description = tailoring_covs_description,
