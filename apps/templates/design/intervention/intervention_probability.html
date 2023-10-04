@@ -142,22 +142,23 @@ $(document).ready(function(){
                                             <p>To ensure a continual update of personalization, you cannot choose the
                                                 intervention probability lower/upper bound during personalization to be
                                                 0 or 1. If you are concerned about burden or habituation, we suggest
-                                                that you choose a smaller upper bound.</p>
+                                                that you choose a smaller upper bound. See the HeartSteps example.</p>
                                             </p>
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
                                             <p>Here, we choose the intervention probability during the personalization
                                                 period to be between 0.1 and 0.8. Notice that with 5 decision
-                                                points/day, an intervention probability of 0.8 corresponds to an average
-                                                of 5 x 0.8 = 4 activity suggestion messages (Intervention Option A) per day. 
-                                                Similarly, an intervention probability of 0.1 corresponds to an average
-                                                of 5 x 0.1 = 0.5 activity suggestion messages (Intervention Option A) per day.
-                                                In other words, on average, the intervention sends no more than 4 activity suggestions 
-                                                per day and no fewer than 0.5 activity suggestions per day.
-                                                <!-- If you want to avoid sending four activity suggestions a day, you can consider 
-                                                1) lowering the upper bound or 2) adding “receiving more than three
-                                                activity suggestions in the same day” as an ineligibility criterion.  -->
+                                                points/day, an intervention probability of 0.1 corresponds to an average
+                                                of 0.1 x 5 = 0.5 activity suggestion messages (Intervention Option A) per day. 
+                                                Similarly, an intervention probability of 0.8 corresponds to an average
+                                                of 0.8 x 5 = 4 activity suggestion messages (Intervention Option A) per day.
+                                                In other words, on average, the intervention sends between 0.5 and 4 
+                                                activity suggestions per day.</p>
+                                            <p> In this example, if you believe sending 4 activity suggestions a day may
+                                                be burdensome, you can consider lowering the intervention probability upper bound. 
+                                                Similarly, if you believe that you may not have enough samples with 0.5 activity
+                                                suggestions a day, you can consider increasing the intervention probability lower bound. 
                                             </p>
                                         </div>
 
