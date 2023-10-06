@@ -4,9 +4,9 @@
 
     $('#donotshowagain').change(function (e) {
         if ($(this).prop('checked')) {
-            Cookies.set('donotshowagain', 'true');
+            Cookies.set('donotshowagain', 2);
         }else{
-            Cookies.set('donotshowagain', 'false');
+            Cookies.set('donotshowagain', 1);
         }
     });
 
@@ -15,8 +15,9 @@
         'justify-content': 'center',
         'align-items': 'center'
     }).carousel({interval: false,wrap: false});
-    if(Cookies.get('donotshowagain')=='false' || Cookies.get('donotshowagain')==null){
+    if(Cookies.get('donotshowagain')==1 || Cookies.get('donotshowagain')==null){
         $("#instructionModel").modal('show');
+        Cookies.set('donotshowagain', Cookies.get('donotshowagain') + 1);
     }
 
 var myCarousel   = $('#myCarousel');
@@ -64,10 +65,10 @@ function showControl() {
     });
 
  function showModalByLink(){
-    if(Cookies.get('donotshowagain')!='false' || Cookies.get('donotshowagain')!=null){
+    if(Cookies.get('donotshowagain')==1 || Cookies.get('donotshowagain')!=null){
 
     }
-    if (document.cookie.indexOf('donotshowagain') > -1 && Cookies.get('donotshowagain')=="true") {
+    if (document.cookie.indexOf('donotshowagain') > -1 && Cookies.get('donotshowagain')==2) {
       $('#donotshowagain').prop('checked', true);
     }
     $('#instructionModel').modal('show');
