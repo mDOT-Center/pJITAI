@@ -93,19 +93,20 @@ function get_prob(abc){
                                                             Based on the information you entered on the previous screens,<br>
                                                             the probability of providing <span
                                                                 style="background-color: #eeece9; color:#f85e5e;"> {{intervention_option_a}}</span> (Intervention Option A)
-                                                            when given <span
-                                                            style="background-color: #eeece9; color:#f85e5e;">the value(s) of the tailoring variable(s)</span> (See the box below) is:
+                                                            given <span
+                                                            style="background-color: #eeece9; color:#f85e5e;">the tailoring variable values in the box below</span>  is:
                                                         </h6>
-                                                        <h1 class="text-center">[<span id="probability_field">{{probability}}</span>]</h1>
+                                                        <h1 class="text-center"><span id="probability_field">{{probability}}</span></h1>
                                                         <!-- <div class="text-center" style="color:red;"><b>NOTE:</b><small> 53% is a demo value. This value be computed by an algorithm once backend algorithm is complete. </small></div> -->
                                                     </div>
 
 
                                                     <div style="margin-top: 2%;">
-                                                        <h5>Values of the tailoring variables</h5>
+                                                        <h5>Tailoring variable values</h5>
                                                         <div class="rightsidebluetextbox" style="margin-top:0px;">
                                                             <!-- <h6><i class="fas fa-sliders-h"></i> Tailoring Variables Values </h6> -->
-                                                            <h6> Change the values of tailoring variables to see how the intervention probability changes.</h6>
+                                                            <h6> Input different possible tailoring variable values to see how the intervention probability would 
+                                                                change with different tailoring-variable values.</h6>
                                                             <hr>
                                                             {% for i in range(tailoring_covs_num) %}
                                                             <div class="form-group">
@@ -128,19 +129,19 @@ function get_prob(abc){
 
                                                     <p>
                                                     <ul>
-                                                        <li><b>Note 1</b>:This is the initial probability of delivering intervention option A.
+                                                        <li><b>Note 1</b>:This is the initial probability of delivering Intervention Option A.
                                                             The intervention probability will change (be personalized) as data accrues during the study but will
                                                             never go
                                                             below
                                                             {{settings.get("intervention_probability_lower_bound")|float*100}}%
                                                             or above
                                                             {{settings.get("intervention_probability_upper_bound")|float*100}}%
-                                                            because of your configuration.
+                                                            given the lower and upper bounds you set to the probability of sending Intervention Option A.
 
                                                         </li>
-                                                        <li><b>Note 2</b>: This is a summary based on your
-                                                            configuration. Your inputs here do not change the actual
-                                                            configuration of your pJITAI.
+                                                        <li><b>Note 2</b>: This page is just a test environment for you to check the effect of your design choices. 
+                                                            Your inputs here do not change the actual
+                                                            design of your pJITAI.
                                                         </li>
 <!--                                                         <li><b>Note 3</b>: If the prior mean of the interaction
                                                             coefficient of a tailoring variable is zero, then this
