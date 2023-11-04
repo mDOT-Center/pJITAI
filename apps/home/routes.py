@@ -205,12 +205,16 @@ def intervention_settings(setting_type, project_uuid):
 
     if request.method == 'POST':
         add_menu(user_id, project_uuid, request.path)
+        update_intervention_settings(request.form.to_dict(), project_details_obj) # TWH: Get updated settings before page rendering so that fields in adjacent pages display properly.
+        project_details, project_details_obj = get_project_details(project_uuid, user_id) # TWH: Get updated settings before page rendering so that fields in adjacent pages display properly.
+        intervention_settings = project_details.get("intervention_settings")  # TWH: Get updated settings before page rendering so that fields in adjacent pages display properly.
+        
         if 'ineligibility' in request.referrer:
             for k in list(intervention_settings.keys()):
                 if k.startswith("condition"):
                     intervention_settings.pop(k)
-        update_intervention_settings(request.form.to_dict(), project_details_obj)
-
+        
+        
     all_menus = get_project_menu_pages(user_id, project_uuid)
 
     if setting_type == "intervention_option":
