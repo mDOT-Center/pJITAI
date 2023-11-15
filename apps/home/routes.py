@@ -273,9 +273,7 @@ def model_settings(setting_type, project_uuid):
     if request.method == 'POST':
         add_menu(user_id, project_uuid, request.path)
         update_model_settings(request.form.to_dict(), project_details_obj)
-        project_details, project_details_obj = get_project_details(project_uuid, user_id) #TWH Update after save                                                                                                                                                                                
-        project_name = project_details.get("general_settings", {}).get("study_name", "") #TWH Update after save 
-
+        project_details, project_details_obj = get_project_details(project_uuid, user_id)
 
     if project_details.get("model_settings"):
         all_covariates = project_details.get("covariates")
@@ -286,8 +284,8 @@ def model_settings(setting_type, project_uuid):
             "proximal_outcome_name")
         model_settings["intervention_component_name"] = project_details.get("general_settings", {}).get(
             "intervention_component_name")
-        model_settings['noise_scale'] = 3.16
-        model_settings['noise_degree_of_freedom'] = 5
+        # model_settings['noise_scale'] = 3.16 # TWH Why was this overriding inputs here?
+        # model_settings['noise_degree_of_freedom'] = 5 # TWH Why was this overriding inputs here?
         for c in all_covariates:
             print(f'model settings {all_covariates[c]}')
             all_covs.append(all_covariates[c])
@@ -395,7 +393,8 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
         if cov_id:
             update_covariates_settings(form_data, project_details_obj, cov_id)
             project_details, project_details_obj = get_project_details(project_uuid, user_id)
-            all_covariates = project_details.get("covariates")            
+            all_covariates = project_details.get("covariates")
+            settings = project_details.get("covariates").get(cov_id)            
         else:
             update_model_settings(request.form.to_dict(), project_details_obj)
             project_details, project_details_obj = get_project_details(project_uuid, user_id)
