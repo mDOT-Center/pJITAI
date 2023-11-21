@@ -60,6 +60,12 @@ function get_prob(abc){
         });
     });
 
+    var low_bound = document.getElementById('configuration_note_low_bound').value;
+    var high_bound = document.getElementById('configuration_note_high_bound').value;
+    document.getElementById('configuration_note_low_bound').innerHTML = round(low_bound, 2);
+    document.getElementById('configuration_note_high_bound').innerHTML = round(high_bound, 2);
+    
+
         </script>
 
 <!-- [ Main Content ] start -->
@@ -103,7 +109,7 @@ function get_prob(abc){
 
 
                                                     <div style="margin-top: 2%;">
-                                                        <h5>Tailoring variable values</h5>
+                                                        <h5>Tailoring variable values (play with the values!)</h5>
                                                         <div class="rightsidebluetextbox" style="margin-top:0px;">
                                                             <!-- <h6><i class="fas fa-sliders-h"></i> Tailoring Variables Values </h6> -->
                                                             <h6> Input different possible tailoring variable values to see how the intervention probability would 
@@ -134,9 +140,9 @@ function get_prob(abc){
                                                             The intervention probability will change (be personalized) as data accrues during the study but will
                                                             never go
                                                             below
-                                                            {{settings.get("intervention_probability_lower_bound")|float*100}}%
+                                                            <span id="configuration_note_low_bound">{{settings.get("intervention_probability_lower_bound")|float*100}}</span>%
                                                             or above
-                                                            {{settings.get("intervention_probability_upper_bound")|float*100}}%
+                                                            <span id="configuration_note_high_bound">{{settings.get("intervention_probability_upper_bound")|float*100}}</span>%
                                                             given the lower and upper bounds you set to the probability of sending Intervention Option A.
 
                                                         </li>
