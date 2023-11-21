@@ -147,7 +147,7 @@
                                                     <select id="update_day" name="update_day" class="form-control"
                                                             disabled>
                                                         {% for udur in update_duration%}
-                                                        <option {% if settings.update_day==udur %} selected{% endif %}
+                                                        <option id="update_day_option"{% if settings.update_day==udur %} selected{% endif %}
                                                                 value="{{udur}}">{{udur}}
                                                         </option>
                                                         {%endfor%}
@@ -221,4 +221,12 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+<script>
+var a = localStorage.getItem("update_day_option");
+
+document.getElementById("update_day_option").value = a; 
+</script>
+
+{% endblock javascripts %}
