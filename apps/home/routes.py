@@ -145,6 +145,10 @@ def project_settings(setting_type, project_uuid=None):
         add_menu(user_id, project_uuid, request.path)
         if project_details_obj:
             update_general_settings(request.form.to_dict(), project_details_obj)
+            project_details, project_details_obj = get_project_details(project_uuid, user_id) #TWH Update after write
+            project_name = project_details.get("general_settings", {}).get("study_name", "") #TWH Update after write
+            general_settings = project_details.get("general_settings", {}) #TWH Update after write
+            modified_on = project_details.get("modified_on", "") #TWH Update after write
         else:
             gdata = request.form.to_dict()
 
@@ -205,14 +209,11 @@ def intervention_settings(setting_type, project_uuid):
 
     if request.method == 'POST':
         add_menu(user_id, project_uuid, request.path)
-        update_intervention_settings(request.form.to_dict(), project_details_obj) # TWH: Get updated settings before page rendering so that fields in adjacent pages display properly.
-        project_details, project_details_obj = get_project_details(project_uuid, user_id) # TWH: Get updated settings before page rendering so that fields in adjacent pages display properly.
-        intervention_settings = project_details.get("intervention_settings")  # TWH: Get updated settings before page rendering so that fields in adjacent pages display properly.
         if 'ineligibility' in request.referrer:
             for k in list(intervention_settings.keys()):
                 if k.startswith("condition"):
                     intervention_settings.pop(k)
-        
+        update_intervention_settings(request.form.to_dict(), project_details_obj)
 
     all_menus = get_project_menu_pages(user_id, project_uuid)
 
@@ -265,6 +266,10 @@ def model_settings(setting_type, project_uuid):
 
     # proximal_outcome_name (general settings)
     # intervention_component_name (general settings)
+    if request.method == 'POST':
+        add_menu(user_id, project_uuid, request.path)
+        update_model_settings(request.form.to_dict(), project_details_obj)
+        project_details, project_details_obj = get_project_details(project_uuid, user_id)
 
     if project_details.get("model_settings"):
         all_covariates = project_details.get("covariates")
@@ -275,8 +280,8 @@ def model_settings(setting_type, project_uuid):
             "proximal_outcome_name")
         model_settings["intervention_component_name"] = project_details.get("general_settings", {}).get(
             "intervention_component_name")
-        model_settings['noise_scale'] = 3.16
-        model_settings['noise_degree_of_freedom'] = 5
+        # model_settings['noise_scale'] = 3.16 # TWH Why was this overriding inputs here?
+        # model_settings['noise_degree_of_freedom'] = 5 # TWH Why was this overriding inputs here?
         for c in all_covariates:
             print(f'model settings {all_covariates[c]}')
             all_covs.append(all_covariates[c])
@@ -285,10 +290,6 @@ def model_settings(setting_type, project_uuid):
 
     if not modified_on:
         modified_on = datetime.now()
-
-    if request.method == 'POST':
-        add_menu(user_id, project_uuid, request.path)
-        update_model_settings(request.form.to_dict(), project_details_obj)
 
     all_menus = get_project_menu_pages(user_id, project_uuid)#@Anand - add new menu here
 
@@ -387,8 +388,13 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
 
         if cov_id:
             update_covariates_settings(form_data, project_details_obj, cov_id)
+            project_details, project_details_obj = get_project_details(project_uuid, user_id)
+            all_covariates = project_details.get("covariates")
+            settings = project_details.get("covariates").get(cov_id)            
         else:
             update_model_settings(request.form.to_dict(), project_details_obj)
+            project_details, project_details_obj = get_project_details(project_uuid, user_id)
+            settings = project_details.get("covariates").get(cov_id)
 
     all_menus = get_project_menu_pages(user_id, project_uuid)
 

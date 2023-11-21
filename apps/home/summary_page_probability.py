@@ -258,4 +258,4 @@ def decision(stand_action_state, stand_beta_mu, stand_beta_Sigma, L, stand_noise
     pi=max(lower_clip,pi)
     pi=min(upper_clip,pi)
 
-    return pi 
+    return round(pi,2) 
