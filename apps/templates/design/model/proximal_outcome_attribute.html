@@ -86,22 +86,24 @@
                                                 receives inappropriate values from your mobile app. Please read
                                                 [tutorial] for more details.
                                              </p>
-                                            <p>If you're reading the HeartSteps demo, the HeartSteps numbers look 
-                                                weird because in HeartSteps the proximal outcome (the 30-minute step count
-                                                 after each decision point) is log-transformed.
-                                                (See HeartSteps Example for more explanation.) 
-                                            </p>
-                                            <p>You determine whether your proximal outcome needs to be transformed. 
-                                                Please note that if your proximal outcome needs to be transformed, the
-                                                transformation needs to be implemented in the mobile application; the
-                                                algorithm will not do the transformation. Hence, if your proximal outcome
-                                                need not be transformed, we are asking for the minimum
-                                                and maximum values of the proximal outcome. If there is transformation, we are asking 
-                                                for the minimum and maximum values after the transformation.
-                                            </p>
-                                            <p>In this version of pJITAI, we assume the proximal outcome is continuous. In the future,
+                                             <p>In this version of pJITAI, we assume the proximal outcome is continuous. In the future,
                                                 categorical proximal outcomes will be incorporated.
                                             </p>
+                                            <p> If you're reading the HeartSteps demo, the HeartSteps numbers look 
+                                                weird because in HeartSteps the proximal outcome (the 30-minute step count
+                                                 after each decision point) is log-transformed.
+                                                (See the HeartSteps Example tab for more explanation.) 
+                                            </p>
+                                            <p> [You determine whether your proximal outcome needs to be transformed. 
+                                                If you decide to transform your proximal outcome, please read the following.]
+                                                If your proximal outcome needs to be transformed, the
+                                                transformation needs to be implemented in the mobile application; the
+                                                algorithm will not do the transformation. Hence, if there is transformation, we are asking 
+                                                for the minimum and maximum values of the proximal outcome after the transformation. 
+                                                (If your proximal outcome need not be transformed, we are asking for the minimum and maximum 
+                                                values of the proximal outcome without any transformation.)
+                                            </p>
+                                            
                                         </div>
                                         <div class="tab-pane fade" id="profile" role="tabpanel"
                                              aria-labelledby="profile-tab">
