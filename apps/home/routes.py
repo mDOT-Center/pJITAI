@@ -411,21 +411,23 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
                                menu_number=14, project_name=project_name, modified_on=modified_on, settings=settings,
                                project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type == "covariate_attributes":
+        cov_name = all_covariates.get(cov_id, {}).get("covariate_name")
         return render_template("design/covariates/covariate_attributes.html", segment="covariates", all_menus=all_menus,
                                menu_number=14, project_name=project_name, modified_on=modified_on,
-                               covariates_types=covariates_types, settings=settings, project_uuid=project_uuid,
+                               covariates_types=covariates_types, cov_name=cov_name, settings=settings, project_uuid=project_uuid,
                                cov_id=cov_id)
     elif setting_type == "covariate_main_effect":
+        cov_name = all_covariates.get(cov_id, {}).get("covariate_name")
         is_tailoring = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
         return render_template("design/covariates/covariate_main_effect.html", segment="covariates", formula=formula,
                                all_menus=all_menus, menu_number=14, project_name=project_name, modified_on=modified_on,
-                               is_tailoring=is_tailoring, settings=settings, project_uuid=project_uuid, cov_id=cov_id)
+                               is_tailoring=is_tailoring, cov_name=cov_name, settings=settings, project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type == "covariate_tailored_effect":
         formula = generate_formula(project_uuid=project_uuid, is_summary_page="no", add_red_note="yes", cov_id=cov_id, covariate_tailored_effect=True)
-
+        cov_name = all_covariates.get(cov_id, {}).get("covariate_name")
         return render_template("design/covariates/covariate_tailored_effect.html", segment="covariates",
                                formula=formula, all_menus=all_menus, menu_number=14, project_name=project_name,
-                               modified_on=modified_on, settings=settings, project_uuid=project_uuid, cov_id=cov_id)
+                               modified_on=modified_on, cov_name=cov_name, settings=settings, project_uuid=project_uuid, cov_id=cov_id)
     elif setting_type == "covariate_summary":
         tal_val = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
         is_tailoring = True
