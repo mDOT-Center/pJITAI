@@ -60,10 +60,9 @@ function get_prob(abc){
         });
     });
 
-    var low_bound = document.getElementById('configuration_note_low_bound').value;
-    var high_bound = document.getElementById('configuration_note_high_bound').value;
-    document.getElementById('configuration_note_low_bound').innerHTML = round(low_bound, 2);
-    document.getElementById('configuration_note_high_bound').innerHTML = round(high_bound, 2);
+
+
+
     
 
         </script>
@@ -140,9 +139,9 @@ function get_prob(abc){
                                                             The intervention probability will change (be personalized) as data accrues during the study but will
                                                             never go
                                                             below
-                                                            <span id="configuration_note_low_bound">{{settings.get("intervention_probability_lower_bound")|float*100}}</span>%
+                                                            <span id="configuration_note_low_bound">{{settings.get("intervention_probability_lower_bound")|float}}</span>
                                                             or above
-                                                            <span id="configuration_note_high_bound">{{settings.get("intervention_probability_upper_bound")|float*100}}</span>%
+                                                            <span id="configuration_note_high_bound">{{settings.get("intervention_probability_upper_bound")|float}}</span>
                                                             given the lower and upper bounds you set to the probability of sending Intervention Option A.
 
                                                         </li>

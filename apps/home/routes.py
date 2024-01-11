@@ -418,6 +418,7 @@ def covariates_settings(setting_type, project_uuid, cov_id=None):
                                covariates_types=covariates_types, cov_name=cov_name, settings=settings, project_uuid=project_uuid,
                                cov_id=cov_id)
     elif setting_type == "covariate_main_effect":
+        cov_name = all_covariates.get(cov_id, {}).get("covariate_name")
         is_tailoring = project_details_obj.covariates.get(cov_id).get("tailoring_variable", "no")
         cov_name = all_covariates.get(cov_id, {}).get("covariate_name")
         return render_template("design/covariates/covariate_main_effect.html", segment="covariates", formula=formula,
