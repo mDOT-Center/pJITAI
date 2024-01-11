@@ -52,11 +52,7 @@
                                                     <div class="rightsidebluetextbox">
                                                         <p>This version of Thompson Sampling uses a Bayesian linear
                                                             regression to model the relationship between the proximal
-                                                            outcome, states, and intervention options. This algorithm
-                                                            uses the data from each individual to learn and update that
-                                                            individual’s coefficients. (In other words, in this version, 
-                                                            to personalize the decision rule for a participant,
-                                                            the algorithm does NOT use other participants' data.) 
+                                                            outcome, states, and intervention options. 
                                                             This method determines which
                                                             intervention option to deliver based on the posterior
                                                             probability that the intervention option is most effective
@@ -68,6 +64,11 @@
                                                             <li>There are two intervention options.</li>
                                                             <li>The proximal outcome is continuous.</li>
                                                         </ul>
+                                                        <p>In addition, in this version, the algorithm uses only data from 
+                                                            each individual to learn and update that
+                                                            individual’s coefficients. (In other words, in this version, 
+                                                            to personalize the decision rule for a participant,
+                                                            the algorithm does NOT use other participants' data.) </p>
                                                         <p>Coming soon: a version of Thompson Sampling for categorical proximal
                                                             outcomes.</p>
                                                         
